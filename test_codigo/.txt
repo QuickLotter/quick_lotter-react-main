@@ -1,0 +1,11 @@
+{
+  "sum": [1, 36],
+  "odd": [1, 36],
+  "low": [1, 36],
+  "prime": [1, 36],
+  "fibonacci": [1, 36],
+  "mult_of_3": [1, 36],
+  "adjacent": [1, 36],
+  "repeated": [1, 36],
+  "sequence": [1, 36]
+}

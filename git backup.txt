@@ -1,0 +1,10 @@
+<<<<<<< HEAD
+$mensagem = Read-Host "Atualizações na home e ajustes de responsividade"
+=======
+$mensagem = Read-Host "Escreva uma mensagem para o commit"
+>>>>>>> 7f9956cf64b1b8f396d084dd450e80a270638e03
+git add .
+git commit -m "🚀 $mensagem"
+git push
+
+npx expo start -c
