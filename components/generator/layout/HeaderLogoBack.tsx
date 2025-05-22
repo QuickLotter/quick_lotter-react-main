@@ -1,5 +1,3 @@
-// components/layout/HeaderLogoBack.tsx
-
 import React from "react";
 import {
   View,
@@ -19,7 +17,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import { LinearGradient } from "expo-linear-gradient";
 
-// Lista de estados (padrão EUA)
 const STATES = [
   "AZ",
   "AR",
@@ -69,7 +66,6 @@ const STATES = [
   "WY",
 ];
 
-// Props do componente
 type Props = {
   onMenuPress?: () => void;
   showMenu?: boolean;
@@ -94,10 +90,11 @@ export default function HeaderLogoBack({
   const [state, setState] = React.useState("NY");
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  // Mostra menu hambúrguer APENAS na home ("/home")
   const isHome = pathname === "/home";
 
-  // Define o alinhamento do logo dinamicamente
+  const hideBackRoutes = ["/analysis", "/overview", "/my-lines", "/checker"];
+  const showBackButton = !hideBackRoutes.includes(pathname);
+
   let logoContainerAlign: "flex-start" | "center" | "flex-end";
   if (logoAlign === "left") logoContainerAlign = "flex-start";
   else if (logoAlign === "right") logoContainerAlign = "flex-end";
@@ -108,7 +105,7 @@ export default function HeaderLogoBack({
       colors={["#004AB1", "#007EFF"]}
       locations={[0, 0.41]}
       start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 1 }}
       style={[
         styles.wrapper,
         transparent && {
@@ -120,7 +117,7 @@ export default function HeaderLogoBack({
       ]}
     >
       <ResponsiveContainer style={styles.inner}>
-        {/* Botão de menu/voltar */}
+        {/* Botão de menu ou voltar */}
         {showMenu ? (
           <Pressable
             onPress={isHome ? onMenuPress : () => router.back()}
@@ -128,19 +125,21 @@ export default function HeaderLogoBack({
           >
             {isHome ? (
               <Entypo name="menu" size={28} color={Colors.white} />
-            ) : (
+            ) : showBackButton ? (
               <MaterialIcons
                 name="arrow-back-ios"
                 size={24}
                 color={Colors.white}
               />
+            ) : (
+              <View style={{ width: 24 }} />
             )}
           </Pressable>
         ) : (
           <View style={{ width: 44 }} />
         )}
 
-        {/* LOGO centralizada, esquerda ou direita */}
+        {/* Logo */}
         <View
           style={[styles.logoContainer, { alignItems: logoContainerAlign }]}
         >
@@ -151,7 +150,7 @@ export default function HeaderLogoBack({
           {title ? <Text style={styles.title}>{title}</Text> : null}
         </View>
 
-        {/* Seleção de Estado */}
+        {/* Botão seletor de estado */}
         {showStateSelector ? (
           <Pressable
             onPress={() => setModalVisible(true)}
@@ -175,6 +174,10 @@ export default function HeaderLogoBack({
               data={STATES}
               keyExtractor={(item) => item}
               numColumns={4}
+              contentContainerStyle={{
+                alignSelf: "center",
+                width: 374, // limite fixo para grid
+              }}
               renderItem={({ item }) => {
                 const isSelected = item === state;
                 return (
@@ -237,6 +240,7 @@ const styles = StyleSheet.create({
   menuButton: {
     padding: 6,
     zIndex: 3,
+    width: 44,
   },
   logoContainer: {
     flex: 1,
@@ -290,7 +294,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     margin: 6,
     borderRadius: 8,
-    width: "22%",
+    width: 78, // ⬅️ 78 * 4 + margens = ~374px
     alignItems: "center",
     backgroundColor: "#F2F2F2",
     borderWidth: 1,

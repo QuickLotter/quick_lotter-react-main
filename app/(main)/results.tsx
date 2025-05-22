@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
-import { MaterialIcons } from "@expo/vector-icons";
 
 import Powerball from "@/assets/images/ny_game_logo/powerball.svg";
 import MegaMillions from "@/assets/images/ny_game_logo/megamillions.svg";
@@ -25,6 +24,7 @@ import NumbersEvening from "@/assets/images/ny_game_logo/numbers_evening.svg";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const MAX_CARD_WIDTH = Math.min(359, SCREEN_WIDTH - 16);
+const CARD_HEIGHT = 72;
 
 const gameCards = [
   {
@@ -163,12 +163,12 @@ export default function ResultsPage() {
                 },
               ]}
             >
-              {/* Logo à esquerda */}
+              {/* Logo */}
               <View style={styles.logoArea}>
                 <Logo width={48} height={22} />
               </View>
 
-              {/* Centro: infos centralizadas vertical/horizontal */}
+              {/* Info */}
               <View style={styles.infoArea}>
                 <Text style={styles.nextDrawLabel}>
                   Next Draw:{" "}
@@ -185,19 +185,16 @@ export default function ResultsPage() {
                 )}
               </View>
 
-              {/* Direita: Past Results */}
+              {/* Botão "Past Results" com fundo colorido */}
               <TouchableOpacity
-                style={styles.rightArea}
-                activeOpacity={0.83}
+                style={[
+                  styles.pastResultButton,
+                  { backgroundColor: game.color },
+                ]}
+                activeOpacity={0.9}
                 onPress={() => router.push(`/results/${game.route}`)}
               >
-                <Text style={styles.pastResults}>Past Results</Text>
-                <MaterialIcons
-                  name="arrow-forward-ios"
-                  size={22}
-                  color="#7E8894"
-                  style={{ marginLeft: 1 }}
-                />
+                <Text style={styles.pastResultText}>Past Results</Text>
               </TouchableOpacity>
             </View>
           );
@@ -206,8 +203,6 @@ export default function ResultsPage() {
     </View>
   );
 }
-
-const CARD_HEIGHT = 72;
 
 const styles = StyleSheet.create({
   container: {
@@ -237,8 +232,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 2,
     marginBottom: 12,
-    // Sombra visível para o pad (azulada ou colorida por jogo)
-    shadowColor: "#333",
     shadowOpacity: 0.19,
     shadowRadius: 7,
     shadowOffset: { width: 0, height: 4 },
@@ -260,6 +253,22 @@ const styles = StyleSheet.create({
     height: CARD_HEIGHT,
     paddingHorizontal: 2,
   },
+  nextDrawLabel: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: "#222",
+    textAlign: "center",
+  },
+  nextDrawDay: {
+    fontWeight: "bold",
+    color: "#222",
+  },
+  nextDrawDate: {
+    fontSize: 13,
+    color: "#222",
+    fontWeight: "400",
+    textAlign: "center",
+  },
   drawStartedOutline: {
     fontSize: 12,
     fontWeight: "bold",
@@ -278,36 +287,17 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
     marginTop: 2,
   },
-  nextDrawLabel: {
-    fontSize: 13,
-    fontWeight: "bold",
-    color: "#222",
-    textAlign: "center",
-    marginBottom: 0,
-  },
-  nextDrawDay: {
-    fontWeight: "bold",
-    color: "#222",
-  },
-  nextDrawDate: {
-    fontSize: 13,
-    color: "#222",
-    fontWeight: "400",
-    marginBottom: 0,
-    textAlign: "center",
-  },
-  rightArea: {
-    flexDirection: "row",
+  pastResultButton: {
+    borderRadius: 24,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    height: 36,
+    justifyContent: "center",
     alignItems: "center",
-    marginLeft: 6,
-    minWidth: 54,
-    justifyContent: "flex-end",
-    height: CARD_HEIGHT,
   },
-  pastResults: {
+  pastResultText: {
     fontSize: 12,
-    color: "#7E8894",
-    fontWeight: "500",
-    marginRight: 2,
+    fontWeight: "600",
+    color: "#FFF",
   },
 });

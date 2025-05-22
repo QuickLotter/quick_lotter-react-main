@@ -89,11 +89,11 @@ export default function MyLinesScreen() {
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      <HeaderLogoBack />
+      <HeaderLogoBack title="" />
+      <Text style={styles.pageTitle}>📄 My Saved Lines</Text>
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <ResponsiveContainer>
-          <View style={{ height: insets.top + 10 }} />
-          <Text style={styles.title}>📄 My Saved Lines</Text>
           <FlatList
             data={savedGames}
             keyExtractor={(item) => item.id}
@@ -237,12 +237,13 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 100,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: Colors.primary,
+  pageTitle: {
     textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#0E4CA1",
+    marginTop: 10,
+    marginBottom: 12,
   },
   card: {
     borderRadius: 12,

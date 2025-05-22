@@ -1,19 +1,13 @@
-// app/(main)/layout.tsx
+import React from "react";
 import { Stack } from "expo-router";
-import { View, StyleSheet } from "react-native";
-import BottomNav from "@/components/generator/layout/BottomNav";
 
 export default function MainLayout() {
   return (
-    <View style={styles.wrapper}>
-      <Stack screenOptions={{ headerShown: false }} />
-      <BottomNav />
-    </View>
+    <Stack
+      screenOptions={{
+        animation: "fade", // ou 'fade', 'default', 'simple_push'
+        headerShown: false,
+      }}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-  },
-});

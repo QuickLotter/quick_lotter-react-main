@@ -29,7 +29,7 @@ export default function Profile() {
         showsVerticalScrollIndicator={false}
       >
         {/* ✅ Espaço seguro abaixo do header */}
-        <View style={{ height: insets.top + 20 }} />
+        <View style={{ height: insets.top + 10 }} />
 
         <ResponsiveContainer>
           <Text style={styles.title}>My Profile</Text>
