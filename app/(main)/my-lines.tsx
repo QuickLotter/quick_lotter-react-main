@@ -8,9 +8,9 @@ import {
   SafeAreaView,
   ScrollView,
   Modal,
-  Platform,
 } from "react-native";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
+import BottomNav from "@/components/generator/layout/BottomNav";
 import { Colors } from "@/theme";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -66,7 +66,6 @@ export default function MyLinesScreen() {
   const insets = useSafeAreaInsets();
   const [savedGames, setSavedGames] = useState(initialGames);
 
-  // Modal state for deletion
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -93,7 +92,7 @@ export default function MyLinesScreen() {
       <HeaderLogoBack />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <ResponsiveContainer>
-          <View style={{ height: insets.top + 160 }} />
+          <View style={{ height: insets.top + 10 }} />
           <Text style={styles.title}>📄 My Saved Lines</Text>
           <FlatList
             data={savedGames}
@@ -102,7 +101,6 @@ export default function MyLinesScreen() {
             contentContainerStyle={{ paddingBottom: 24 }}
             renderItem={({ item }) => (
               <View style={styles.card}>
-                {/* X Button */}
                 <Pressable
                   hitSlop={16}
                   style={({ pressed }) => [
@@ -182,7 +180,6 @@ export default function MyLinesScreen() {
             )}
           />
 
-          {/* Custom Modal Alert */}
           <Modal
             visible={deleteModalVisible}
             transparent
@@ -226,6 +223,8 @@ export default function MyLinesScreen() {
           </Modal>
         </ResponsiveContainer>
       </ScrollView>
+
+      <BottomNav />
     </SafeAreaView>
   );
 }
@@ -236,7 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 100,
   },
   title: {
     fontSize: 24,
@@ -309,7 +308,6 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.65,
   },
-  // Modal styles
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.28)",

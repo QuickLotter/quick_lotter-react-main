@@ -15,7 +15,7 @@ import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import BottomNav from "@/components/generator/layout/BottomNav";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import GameCardSlider from "@/components/cards/GameCardSlider"; // <<-- NOVO
-import MenuDrawer from "../menu-drawer";
+import MenuDrawer from "./menu-drawer";
 import { GameData } from "@/types/GameData";
 import { fetchNewYorkGames } from "@/states/new_york/games";
 
