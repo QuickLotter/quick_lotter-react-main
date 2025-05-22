@@ -16,17 +16,20 @@ type Props = {
   onPress?: () => void;
 };
 
+/**
+ * A propriedade data.numbers deve ser:
+ * - [num1, num2, num3, num4, num5, megaBall] se tiver extra ball
+ * - [num1, num2, num3, num4, num5] se não tiver
+ * A configuração extra ball é automática via ui.lastBallTextColor
+ */
 export default function GameCard({ data, onPress }: Props) {
   const { width } = useWindowDimensions();
-
-  // Responsividade: largura do card entre 320 e 768
   const maxWidth = 384;
   const minWidth = 192;
   const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
-
-  // Escala proporcional com base na largura base de 375
   const scale = cardWidth / 375;
 
+  // Busca a configuração visual específica do jogo
   const ui = gameSliderUI[data.slug] || gameSliderUI["megamillions"];
 
   return (
@@ -36,7 +39,7 @@ export default function GameCard({ data, onPress }: Props) {
         {
           width: cardWidth,
           borderColor: ui.borderColor,
-          padding: 28 * scale, // padding ajustado (era 32)
+          padding: 28 * scale,
           borderRadius: 24 * scale,
         },
       ]}
@@ -124,12 +127,15 @@ export default function GameCard({ data, onPress }: Props) {
       </Text>
 
       <View
-        style={[styles.numberRow, { gap: 8 * scale, marginBottom: 16 * scale }]}
+        style={[styles.numberRow, { gap: 4 * scale, marginBottom: 16 * scale }]}
       >
         {data.numbers.map((num, index) => {
-          const isLast = index === data.numbers.length - 1;
+          const isLast =
+            index === data.numbers.length - 1 && !!ui.lastBallTextColor;
           const ballColors = isLast ? ui.lastBallGradient : ui.ballGradient;
-          const ballTextColor = isLast ? "#000" : "#101820";
+          const ballTextColor = isLast
+            ? ui.lastBallTextColor ?? "#000"
+            : ui.ballTextColor ?? "#101820";
 
           return (
             <LinearGradient
@@ -138,8 +144,8 @@ export default function GameCard({ data, onPress }: Props) {
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={{
-                width: 36 * scale,
-                height: 36 * scale,
+                width: 40 * scale,
+                height: 40 * scale,
                 borderRadius: 40 * scale,
                 justifyContent: "center",
                 alignItems: "center",
@@ -149,7 +155,7 @@ export default function GameCard({ data, onPress }: Props) {
             >
               <Text
                 style={{
-                  fontSize: 14 * scale,
+                  fontSize: 18 * scale,
                   fontWeight: "700",
                   color: ballTextColor,
                 }}
@@ -253,12 +259,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: 8,
+    gap: 4,
     marginBottom: 16,
   },
   numberBall: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
@@ -280,7 +286,7 @@ const styles = StyleSheet.create({
   },
   playButton: {
     paddingVertical: 12,
-    paddingHorizontal: 40,
+    paddingHorizontal: 60,
     borderRadius: 24,
     borderWidth: 2,
     shadowColor: "#000",

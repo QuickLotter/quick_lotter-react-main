@@ -6,14 +6,18 @@ export const gameSliderUI = {
     lastBallGradient: ["#FF6666", "#B1001C"],
     playButtonColor: "#000",
     playButtonBorder: "#C7102E",
+    ballTextColor: "#101820", // Cor padrão para os números das bolas normais
+    lastBallTextColor: "#fff", // Cor personalizada para o número da PowerBall
   },
   megamillions: {
     borderColor: "#05549E",
     gradient: ["#FFFFFF", "#0E4CA1", "#FFFFFF"],
     ballGradient: ["#FFFFFF", "#BBBBBB"],
-    lastBallGradient: ["#1C91FF", "#011F3C"],
+    lastBallGradient: ["#FFDE1B", "#B77302"],
     playButtonColor: "#0E4CA1",
     playButtonBorder: "#EE3E33",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#fff", // Amarelo (Mega Ball) normalmente fica preto ou azul
   },
   cash4life: {
     borderColor: "#2D7F67",
@@ -22,14 +26,18 @@ export const gameSliderUI = {
     lastBallGradient: ["#5160AC", "#3D425E"],
     playButtonColor: "#3E4982",
     playButtonBorder: "#2D7F67",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#fff", // Cash Ball normalmente é branco ou verde
   },
   nylotto: {
     borderColor: "#D31245",
     gradient: ["#FFFFFF", "#D31245", "#FFFFFF"],
     ballGradient: ["#FFFFFF", "#BBBBBB"],
-    lastBallGradient: ["#FFFFFF", "#BBBBBB"],
+    lastBallGradient: ["#F53C6D", "#A4143A"],
     playButtonColor: "#D31245",
     playButtonBorder: "#005596",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#fff",
   },
   win4_midday: {
     borderColor: "#7E0C6E",
@@ -38,6 +46,8 @@ export const gameSliderUI = {
     lastBallGradient: ["#FFFFFF", "#BBBBBB"],
     playButtonColor: "#7E0C6E",
     playButtonBorder: "#7E0C6E",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#101820",
   },
   win4_evening: {
     borderColor: "#7E0C6E",
@@ -46,6 +56,8 @@ export const gameSliderUI = {
     lastBallGradient: ["#FFFFFF", "#BBBBBB"],
     playButtonColor: "#7E0C6E",
     playButtonBorder: "#7E0C6E",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#101820",
   },
   numbers_midday: {
     borderColor: "#2E73B5",
@@ -54,6 +66,8 @@ export const gameSliderUI = {
     lastBallGradient: ["#FFFFFF", "#BBBBBB"],
     playButtonColor: "#2E73B5",
     playButtonBorder: "#2E73B5",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#101820",
   },
   take5_evening: {
     borderColor: "#CA3092",
@@ -62,6 +76,8 @@ export const gameSliderUI = {
     lastBallGradient: ["#FFFFFF", "#BBBBBB"],
     playButtonColor: "#00928F",
     playButtonBorder: "#CA3092",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#101820",
   },
   numbers_evening: {
     borderColor: "#2E73B5",
@@ -70,6 +86,8 @@ export const gameSliderUI = {
     lastBallGradient: ["#FFFFFF", "#BBBBBB"],
     playButtonColor: "#2E73B5",
     playButtonBorder: "#2E73B5",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#101820",
   },
   take5_midday: {
     borderColor: "#CA3092",
@@ -78,6 +96,8 @@ export const gameSliderUI = {
     lastBallGradient: ["#FFFFFF", "#BBBBBB"],
     playButtonColor: "#00928F",
     playButtonBorder: "#CA3092",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#101820",
   },
   pick10: {
     borderColor: "#ECC200",
@@ -86,5 +106,7 @@ export const gameSliderUI = {
     lastBallGradient: ["#FFFFFF", "#BBBBBB"],
     playButtonColor: "#ECC200",
     playButtonBorder: "#000",
+    ballTextColor: "#101820",
+    lastBallTextColor: "#101820",
   },
 };
