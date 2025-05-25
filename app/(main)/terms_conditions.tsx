@@ -51,7 +51,7 @@ export default function TermsOfUseScreen() {
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>2. Introduction</Text>
             <Text style={styles.text}>
-              Welcome to Quick Letter. By accessing or using our website, tools,
+              Welcome to Quick Lotter. By accessing or using our website, tools,
               and services, you agree to comply with and be bound by these Terms
               and Conditions ("Terms"). If you do not agree with these Terms,
               please do not use our services.
@@ -62,7 +62,7 @@ export default function TermsOfUseScreen() {
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>3. Use of Services</Text>
             <Text style={styles.text}>
-              Quick Letter provides tools for generating, filtering, and
+              Quick Lotter provides tools for generating, filtering, and
               printing numbers for lottery wheels ("Services"). These tools are
               intended for entertainment and informational purposes only.
             </Text>
@@ -72,7 +72,7 @@ export default function TermsOfUseScreen() {
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>4. No Guarantee of Wins</Text>
             <Text style={styles.text}>
-              Quick Letter makes no guarantee, warranty, or representation that
+              Quick Lotter makes no guarantee, warranty, or representation that
               using our Services will result in winning any lottery or other
               game of chance. All outcomes are purely based on chance, and users
               should be aware of the risks associated with gambling.
@@ -98,8 +98,8 @@ export default function TermsOfUseScreen() {
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>6. Intellectual Property</Text>
             <Text style={styles.text}>
-              All content, tools, and features provided on the Quick Letter
-              website are the property of Quick Letter and are protected by
+              All content, tools, and features provided on the Quick Lotter
+              website are the property of Quick Lotter and are protected by
               intellectual property laws. Users may not reproduce, distribute,
               or otherwise exploit any part of our website without our express
               written consent.
@@ -110,7 +110,7 @@ export default function TermsOfUseScreen() {
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>7. Limitation of Liability</Text>
             <Text style={styles.text}>
-              To the fullest extent permitted by law, Quick Letter shall not be
+              To the fullest extent permitted by law, Quick Lotter shall not be
               liable for any direct, indirect, incidental, or consequential
               damages arising out of or in connection with the use of our
               Services.
@@ -122,7 +122,7 @@ export default function TermsOfUseScreen() {
             <Text style={styles.sectionTitle}>8. Disclaimers</Text>
             <Text style={styles.text}>
               - <Text style={styles.bold}>No Professional Advice:</Text> The
-              content on Quick Letter does not constitute professional advice
+              content on Quick Lotter does not constitute professional advice
               and should not be relied upon as such.{"\n"}-{" "}
               <Text style={styles.bold}>No Warranties:</Text> The Services are
               provided "as is" without warranties of any kind, either express or
@@ -134,7 +134,7 @@ export default function TermsOfUseScreen() {
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>9. Changes to Terms</Text>
             <Text style={styles.text}>
-              Quick Letter reserves the right to update or modify these Terms at
+              Quick Lotter reserves the right to update or modify these Terms at
               any time. Users are encouraged to review the Terms periodically.
               Continued use of our Services after any changes constitutes
               acceptance of the new Terms.

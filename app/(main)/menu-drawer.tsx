@@ -1,4 +1,3 @@
-// app/menu-drawer.tsx
 import React from "react";
 import {
   View,
@@ -6,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Alert,
   Share,
   Linking,
 } from "react-native";
@@ -22,177 +20,159 @@ import { Colors } from "@/theme";
 export default function MenuDrawer({ onClose }: { onClose?: () => void }) {
   const router = useRouter();
 
-  // Handler para navegação
   const handleNavigate = (path: string) => {
     router.push(path);
-    if (onClose) onClose();
+    onClose?.();
   };
 
-  // Ações para botões não-navegáveis
   const handleShare = async () => {
     try {
       await Share.share({
         message: "Check out QuickLotter! https://quicklotter.com",
       });
-    } catch (error) {
-      Alert.alert("Error", "Could not share the app.");
+    } catch {
+      alert("Failed to share");
     }
-    if (onClose) onClose();
+    onClose?.();
   };
 
   const handleRate = () => {
-    // Substitua pelo link da sua loja/app
     Linking.openURL("https://quicklotter.com/app-review");
-    if (onClose) onClose();
+    onClose?.();
   };
 
   const handleRetailer = () => {
-    // Substitua pelo link correto do seu buscador de lojas
     Linking.openURL("https://nylottery.ny.gov/find-a-retailer");
-    if (onClose) onClose();
+    onClose?.();
   };
 
   return (
-    <View style={styles.container}>
-      {/* TOPO */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => console.log("Upload photo")}
-          style={styles.profileCircle}
-        >
-          <Text style={styles.profileInitial}>J</Text>
-          <View style={styles.uploadIcon}>
-            <MaterialIcons name="photo-camera" size={14} color="#007EFF" />
-          </View>
-        </TouchableOpacity>
-
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>Juliano Santana</Text>
-          <Text style={styles.userEmail}>test@quicklotter.com</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 48 }}
+    >
+      {/* Header Profile */}
+      <View style={styles.profileHeader}>
+        <View style={styles.avatarCircle}>
+          <Text style={styles.avatarInitial}>J</Text>
         </View>
-        <Text style={styles.activeStatus}>Active</Text>
+        <View>
+          <Text style={styles.profileName}>Juliano Santana</Text>
+          <Text style={styles.profileEmail}>test@quicklotter.com</Text>
+        </View>
       </View>
 
-      {/* MENU */}
-      <ScrollView contentContainerStyle={styles.menu}>
+      {/* GENERAL */}
+      <Section title="GENERAL">
         <MenuItem
-          icon={<Ionicons name="person" size={22} color={Colors.primary} />}
+          icon="person"
           label="My Profile"
           onPress={() => handleNavigate("/profile")}
         />
         <MenuItem
-          icon={
-            <MaterialIcons
-              name="sports-esports"
-              size={22}
-              color={Colors.primary}
-            />
-          }
+          icon="sports-esports"
           label="Results"
           onPress={() => handleNavigate("/results")}
         />
         <MenuItem
-          icon={<Entypo name="location-pin" size={22} color={Colors.primary} />}
+          icon="location-pin"
           label="My Location: NY"
           onPress={() => handleNavigate("/location")}
         />
         <MenuItem
-          icon={
-            <MaterialIcons
-              name="new-releases"
-              size={22}
-              color={Colors.primary}
-            />
-          }
+          icon="update"
           label="What’s New"
           onPress={() => handleNavigate("/whats-new")}
         />
+      </Section>
+
+      {/* SUPPORT */}
+      <Section title="SUPPORT">
         <MenuItem
-          icon={
-            <Ionicons
-              name="help-circle-outline"
-              size={22}
-              color={Colors.primary}
-            />
-          }
+          icon="support-agent"
           label="Support"
           onPress={() => handleNavigate("/support")}
         />
+        <MenuItem icon="share" label="Share This App" onPress={handleShare} />
         <MenuItem
-          icon={<Entypo name="share" size={22} color={Colors.primary} />}
-          label="Share This App"
-          onPress={handleShare}
-        />
-        <MenuItem
-          icon={<FontAwesome5 name="store" size={20} color={Colors.primary} />}
+          icon="store"
           label="Find A Retailer"
           onPress={handleRetailer}
         />
+        <MenuItem icon="star-rate" label="Rate This App" onPress={handleRate} />
+      </Section>
+
+      {/* LEGAL */}
+      <Section title="LEGAL">
         <MenuItem
-          icon={<MaterialIcons name="stars" size={22} color={Colors.primary} />}
-          label="Rate This App"
-          onPress={handleRate}
-        />
-        <MenuItem
-          icon={
-            <Ionicons
-              name="information-circle-outline"
-              size={22}
-              color={Colors.primary}
-            />
-          }
+          icon="info-outline"
           label="About This App"
           onPress={() => handleNavigate("/about")}
         />
         <MenuItem
-          icon={
-            <MaterialIcons
-              name="description"
-              size={22}
-              color={Colors.primary}
-            />
-          }
+          icon="description"
           label="Terms & Conditions"
           onPress={() => handleNavigate("/terms_conditions")}
         />
         <MenuItem
-          icon={
-            <MaterialIcons name="policy" size={22} color={Colors.primary} />
-          }
+          icon="policy"
           label="Privacy Policy"
           onPress={() => handleNavigate("/privacy")}
         />
-      </ScrollView>
+      </Section>
 
       {/* LOGOUT */}
-      <TouchableOpacity
-        style={styles.logout}
-        onPress={() => {
-          // Aqui pode adicionar lógica de logout real
-          router.replace("/login");
-          if (onClose) onClose();
-        }}
-      >
-        <Ionicons name="log-out-outline" size={20} color={Colors.primary} />
-        <Text style={styles.logoutText}>Log out</Text>
-      </TouchableOpacity>
+      <View style={styles.logoutSection}>
+        <TouchableOpacity
+          style={styles.logoutBtn}
+          onPress={() => {
+            router.replace("/login");
+            onClose?.();
+          }}
+        >
+          <Ionicons name="log-out-outline" size={20} color="#E53935" />
+          <Text style={styles.logoutText}>Log out</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+}
+
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      <View style={styles.card}>{children}</View>
     </View>
   );
 }
 
-// MenuItem genérico
 function MenuItem({
   icon,
   label,
   onPress,
 }: {
-  icon: JSX.Element;
+  icon: string;
   label: string;
-  onPress?: () => void;
+  onPress: () => void;
 }) {
+  let IconComponent: any = MaterialIcons;
+
+  if (icon === "share" || icon === "location-pin") {
+    IconComponent = Entypo;
+  } else if (icon === "store") {
+    IconComponent = FontAwesome5;
+  }
+
   return (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-      {icon}
+      <IconComponent name={icon as any} size={20} color="#007AFF" />
       <Text style={styles.menuItemText}>{label}</Text>
     </TouchableOpacity>
   );
@@ -201,83 +181,82 @@ function MenuItem({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ECF1FF",
+    backgroundColor: "#F2F2F7",
   },
-  header: {
-    backgroundColor: "#007EFF",
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
+  profileHeader: {
+    backgroundColor: "#fff",
+    paddingVertical: 20,
+    paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
   },
-  profileCircle: {
-    width: 48,
-    height: 48,
-    backgroundColor: "#fff",
-    borderRadius: 24,
+  avatarCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: "#D9EFFF",
     alignItems: "center",
     justifyContent: "center",
-    position: "relative",
+    marginRight: 12,
   },
-  profileInitial: {
+  avatarInitial: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#007EFF",
+    color: "#007AFF",
   },
-  uploadIcon: {
-    position: "absolute",
-    bottom: -2,
-    right: -2,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 2,
-    borderWidth: 1,
-    borderColor: "#007EFF",
-  },
-  userInfo: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  userName: {
+  profileName: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#000",
   },
-  userEmail: {
-    fontSize: 12,
-    color: "#fff",
+  profileEmail: {
+    fontSize: 13,
+    color: "#555",
+    marginTop: 2,
   },
-  activeStatus: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#00FF57",
+  section: {
+    marginTop: 24,
+    paddingHorizontal: 16,
   },
-  menu: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+  sectionTitle: {
+    fontSize: 13,
+    color: "#666",
+    marginBottom: 6,
+    fontWeight: "600",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    overflow: "hidden",
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 18,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#EEE",
   },
   menuItemText: {
     marginLeft: 12,
     fontSize: 15,
-    color: Colors.primary,
-    fontWeight: "500",
+    color: "#000",
   },
-  logout: {
+  logoutSection: {
+    marginTop: 32,
+    paddingHorizontal: 16,
+  },
+  logoutBtn: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
+    padding: 14,
+    borderRadius: 12,
+    backgroundColor: "#fff",
   },
   logoutText: {
     marginLeft: 10,
-    color: Colors.primary,
+    fontSize: 15,
     fontWeight: "bold",
+    color: "#E53935",
   },
 });

@@ -42,17 +42,17 @@ const NAV_ITEMS = [
     icon: (color: string) => <Entypo name="eye" size={24} color={color} />,
   },
   {
-    route: "/my-lines",
-    label: "My Lines",
-    icon: (color: string) => (
-      <MaterialIcons name="list-alt" size={24} color={color} />
-    ),
-  },
-  {
     route: "/checker",
     label: "Checker",
     icon: (color: string) => (
       <FontAwesome5 name="check" size={20} color={color} />
+    ),
+  },
+  {
+    route: "/my-lines",
+    label: "My Lines",
+    icon: (color: string) => (
+      <MaterialIcons name="list-alt" size={24} color={color} />
     ),
   },
 ];
