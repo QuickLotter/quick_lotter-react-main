@@ -57,7 +57,7 @@ export default function MenuDrawer({ onClose }: { onClose?: () => void }) {
           <Text style={styles.avatarInitial}>J</Text>
         </View>
         <View>
-          <Text style={styles.profileName}>Juliano Santana</Text>
+          <Text style={styles.profileName}>Juliano Nascimento</Text>
           <Text style={styles.profileEmail}>test@quicklotter.com</Text>
         </View>
       </View>

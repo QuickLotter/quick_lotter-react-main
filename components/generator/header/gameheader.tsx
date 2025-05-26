@@ -1,5 +1,5 @@
 // ✅ Path: components/generator/header/gameheader.tsx
-// Atualizado para aceitar cores dinâmicas e ser 100% reutilizável por todos os jogos
+// Atualizado para aceitar rota de voltar customizada (ex: OverviewSelector) e seguir padrão iOS
 
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
@@ -14,6 +14,7 @@ type Props = {
   subtitle: string;
   headerColor: string; // 🎨 cor de fundo (dinâmica por jogo)
   textColor?: string; // 🖋️ cor do texto (opcional, padrão branco)
+  backTo?: string; // 🛣️ rota para voltar (opcional)
 };
 
 export default function GameHeader({
@@ -22,6 +23,7 @@ export default function GameHeader({
   subtitle,
   headerColor,
   textColor = "#FFFFFF", // padrão branco
+  backTo = "/home", // padrão: home
 }: Props) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -36,7 +38,7 @@ export default function GameHeader({
       <ResponsiveContainer style={styles.inner}>
         {/* 🔙 Botão de voltar */}
         <Pressable
-          onPress={() => router.push("/home")}
+          onPress={() => router.push(backTo)}
           style={styles.backButton}
         >
           <MaterialIcons name="arrow-back-ios" size={22} color={textColor} />

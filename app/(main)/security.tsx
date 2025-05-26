@@ -3,152 +3,162 @@ import {
   View,
   Text,
   StyleSheet,
-  Switch,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
+  Platform,
+  SafeAreaView,
 } from "react-native";
-import { Ionicons, Feather } from "@expo/vector-icons";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
-import { Colors, Typography } from "@/theme";
+import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
+
+// iOS Switch custom component
+function IOSSwitch({ value, onValueChange, disabled }) {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={() => !disabled && onValueChange(!value)}
+      style={[
+        iosSwitchStyles.switchBase,
+        value ? iosSwitchStyles.switchBaseOn : iosSwitchStyles.switchBaseOff,
+        disabled && { opacity: 0.5 },
+      ]}
+      accessibilityRole="switch"
+      accessibilityState={{ checked: value, disabled }}
+    >
+      <View
+        style={[
+          iosSwitchStyles.thumb,
+          value ? iosSwitchStyles.thumbOn : iosSwitchStyles.thumbOff,
+        ]}
+      />
+    </TouchableOpacity>
+  );
+}
+
+const iosSwitchStyles = StyleSheet.create({
+  switchBase: {
+    width: 52,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#E5E5EA",
+    justifyContent: "center",
+    padding: 3,
+    borderWidth: 0,
+  },
+  switchBaseOn: {
+    backgroundColor: "#34C759", // iOS green
+  },
+  switchBaseOff: {
+    backgroundColor: "#E5E5EA",
+  },
+  thumb: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "#fff",
+    position: "absolute",
+    top: 3,
+    left: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+    transition: "left 0.2s cubic-bezier(.4,0,.2,1)",
+  },
+  thumbOn: {
+    left: 23,
+    shadowColor: "#34C759",
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+  },
+  thumbOff: {
+    left: 3,
+  },
+});
 
 export default function SecuritySettings() {
   const insets = useSafeAreaInsets();
-  const router = useRouter();
 
   const [email2FA, setEmail2FA] = useState(false);
   const [sms2FA, setSms2FA] = useState(false);
   const [loginNotif, setLoginNotif] = useState(true);
-  const [successMsg, setSuccessMsg] = useState("");
-
-  const handleToggle = (type: string) => {
-    if (type === "email") {
-      setEmail2FA(!email2FA);
-      setSuccessMsg("2-Step Authentication with email is enabled");
-    } else if (type === "notif") {
-      setLoginNotif(!loginNotif);
-      setSuccessMsg("Login notifications are now active");
-    }
-  };
 
   return (
-    <SafeAreaView style={styles.wrapper}>
+    <SafeAreaView style={styles.bg}>
       <HeaderLogoBack />
       <ScrollView
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingTop: insets.top + 20 },
-        ]}
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: insets.top + 12,
+          paddingBottom: 48,
+        }}
       >
         <ResponsiveContainer>
           <Text style={styles.title}>Security Settings</Text>
 
-          {successMsg !== "" && (
-            <View style={styles.successBox}>
-              <Ionicons
-                name="checkmark"
-                size={20}
-                color="#fff"
-                style={styles.successIcon}
-              />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.successTitle}>{successMsg}</Text>
-              </View>
-              <TouchableOpacity onPress={() => setSuccessMsg("")}>
-                <Ionicons name="close" size={18} color="#fff" />
+          {/* Password card */}
+          <View style={styles.card}>
+            <View style={styles.cardRow}>
+              <Text style={styles.cardTitle}>Password</Text>
+              <TouchableOpacity style={styles.editBtn}>
+                <Feather name="edit-2" size={17} color="#007AFF" />
               </TouchableOpacity>
             </View>
-          )}
-
-          {/* Password editable */}
-          <View style={styles.cardWithShadow}>
-            <View style={styles.rowBetween}>
-              <Text style={styles.labelBold}>Password</Text>
-              <TouchableOpacity onPress={() => router.push("/change-password")}>
-                <Feather name="edit-2" size={16} color={Colors.primary} />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.sub}>Change your password</Text>
+            <Text style={styles.cardSub}>Change your password</Text>
           </View>
 
           {/* 2-Step Auth */}
-          <View style={styles.cardWithShadow}>
-            <View style={styles.rowBetween}>
-              <Text style={styles.labelBold}>2-Step Authentication</Text>
-              <Ionicons
-                name="information-circle-outline"
-                size={16}
-                color={Colors.primary}
-              />
+          <View style={styles.card}>
+            <View style={styles.cardRow}>
+              <Text style={styles.cardTitle}>2-Step Authentication</Text>
+              <Feather name="info" size={17} color="#007AFF" />
             </View>
-            <Text style={styles.sub}>
-              For an extra layer of security, activate 2-Step Authentication to
-              get one-time code with your password at every login.
+            <Text style={styles.cardSub}>
+              For extra security, activate 2-Step Authentication to get a
+              one-time code with your password at every login.
             </Text>
-
             <View style={styles.switchRow}>
               <Text style={styles.switchLabel}>Get code via email</Text>
-              <Switch
-                value={email2FA}
-                onValueChange={() => handleToggle("email")}
-                trackColor={{ false: "#ccc", true: Colors.success }}
-                thumbColor="#fff"
-              />
+              <IOSSwitch value={email2FA} onValueChange={setEmail2FA} />
             </View>
-
             <View style={styles.switchRow}>
               <Text style={styles.switchLabel}>Get code via SMS</Text>
-              <Switch
-                value={sms2FA}
-                onValueChange={() => setSms2FA(!sms2FA)}
-                trackColor={{ false: "#ccc", true: Colors.success }}
-                thumbColor="#fff"
-              />
+              <IOSSwitch value={sms2FA} onValueChange={setSms2FA} />
             </View>
-
-            <View style={styles.verifyBox}>
-              <Ionicons
-                name="alert-circle-outline"
+            <View style={styles.infoBox}>
+              <Feather
+                name="alert-circle"
                 size={18}
-                color={Colors.warning}
+                color="#F5A623"
                 style={{ marginTop: 2 }}
               />
               <View style={{ flex: 1 }}>
-                <Text style={styles.verifyTitle}>
+                <Text style={styles.infoTitle}>
                   First verify your Phone Number
                 </Text>
-                <Text style={styles.verifySub}>
-                  To activate the security settings via SMS please verify your
-                  phone number.
+                <Text style={styles.infoSub}>
+                  To activate SMS security, please verify your phone number.
                 </Text>
               </View>
             </View>
-
-            <TouchableOpacity style={styles.verifyButton}>
-              <Text style={styles.verifyButtonText}>Verify</Text>
+            <TouchableOpacity style={styles.verifyBtn}>
+              <Text style={styles.verifyBtnText}>Verify</Text>
             </TouchableOpacity>
           </View>
 
           {/* Login Notifications */}
-          <View style={styles.cardWithShadow}>
+          <View style={styles.card}>
             <View style={styles.switchRow}>
               <View style={{ flex: 1 }}>
-                <Text style={styles.labelBold}>Login Notifications</Text>
-                <Text style={styles.sub}>
-                  Activate this option to receive an email notification every
-                  time your account is logged into.
+                <Text style={styles.cardTitle}>Login Notifications</Text>
+                <Text style={styles.cardSub}>
+                  Receive an email notification every time your account is
+                  accessed.
                 </Text>
               </View>
-              <Switch
-                value={loginNotif}
-                onValueChange={() => handleToggle("notif")}
-                trackColor={{ false: "#ccc", true: Colors.success }}
-                thumbColor="#fff"
-              />
+              <IOSSwitch value={loginNotif} onValueChange={setLoginNotif} />
             </View>
           </View>
         </ResponsiveContainer>
@@ -158,110 +168,101 @@ export default function SecuritySettings() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
+  bg: {
     flex: 1,
-    backgroundColor: "#ECF1FF",
-  },
-  scrollContent: {
-    alignItems: "center",
-    minHeight: "100%",
-    backgroundColor: "#ECF1FF",
-    paddingBottom: 80,
+    backgroundColor: "#F6F8FC",
   },
   title: {
-    ...Typography.heading,
-    fontSize: 20,
-    textAlign: "center",
-    marginBottom: 24,
-    color: Colors.text,
-  },
-  cardWithShadow: {
-    backgroundColor: Colors.white,
-    borderRadius: 5,
-    padding: 16,
-    marginBottom: 24,
-    gap: 14,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-    width: "100%",
-    maxWidth: 500,
-    alignSelf: "center",
-  },
-  labelBold: {
-    color: Colors.text,
+    fontSize: 22,
     fontWeight: "700",
-    fontSize: 15,
+    color: "#222",
+    marginBottom: 24,
+    textAlign: "center",
+    fontFamily: Platform.OS === "ios" ? "System" : "Montserrat",
   },
-  sub: {
-    color: Colors.textMuted,
-    fontSize: 13,
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 18,
+    padding: 20,
+    marginBottom: 18,
+    shadowColor: "#0E4CA1",
+    shadowOpacity: 0.09,
+    shadowOffset: { width: 0, height: 7 },
+    shadowRadius: 18,
+    elevation: 6,
   },
-  rowBetween: {
+  cardRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 6,
+  },
+  cardTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#222",
+  },
+  cardSub: {
+    fontSize: 13,
+    color: "#767676",
+    marginBottom: 9,
+    fontFamily: Platform.OS === "ios" ? "System" : "Montserrat",
+  },
+  editBtn: {
+    padding: 8,
+    borderRadius: 8,
   },
   switchRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 4,
+    marginBottom: 4,
+    gap: 16,
   },
   switchLabel: {
-    fontSize: 14,
-    color: Colors.text,
+    fontSize: 15,
+    color: "#222",
     fontWeight: "500",
     flex: 1,
+    fontFamily: Platform.OS === "ios" ? "System" : "Montserrat",
   },
-  verifyBox: {
-    backgroundColor: "#FFFBDB",
+  infoBox: {
+    backgroundColor: "#FFF8E1",
+    borderRadius: 12,
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 8,
     padding: 12,
-    borderRadius: 10,
+    marginTop: 10,
+    gap: 9,
   },
-  verifyTitle: {
+  infoTitle: {
+    color: "#D68910",
     fontWeight: "600",
-    color: Colors.warning,
-    marginBottom: 4,
     fontSize: 13,
   },
-  verifySub: {
+  infoSub: {
     fontSize: 12,
-    color: Colors.text,
+    color: "#444",
   },
-  verifyButton: {
-    marginTop: 8,
-    backgroundColor: "#fff",
+  verifyBtn: {
+    marginTop: 16,
+    borderRadius: 999,
     borderWidth: 1.5,
-    borderColor: Colors.text,
-    borderRadius: 30,
-    paddingVertical: 10,
+    borderColor: "#007AFF",
+    backgroundColor: "#fff",
     alignItems: "center",
+    paddingVertical: 12,
+    width: "100%",
+    shadowColor: "#007AFF44",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
   },
-  verifyButtonText: {
-    color: Colors.text,
-    fontWeight: "bold",
-    fontSize: 15,
-  },
-  successBox: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    backgroundColor: Colors.success,
-    borderRadius: 10,
-    padding: 14,
-    marginBottom: 16,
-    gap: 12,
-  },
-  successIcon: {
-    marginTop: 3,
-  },
-  successTitle: {
-    color: "#fff",
+  verifyBtnText: {
+    color: "#007AFF",
     fontWeight: "700",
-    fontSize: 14,
+    fontSize: 17,
+    letterSpacing: 0.1,
   },
 });

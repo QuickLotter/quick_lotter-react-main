@@ -8,12 +8,24 @@ import {
   Pressable,
   SafeAreaView,
   ScrollView,
+  Platform,
 } from "react-native";
-import { Colors, Typography } from "@/theme";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import { MaterialIcons } from "@expo/vector-icons";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+// Cores iOS-like
+const COLORS = {
+  background: "#F6F6F8",
+  white: "#FFF",
+  text: "#23242A",
+  textMuted: "#8C95A3",
+  border: "#E5E7EB",
+  primary: "#007AFF",
+  infoBg: "#EAF2FD",
+  accent: "#FF3366",
+};
 
 export default function EditPhone() {
   const [phone, setPhone] = useState("");
@@ -29,48 +41,51 @@ export default function EditPhone() {
         showsVerticalScrollIndicator={false}
       >
         <ResponsiveContainer>
-          {/* ✅ Espaço seguro abaixo do header */}
-          <View style={{ height: insets.top + 20 }} />
+          <View style={{ height: insets.top + 12 }} />
 
-          {/* ✅ Ícone circular */}
+          {/* Ícone circular */}
           <View style={styles.iconWrapper}>
-            <MaterialIcons name="phone" size={36} color={Colors.primary} />
+            <MaterialIcons name="phone" size={38} color={COLORS.primary} />
           </View>
 
-          {/* ✅ Título */}
+          {/* Título */}
           <Text style={styles.title}>Edit Your Phone Number</Text>
 
-          {/* ✅ Input com prefixo + edit */}
+          {/* Input + prefixo */}
           <View style={styles.inputRow}>
             <View style={styles.prefixBox}>
               <Text style={styles.prefixText}>+1</Text>
             </View>
-
             <View style={styles.phoneInputWrapper}>
               <TextInput
                 placeholder="Phone Number"
-                placeholderTextColor={Colors.textMuted}
+                placeholderTextColor={COLORS.textMuted}
                 style={styles.phoneInput}
                 value={phone}
                 onChangeText={setPhone}
                 keyboardType="phone-pad"
+                selectionColor={COLORS.primary}
               />
-              <Pressable style={styles.editIcon}>
-                <MaterialIcons name="edit" size={20} color={Colors.textMuted} />
+              <Pressable style={styles.editIcon} hitSlop={8}>
+                <MaterialIcons name="edit" size={22} color={COLORS.textMuted} />
               </Pressable>
             </View>
           </View>
 
-          {/* ✅ Botão alinhado dentro do container */}
+          {/* Botão */}
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Save and send the message</Text>
           </TouchableOpacity>
 
-          {/* ✅ Info com ícone */}
+          {/* Info */}
           <View style={styles.infoBox}>
-            <MaterialIcons name="info-outline" size={18} color={Colors.text} />
+            <MaterialIcons
+              name="info-outline"
+              size={19}
+              color={COLORS.primary}
+            />
             <Text style={styles.infoText}>
-              After editing your phone number, you will receive a text message
+              After editing your phone number, you’ll receive a text message
               with a verification code. This is done to maintain your account’s
               security.
             </Text>
@@ -84,88 +99,129 @@ export default function EditPhone() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: COLORS.background,
   },
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 44,
+    backgroundColor: COLORS.background,
   },
   iconWrapper: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     backgroundColor: "#E7F5FF",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
-    marginBottom: 24,
+    marginBottom: 22,
+    marginTop: 6,
+    shadowColor: "#007AFF",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 14,
+    elevation: Platform.OS === "android" ? 1 : 0,
   },
   title: {
-    ...Typography.heading,
-    fontSize: 18,
+    fontSize: 23,
+    fontWeight: "700",
     textAlign: "center",
-    color: Colors.text,
-    marginBottom: 20,
+    color: COLORS.text,
+    marginBottom: 23,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    letterSpacing: 0.04,
   },
   inputRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 28,
+    marginBottom: 34,
+    width: "100%",
   },
   prefixBox: {
-    backgroundColor: Colors.white,
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    paddingVertical: 15,
+    paddingHorizontal: 22,
     borderWidth: 1,
-    borderColor: Colors.border,
-    marginRight: 8,
+    borderColor: COLORS.border,
+    marginRight: 10,
+    minWidth: 52,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.04,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 6,
+    elevation: Platform.OS === "android" ? 1 : 0,
   },
   prefixText: {
-    fontWeight: "600",
-    color: Colors.text,
+    fontWeight: "700",
+    color: COLORS.text,
+    fontSize: 17,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   phoneInputWrapper: {
     flex: 1,
     position: "relative",
   },
   phoneInput: {
-    borderRadius: 10,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: Colors.border,
-    backgroundColor: Colors.white,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    paddingRight: 40,
-    color: Colors.text,
-    fontSize: 16,
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.white,
+    paddingVertical: 15,
+    paddingHorizontal: 18,
+    paddingRight: 44,
+    color: COLORS.text,
+    fontSize: 17,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    shadowColor: "#000",
+    shadowOpacity: 0.04,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 6,
+    elevation: Platform.OS === "android" ? 1 : 0,
   },
   editIcon: {
     position: "absolute",
-    right: 12,
+    right: 16,
     top: "50%",
-    transform: [{ translateY: -10 }],
+    marginTop: -11,
+    opacity: 0.68,
   },
   button: {
-    backgroundColor: "#FF3366",
-    paddingVertical: 16,
-    borderRadius: 50,
+    backgroundColor: COLORS.accent,
+    paddingVertical: 17,
+    borderRadius: 999,
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 28,
     width: "100%",
+    shadowColor: COLORS.accent,
+    shadowOpacity: 0.14,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 18,
+    elevation: Platform.OS === "android" ? 2 : 0,
   },
   buttonText: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 15,
+    fontSize: 16,
+    letterSpacing: 0.11,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   infoBox: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 8,
+    gap: 10,
+    backgroundColor: COLORS.infoBg,
+    borderRadius: 16,
+    padding: 16,
+    marginTop: 6,
+    marginBottom: 8,
   },
   infoText: {
     flex: 1,
-    color: Colors.textMuted,
-    fontSize: 13,
+    color: COLORS.textMuted,
+    fontSize: 14,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    lineHeight: 20,
   },
 });

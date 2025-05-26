@@ -10,7 +10,6 @@ import {
   Platform,
 } from "react-native";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
-import { Colors, Typography } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import CardVisual from "@/assets/images/card-visual.svg";
 import VisaIcon from "@/assets/icons/visa.svg";
@@ -20,42 +19,56 @@ import DiscoverIcon from "@/assets/icons/discover.svg";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+const COLORS = {
+  iosBg: "#F6F6F8",
+  white: "#FFF",
+  cardBg: "#FAFAFC",
+  border: "#E5E7EB",
+  text: "#23272F",
+  label: "#4A7EFF",
+  muted: "#A0A7B2",
+  primary: "#007AFF",
+  shadow: "#1A1A1A",
+};
+
 export default function AddCard() {
   const [saveCard, setSaveCard] = useState(true);
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.wrapper}>
+    <View style={{ flex: 1, backgroundColor: COLORS.iosBg }}>
       <HeaderLogoBack />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        bounces
       >
         <ResponsiveContainer>
-          <View style={{ height: insets.top + 20 }} />
-
+          <View style={{ height: insets.top + 8 }} />
           <Text style={styles.title}>Add New Card</Text>
 
-          {/* Cartão SVG visual centralizado */}
+          {/* SVG visual do cartão */}
           <View style={styles.cardVisualWrapper}>
-            <CardVisual width={340} height={180} />
+            <CardVisual width={320} height={170} />
           </View>
 
           {/* Card Number */}
-          <Text style={styles.label}>Card Number:</Text>
+          <Text style={styles.label}>Card Number</Text>
           <View style={styles.inputCameraWrapper}>
             <TextInput
               style={styles.inputCamera}
               placeholder="---- ---- ---- ----"
-              placeholderTextColor={Colors.textMuted}
+              placeholderTextColor={COLORS.muted}
               keyboardType="number-pad"
               maxLength={19}
+              returnKeyType="done"
+              selectionColor={COLORS.primary}
             />
             <Ionicons
               name="camera-outline"
-              size={20}
-              color={Colors.textMuted}
+              size={22}
+              color={COLORS.muted}
               style={styles.cameraIcon}
             />
           </View>
@@ -64,8 +77,10 @@ export default function AddCard() {
           <Text style={styles.label}>Card Holder Name</Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter name on your card"
-            placeholderTextColor={Colors.textMuted}
+            placeholder="Name on your card"
+            placeholderTextColor={COLORS.muted}
+            autoCapitalize="words"
+            selectionColor={COLORS.primary}
           />
 
           {/* Expiration + CVC */}
@@ -75,9 +90,10 @@ export default function AddCard() {
               <TextInput
                 style={styles.input}
                 placeholder="MM/YY"
-                placeholderTextColor={Colors.textMuted}
+                placeholderTextColor={COLORS.muted}
                 keyboardType="numeric"
                 maxLength={5}
+                selectionColor={COLORS.primary}
               />
             </View>
             <View style={{ flex: 1 }}>
@@ -85,15 +101,16 @@ export default function AddCard() {
               <TextInput
                 style={styles.input}
                 placeholder="CVC"
-                placeholderTextColor={Colors.textMuted}
+                placeholderTextColor={COLORS.muted}
                 keyboardType="number-pad"
                 maxLength={4}
+                selectionColor={COLORS.primary}
               />
             </View>
           </View>
 
-          {/* Card Types - barra premium visual */}
-          <Text style={styles.label}>Card type</Text>
+          {/* Card Types */}
+          <Text style={styles.label}>Card Type</Text>
           <View style={styles.cardTypeRow}>
             <View style={styles.cardTypeIconPad}>
               <VisaIcon width={38} height={26} />
@@ -114,8 +131,9 @@ export default function AddCard() {
             <Switch
               value={saveCard}
               onValueChange={setSaveCard}
-              trackColor={{ true: Colors.primary }}
-              thumbColor="#fff"
+              trackColor={{ true: COLORS.primary, false: "#CED4DA" }}
+              thumbColor={Platform.OS === "android" ? COLORS.white : undefined}
+              ios_backgroundColor="#CED4DA"
             />
             <Text style={styles.switchLabel}>
               Save this card for future payment
@@ -133,106 +151,133 @@ export default function AddCard() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
   scrollContent: {
-    paddingBottom: 60,
+    paddingBottom: 56,
+    backgroundColor: COLORS.iosBg,
   },
   title: {
-    ...Typography.heading,
-    fontSize: 20,
+    fontSize: 25,
+    fontWeight: "700",
+    color: COLORS.text,
     textAlign: "center",
-    marginBottom: 24,
-    color: Colors.text,
+    marginBottom: 26,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    letterSpacing: 0.2,
   },
   cardVisualWrapper: {
     width: "100%",
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 24,
   },
   label: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
-    color: Colors.primary,
-    marginBottom: 6,
+    color: COLORS.label,
+    marginBottom: 8,
+    marginTop: 2,
+    letterSpacing: 0.1,
   },
   input: {
     borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: 10,
-    padding: 14,
-    color: Colors.text,
-    marginBottom: 16,
-    backgroundColor: Colors.white,
+    borderColor: COLORS.border,
+    borderRadius: 18,
+    padding: 16,
+    fontSize: 17,
+    color: COLORS.text,
+    backgroundColor: COLORS.white,
+    marginBottom: 14,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 6,
+    elevation: Platform.OS === "android" ? 1 : 0,
   },
   inputCameraWrapper: {
     position: "relative",
-    marginBottom: 16,
+    marginBottom: 14,
   },
   inputCamera: {
     width: "100%",
     borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: 10,
-    padding: 14,
-    paddingRight: 40, // espaço para o ícone
-    backgroundColor: Colors.white,
-    color: Colors.text,
+    borderColor: COLORS.border,
+    borderRadius: 18,
+    padding: 16,
+    paddingRight: 44, // espaço pro ícone
+    fontSize: 17,
+    backgroundColor: COLORS.white,
+    color: COLORS.text,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 6,
+    elevation: Platform.OS === "android" ? 1 : 0,
   },
   cameraIcon: {
     position: "absolute",
-    right: 14,
-    top: Platform.OS === "web" ? 18 : "50%",
-    transform: [{ translateY: Platform.OS === "web" ? 0 : -10 }],
+    right: 16,
+    top: Platform.OS === "web" ? 17 : "50%",
+    transform: [{ translateY: Platform.OS === "web" ? 0 : -12 }],
+    opacity: 0.66,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 2,
   },
   cardTypeRow: {
     flexDirection: "row",
-    gap: 14,
-    marginTop: 4,
-    marginBottom: 20,
+    gap: 16,
+    marginTop: 5,
+    marginBottom: 18,
     alignItems: "center",
   },
   cardTypeIconPad: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    shadowColor: "#000",
+    backgroundColor: COLORS.cardBg,
+    borderRadius: 16,
+    paddingVertical: 7,
+    paddingHorizontal: 12,
+    shadowColor: COLORS.shadow,
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 6,
     elevation: 2,
     alignItems: "center",
     justifyContent: "center",
-    minWidth: 52,
+    minWidth: 54,
   },
   switchRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 12,
     marginBottom: 32,
+    marginTop: 8,
   },
   switchLabel: {
-    color: Colors.text,
-    fontSize: 14,
+    color: COLORS.text,
+    fontSize: 15,
     fontWeight: "500",
     flex: 1,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   button: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 16,
+    backgroundColor: COLORS.primary,
+    paddingVertical: 17,
     borderRadius: 999,
     alignItems: "center",
+    marginTop: 4,
+    shadowColor: COLORS.primary,
+    shadowOpacity: 0.18,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 16,
+    elevation: Platform.OS === "android" ? 2 : 0,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
+    letterSpacing: 0.2,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
 });

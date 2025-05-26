@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Animated,
   ScrollView,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -27,8 +29,6 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const scaleAnim = useState(new Animated.Value(1))[0];
-
-  // Campos controlados para cadastro
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -36,11 +36,10 @@ export default function SignUp() {
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
-      toValue: 0.95,
+      toValue: 0.97,
       useNativeDriver: true,
     }).start();
   };
-
   const handlePressOut = () => {
     Animated.spring(scaleAnim, {
       toValue: 1,
@@ -57,35 +56,27 @@ export default function SignUp() {
       return;
     }
     setError("");
-    // --- INTEGRAÇÃO COM API DE CADASTRO ---
-    // try {
-    //   const res = await api.signup({ email, phone, password });
-    //   if (res.success) {
-    //     router.replace("/verify-code");
-    //   } else {
-    //     setError(res.message);
-    //   }
-    // } catch (e) {
-    //   setError("Network or server error");
-    // }
-
-    // MOCK: vai direto para verificação de código
     setTimeout(() => {
       router.replace("/verify-code");
     }, 800);
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.background }}>
+    <SafeAreaView style={styles.wrapper}>
       <HeaderLoginLogo title="" />
       <ScrollView
         contentContainerStyle={[
           styles.scrollContainer,
-          { paddingTop: 16, paddingBottom: insets.bottom + 32 },
+          { paddingTop: 24, paddingBottom: insets.bottom + 32 },
         ]}
         keyboardShouldPersistTaps="handled"
       >
         <ResponsiveContainer>
+          <Text style={styles.title}>Create Account</Text>
+          <Text style={styles.subtitle}>
+            Sign up to enjoy all features of Quick Lotter
+          </Text>
+
           <Text style={styles.label}>Email</Text>
           <TextInput
             placeholder="Enter your email"
@@ -110,7 +101,7 @@ export default function SignUp() {
           <Text style={styles.label}>Password</Text>
           <View style={styles.passwordWrapper}>
             <TextInput
-              placeholder="Enter your password"
+              placeholder="Create a password"
               placeholderTextColor={Colors.textMuted}
               secureTextEntry={!showPassword}
               style={styles.passwordInput}
@@ -124,16 +115,12 @@ export default function SignUp() {
               <MaterialIcons
                 name={showPassword ? "visibility" : "visibility-off"}
                 size={22}
-                color={Colors.text}
+                color={Colors.textMuted}
               />
             </Pressable>
           </View>
 
-          {error ? (
-            <Text style={{ color: Colors.danger, marginBottom: 12 }}>
-              {error}
-            </Text>
-          ) : null}
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
           <View style={styles.row}>
             <Pressable
@@ -147,12 +134,7 @@ export default function SignUp() {
               />
               <Text style={styles.remember}> Remember Me</Text>
             </Pressable>
-            <Pressable
-              style={{ marginLeft: "auto" }}
-              onPress={() => router.push("/forgot-password")}
-            >
-              <Text style={styles.link}>Forgot Password</Text>
-            </Pressable>
+            <View style={{ marginLeft: "auto" }} />
           </View>
 
           <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
@@ -166,8 +148,7 @@ export default function SignUp() {
             </Pressable>
           </Animated.View>
 
-          <Text style={styles.or}>─────────── Or With ───────────</Text>
-
+          <Text style={styles.or}>──────── Or Continue With ────────</Text>
           <View style={styles.socialRow}>
             <TouchableOpacity style={styles.socialButton}>
               <GoogleIcon width={20} height={20} />
@@ -179,20 +160,18 @@ export default function SignUp() {
             </TouchableOpacity>
           </View>
 
+          {/* RESPONSIBLE PLAY */}
           <Text style={styles.legalTitle}>Responsible Play</Text>
           <Text style={styles.legalText}>
-            You must be <Text style={styles.bold}>18 years or older</Text> to
-            participate in the lottery in New York. If you or someone you know
-            has a gambling problem, please call{" "}
-            <Text style={styles.bold}>1–877–8–HOPE–NY</Text> or text{" "}
-            <Text style={styles.bold}>HOPENY (467369)</Text>. For any questions,
-            comments, or concerns, please email{" "}
+            Play responsibly. For adults 18+. Need help with gambling? Free,
+            confidential support is available 24/7 at{" "}
+            <Text style={styles.link}>1-800-662-HELP (4357)</Text> or{" "}
             <Text style={styles.link}>support@quicklotter.com</Text>.
           </Text>
-
           <Text style={styles.legalText}>
-            Quicklotter.com does not sell lottery tickets; we provide tools and
-            resources to help you improve your lottery games and strategies.
+            Quick Lotter does not sell lottery tickets. We provide digital tools
+            and resources to help you enjoy and optimize your lottery
+            experience.
           </Text>
 
           <Text style={styles.footerText}>
@@ -203,57 +182,88 @@ export default function SignUp() {
           </Text>
         </ResponsiveContainer>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
-// ... estilos iguais ao seu original ...
-
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: "#F6F7FB",
+  },
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: Colors.background,
     alignItems: "center",
     minHeight: "100%",
   },
   responsiveContainer: {
     width: "100%",
-    maxWidth: 768,
+    maxWidth: 370,
     alignSelf: "center",
-    padding: 24,
+    padding: 26,
+    backgroundColor: "#fff",
+    borderRadius: 18,
+    marginTop: 20,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#00397A22",
+        shadowOpacity: 0.14,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 7 },
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "800",
+    textAlign: "center",
+    marginBottom: 6,
+    color: "#007AFF",
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+  },
+  subtitle: {
+    color: "#8CA1D2",
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 16,
+    marginTop: 2,
   },
   label: {
-    ...Typography.subheading,
-    color: Colors.primary,
+    color: "#2D3A5C",
     marginBottom: 6,
     marginTop: 16,
+    fontSize: 15,
+    fontWeight: "700",
   },
   input: {
-    backgroundColor: Colors.white,
+    backgroundColor: "#F9FAFB",
     padding: 14,
-    borderRadius: 10,
-    color: Colors.text,
+    borderRadius: 12,
+    color: "#222",
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: Colors.border,
+    borderWidth: 1.2,
+    borderColor: "#DEE4F2",
     fontSize: 16,
   },
   passwordWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    paddingHorizontal: 10,
-    backgroundColor: Colors.white,
+    borderRadius: 12,
+    borderWidth: 1.2,
+    borderColor: "#DEE4F2",
+    paddingHorizontal: 6,
+    backgroundColor: "#F9FAFB",
     marginBottom: 16,
   },
   passwordInput: {
     flex: 1,
-    color: Colors.text,
+    color: "#222",
     fontSize: 16,
     paddingVertical: 12,
-    paddingRight: 10,
+    paddingRight: 8,
   },
   eyeButton: {
     padding: 4,
@@ -261,82 +271,98 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 22,
   },
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
   remember: {
-    color: Colors.text,
+    color: "#484F5C",
     fontSize: 14,
     fontWeight: "500",
   },
   link: {
-    color: Colors.primary,
+    color: "#007AFF",
     fontWeight: "600",
+    textDecorationLine: "underline",
   },
   loginButton: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 14,
-    borderRadius: 10,
+    backgroundColor: "#007AFF",
+    paddingVertical: 15,
+    borderRadius: 14,
     alignItems: "center",
-    marginBottom: 24,
-    marginTop: 12,
+    marginBottom: 22,
+    marginTop: 8,
+    shadowColor: "#007AFF",
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
   },
   loginText: {
-    color: Colors.white,
+    color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
   },
   or: {
-    color: Colors.textMuted,
+    color: "#8C94A5",
     textAlign: "center",
-    marginBottom: 16,
+    marginBottom: 18,
     marginTop: 8,
+    fontSize: 13,
+    letterSpacing: 0.5,
   },
   socialRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 10,
-    marginBottom: 24,
+    gap: 12,
+    marginBottom: 26,
   },
   socialButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.white,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: Colors.border,
+    backgroundColor: "#F6F7FB",
+    borderRadius: 11,
+    borderWidth: 1.2,
+    borderColor: "#DEE4F2",
     paddingHorizontal: 16,
     paddingVertical: 12,
     flex: 1,
     gap: 10,
   },
   socialText: {
-    color: Colors.text,
-    fontWeight: "500",
+    color: "#222",
+    fontWeight: "600",
+    fontSize: 14,
   },
   legalTitle: {
-    color: Colors.text,
+    color: "#222",
     fontWeight: "700",
     textAlign: "center",
-    marginBottom: 8,
-    marginTop: 4,
+    marginBottom: 7,
+    marginTop: 8,
+    fontSize: 15,
   },
   legalText: {
-    color: "#333",
+    color: "#7B859B",
     fontSize: 12,
     textAlign: "center",
-    marginBottom: 12,
+    marginBottom: 10,
   },
   bold: {
     fontWeight: "bold",
   },
   footerText: {
-    color: Colors.textMuted,
+    color: "#8C94A5",
     textAlign: "center",
-    marginTop: 8,
-    marginBottom: 16,
+    marginTop: 14,
+    marginBottom: 10,
+    fontSize: 14,
+  },
+  errorText: {
+    color: "#FF3B30",
+    fontSize: 12,
+    marginBottom: 6,
+    textAlign: "center",
   },
 });

@@ -68,6 +68,7 @@ const STATES = [
 
 type Props = {
   onMenuPress?: () => void;
+  onBack?: () => void; // <--- NOVO!
   showMenu?: boolean;
   showStateSelector?: boolean;
   transparent?: boolean;
@@ -77,6 +78,7 @@ type Props = {
 
 export default function HeaderLogoBack({
   onMenuPress,
+  onBack,
   showMenu = true,
   showStateSelector = true,
   transparent = false,
@@ -92,6 +94,7 @@ export default function HeaderLogoBack({
 
   const isHome = pathname === "/home";
 
+  // Inclua aqui as rotas onde NÃO quer mostrar seta back
   const hideBackRoutes = ["/analysis", "/overview", "/my-lines", "/checker"];
   const showBackButton = !hideBackRoutes.includes(pathname);
 
@@ -120,7 +123,16 @@ export default function HeaderLogoBack({
         {/* Botão de menu ou voltar */}
         {showMenu ? (
           <Pressable
-            onPress={isHome ? onMenuPress : () => router.back()}
+            // Só usa onBack se passar, senão usa padrão
+            onPress={
+              isHome
+                ? onMenuPress
+                : showBackButton
+                ? onBack
+                  ? onBack
+                  : () => router.back()
+                : undefined
+            }
             style={styles.menuButton}
           >
             {isHome ? (
@@ -176,7 +188,7 @@ export default function HeaderLogoBack({
               numColumns={4}
               contentContainerStyle={{
                 alignSelf: "center",
-                width: 374, // limite fixo para grid
+                width: 374,
               }}
               renderItem={({ item }) => {
                 const isSelected = item === state;
@@ -294,7 +306,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     margin: 6,
     borderRadius: 8,
-    width: 78, // ⬅️ 78 * 4 + margens = ~374px
+    width: 78,
     alignItems: "center",
     backgroundColor: "#F2F2F2",
     borderWidth: 1,

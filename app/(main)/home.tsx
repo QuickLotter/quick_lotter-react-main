@@ -1,5 +1,3 @@
-//index com gameSliderCard
-
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -9,12 +7,13 @@ import {
   Modal,
   Pressable,
   Animated,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import BottomNav from "@/components/generator/layout/BottomNav";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
-import GameCardSlider from "@/components/cards/GameCardSlider"; // <<-- NOVO
+import GameCardSlider from "@/components/cards/GameCardSlider";
 import MenuDrawer from "./menu-drawer";
 import { GameData } from "@/types/GameData";
 import { fetchNewYorkGames } from "@/states/new_york/games";
@@ -41,7 +40,7 @@ export default function HomeScreen() {
     setDrawerVisible(true);
     Animated.timing(slideAnim, {
       toValue: 0,
-      duration: 200,
+      duration: 230,
       useNativeDriver: false,
     }).start();
   };
@@ -49,7 +48,7 @@ export default function HomeScreen() {
   const closeDrawer = () => {
     Animated.timing(slideAnim, {
       toValue: -DRAWER_WIDTH,
-      duration: 200,
+      duration: 220,
       useNativeDriver: false,
     }).start(() => setDrawerVisible(false));
   };
@@ -58,11 +57,16 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <HeaderLogoBack onMenuPress={openDrawer} />
       {loading ? (
-        <ActivityIndicator size="large" style={{ marginTop: 100 }} />
+        <ActivityIndicator
+          size="large"
+          style={{ marginTop: 100 }}
+          color="#007AFF"
+        />
       ) : (
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
+          bounces
         >
           <ResponsiveContainer>
             <GameCardSlider games={games} />
@@ -72,7 +76,12 @@ export default function HomeScreen() {
 
       <BottomNav />
 
-      <Modal transparent visible={drawerVisible} animationType="none">
+      <Modal
+        transparent
+        visible={drawerVisible}
+        animationType="none"
+        statusBarTranslucent
+      >
         <View style={styles.modalContainer}>
           <Pressable style={styles.backdrop} onPress={closeDrawer} />
           <Animated.View style={[styles.drawer, { left: slideAnim }]}>
@@ -87,11 +96,12 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ECF1FF",
+    backgroundColor: "#F6F6F8", // iOS cinza claro
   },
   scrollContainer: {
-    paddingTop: 60,
-    paddingBottom: 20,
+    paddingTop: 50,
+    paddingBottom: 24,
+    flexGrow: 1,
   },
   modalContainer: {
     flex: 1,
@@ -100,19 +110,21 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    backgroundColor: "rgba(0,0,0,0.22)",
   },
   drawer: {
     position: "absolute",
     top: 0,
     bottom: 0,
-    width: 300,
-    backgroundColor: "#ECF1FF",
+    width: DRAWER_WIDTH,
+    backgroundColor: "#F6F6F8",
     shadowColor: "#000",
     shadowOffset: { width: 2, height: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 6,
+    shadowOpacity: 0.17,
+    shadowRadius: 12,
+    elevation: Platform.OS === "android" ? 7 : 0,
     zIndex: 999,
+    borderTopRightRadius: 24,
+    borderBottomRightRadius: 24,
   },
 });

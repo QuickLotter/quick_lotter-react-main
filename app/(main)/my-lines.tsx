@@ -8,13 +8,13 @@ import {
   SafeAreaView,
   ScrollView,
   Modal,
+  Platform,
 } from "react-native";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import BottomNav from "@/components/generator/layout/BottomNav";
-import { Colors } from "@/theme";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
+import { Ionicons } from "@expo/vector-icons";
 
 // Logos
 import Cash4LifeLogo from "@/assets/images/ny_game_logo/cash4life.svg";
@@ -28,6 +28,19 @@ import Take5MiddayLogo from "@/assets/images/ny_game_logo/take5_midday.svg";
 import Take5EveningLogo from "@/assets/images/ny_game_logo/take5_evening.svg";
 import Win4MiddayLogo from "@/assets/images/ny_game_logo/win4_midday.svg";
 import Win4EveningLogo from "@/assets/images/ny_game_logo/win4_evening.svg";
+
+// Cores iOS
+const COLORS = {
+  background: "#F6F6F8",
+  card: "#FFF",
+  border: "#E5E7EB",
+  text: "#23242A",
+  muted: "#8C95A3",
+  blue: "#007AFF",
+  red: "#FF3B30",
+  green: "#22C55E",
+  shadow: "#111A1A",
+};
 
 const initialGames = [
   {
@@ -102,14 +115,14 @@ export default function MyLinesScreen() {
             renderItem={({ item }) => (
               <View style={styles.card}>
                 <Pressable
-                  hitSlop={16}
+                  hitSlop={14}
                   style={({ pressed }) => [
                     styles.deleteButton,
                     pressed && styles.deletePressed,
                   ]}
                   onPress={() => showDeleteModal(item.id)}
                 >
-                  <Ionicons name="close" size={18} color="#777" />
+                  <Ionicons name="close" size={21} color={COLORS.muted} />
                 </Pressable>
 
                 <View style={styles.header}>
@@ -122,18 +135,18 @@ export default function MyLinesScreen() {
                   <Pressable
                     onPress={() => handleCheck(item)}
                     style={({ pressed }) => [
-                      styles.button,
-                      { backgroundColor: "#00FF38" },
+                      styles.iosButton,
+                      { backgroundColor: COLORS.green },
                       pressed && styles.pressed,
                     ]}
                   >
                     <Ionicons
                       name="checkmark-circle"
-                      size={16}
-                      color="#000"
+                      size={17}
+                      color="#fff"
                       style={styles.icon}
                     />
-                    <Text style={[styles.buttonText, { color: "#000" }]}>
+                    <Text style={[styles.buttonText, { color: "#fff" }]}>
                       Check
                     </Text>
                   </Pressable>
@@ -141,14 +154,14 @@ export default function MyLinesScreen() {
                   <Pressable
                     onPress={() => handlePrint(item)}
                     style={({ pressed }) => [
-                      styles.button,
-                      { backgroundColor: "#000" },
+                      styles.iosButton,
+                      { backgroundColor: COLORS.blue },
                       pressed && styles.pressed,
                     ]}
                   >
-                    <MaterialIcons
-                      name="print"
-                      size={16}
+                    <Ionicons
+                      name="print-outline"
+                      size={17}
                       color="#fff"
                       style={styles.icon}
                     />
@@ -160,14 +173,14 @@ export default function MyLinesScreen() {
                   <Pressable
                     onPress={() => handleDownload(item)}
                     style={({ pressed }) => [
-                      styles.button,
-                      { backgroundColor: "#007AFF" },
+                      styles.iosButton,
+                      { backgroundColor: "#222" },
                       pressed && styles.pressed,
                     ]}
                   >
                     <Ionicons
                       name="download-outline"
-                      size={16}
+                      size={17}
                       color="#fff"
                       style={styles.icon}
                     />
@@ -188,6 +201,12 @@ export default function MyLinesScreen() {
           >
             <View style={styles.modalOverlay}>
               <View style={styles.modalBox}>
+                <Ionicons
+                  name="trash-outline"
+                  size={36}
+                  color={COLORS.red}
+                  style={{ marginBottom: 6 }}
+                />
                 <Text style={styles.modalTitle}>Delete Saved Line</Text>
                 <Text style={styles.modalMsg}>
                   Are you sure you want to delete this saved line?
@@ -214,7 +233,7 @@ export default function MyLinesScreen() {
                     onPress={doDelete}
                   >
                     <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                      Yes
+                      Yes, Delete
                     </Text>
                   </Pressable>
                 </View>
@@ -232,126 +251,153 @@ export default function MyLinesScreen() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: COLORS.background,
   },
   scrollContent: {
-    paddingBottom: 100,
+    paddingBottom: 90,
   },
   pageTitle: {
     textAlign: "center",
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#0E4CA1",
+    fontSize: 19,
+    fontWeight: "700",
+    color: COLORS.blue,
     marginTop: 10,
-    marginBottom: 12,
+    marginBottom: 16,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    letterSpacing: 0.01,
   },
   card: {
-    borderRadius: 12,
-    backgroundColor: "#f5f5f5",
-    padding: 16,
+    borderRadius: 18,
+    backgroundColor: COLORS.card,
+    padding: 18,
     marginBottom: 16,
     position: "relative",
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
-    elevation: 3,
+    shadowColor: COLORS.shadow,
+    shadowOpacity: 0.13,
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 13,
+    elevation: Platform.OS === "android" ? 4 : 0,
   },
   deleteButton: {
     position: "absolute",
     top: 12,
     right: 12,
     zIndex: 1,
-    padding: 4,
+    padding: 7,
     borderRadius: 999,
+    backgroundColor: "#F2F2F2",
   },
   deletePressed: {
     opacity: 0.6,
-    backgroundColor: "#eee",
+    backgroundColor: "#eaeaea",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 7,
     gap: 12,
   },
   date: {
-    fontSize: 14,
-    color: "#777",
+    fontSize: 15,
+    color: COLORS.muted,
+    fontWeight: "600",
+    marginLeft: 5,
   },
   name: {
     fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 12,
+    fontWeight: "600",
+    marginBottom: 13,
+    color: COLORS.text,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   actions: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
+    gap: 11,
     justifyContent: "space-between",
+    marginTop: 3,
   },
   icon: {
     marginRight: 6,
   },
-  button: {
+  iosButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    minWidth: 100,
+    paddingVertical: 11,
+    paddingHorizontal: 15,
+    borderRadius: 999,
+    minWidth: 94,
     flexGrow: 1,
+    marginRight: 2,
+    marginLeft: 2,
+    shadowColor: COLORS.blue,
+    shadowOpacity: 0.09,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: Platform.OS === "android" ? 2 : 0,
   },
   buttonText: {
-    fontWeight: "600",
+    fontWeight: "700",
+    fontSize: 15,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    letterSpacing: 0.03,
   },
   pressed: {
     opacity: 0.65,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.28)",
+    backgroundColor: "rgba(0,0,0,0.19)",
     alignItems: "center",
     justifyContent: "center",
   },
   modalBox: {
     backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 28,
+    borderRadius: 18,
+    padding: 32,
     alignItems: "center",
     minWidth: 270,
     shadowColor: "#000",
     shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: { width: 0, height: 8 },
     shadowRadius: 18,
-    elevation: 10,
+    elevation: 12,
   },
   modalTitle: {
-    fontWeight: "bold",
-    fontSize: 16,
-    marginBottom: 14,
+    fontWeight: "700",
+    fontSize: 18,
+    marginBottom: 10,
+    color: COLORS.text,
+    textAlign: "center",
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   modalMsg: {
-    color: "#222",
+    color: COLORS.muted,
     textAlign: "center",
-    marginBottom: 24,
-    fontSize: 14,
+    marginBottom: 28,
+    fontSize: 15,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   modalActions: {
     flexDirection: "row",
-    gap: 14,
+    gap: 18,
+    marginTop: 2,
   },
   modalBtn: {
-    borderRadius: 7,
-    paddingVertical: 10,
-    paddingHorizontal: 22,
+    borderRadius: 999,
+    paddingVertical: 13,
+    paddingHorizontal: 29,
+    minWidth: 80,
+    alignItems: "center",
+    marginHorizontal: 2,
   },
   cancelBtn: {
-    backgroundColor: "#eee",
-    marginRight: 10,
+    backgroundColor: "#F4F4F4",
+    borderWidth: 1,
+    borderColor: "#eee",
   },
   deleteBtn: {
-    backgroundColor: "#FF3333",
+    backgroundColor: COLORS.red,
   },
 });

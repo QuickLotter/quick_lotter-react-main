@@ -21,7 +21,7 @@ export default function VerifySuccess() {
 
   return (
     <View style={styles.wrapper}>
-      <HeaderLoginLogo title="Verification Success" />
+      <HeaderLoginLogo title="" />
 
       <ScrollView
         contentContainerStyle={styles.scrollContainer}

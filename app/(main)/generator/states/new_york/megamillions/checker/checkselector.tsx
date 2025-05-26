@@ -6,13 +6,14 @@ import {
   ScrollView,
   TouchableOpacity,
   useWindowDimensions,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import BottomNav from "@/components/generator/layout/BottomNav";
 import { FontAwesome5 } from "@expo/vector-icons";
 
-// 🟦 Importação dos logos
+// Logos
 import Powerball from "@/assets/images/ny_game_logo/powerball.svg";
 import MegaMillions from "@/assets/images/ny_game_logo/megamillions.svg";
 import Cash4Life from "@/assets/images/ny_game_logo/cash4life.svg";
@@ -42,13 +43,12 @@ const GAMES = [
 export default function CheckerSelector() {
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const maxWidth = Math.min(width - 32, 480); // Limite de 480px
+  const maxWidth = Math.min(width - 32, 480);
 
   return (
     <View style={styles.container}>
       <HeaderLogoBack title="" />
       <Text style={styles.pageTitle}>Select Game to Check Tickets</Text>
-
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {GAMES.map(({ route, Logo, color }) => (
           <View
@@ -57,22 +57,26 @@ export default function CheckerSelector() {
               styles.card,
               {
                 borderColor: color,
-                shadowColor: color,
+                shadowColor: color + "22",
                 width: maxWidth,
               },
             ]}
           >
-            <Logo width={54} height={26} />
+            {/* Logo à esquerda */}
+            <Logo width={56} height={28} />
 
+            {/* Ícone check central */}
             <View style={styles.centerIcon}>
-              <FontAwesome5 name="check" size={22} color={color} />
+              <FontAwesome5 name="check" size={24} color={color} />
             </View>
 
+            {/* Botão iOS */}
             <TouchableOpacity
               style={[
                 styles.button,
-                { backgroundColor: color, borderColor: "#999" },
+                { backgroundColor: color, shadowColor: color + "33" },
               ]}
+              activeOpacity={0.82}
               onPress={() =>
                 router.push(`/generator/states/new_york/${route}/checker/index`)
               }
@@ -82,7 +86,6 @@ export default function CheckerSelector() {
           </View>
         ))}
       </ScrollView>
-
       <BottomNav />
     </View>
   );
@@ -95,48 +98,52 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     textAlign: "center",
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: "800",
     color: "#0E4CA1",
-    marginTop: 10,
+    marginTop: 16,
     marginBottom: 12,
+    letterSpacing: 0.2,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   scrollContent: {
-    paddingBottom: 100,
+    paddingBottom: 90,
     alignItems: "center",
-    gap: 12,
+    gap: 14,
   },
   card: {
     backgroundColor: "#fff",
     borderWidth: 2,
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 15,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    shadowOpacity: 0.18,
-    shadowRadius: 4,
+    shadowOpacity: 0.13,
+    shadowRadius: 7,
     shadowOffset: { width: 0, height: 3 },
     elevation: 4,
+    marginBottom: 2,
   },
   centerIcon: {
     flex: 1,
     alignItems: "center",
   },
   button: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 24,
-    borderWidth: 1,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 22,
+    borderWidth: 0,
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
     shadowOffset: { width: 0, height: 2 },
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "600",
-    fontSize: 13,
+    fontWeight: "700",
+    fontSize: 14,
+    letterSpacing: 0.2,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
 });

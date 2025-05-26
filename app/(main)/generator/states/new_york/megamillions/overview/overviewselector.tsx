@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   useWindowDimensions,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
@@ -46,10 +47,8 @@ export default function OverviewSelector() {
 
   return (
     <View style={styles.container}>
-      <HeaderLogoBack title="" />
-
+      <HeaderLogoBack title="" showMenu={false} showStateSelector />
       <Text style={styles.pageTitle}>Select Game to View Overview</Text>
-
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {GAMES.map(({ route, Logo, color }) => (
           <View
@@ -58,34 +57,46 @@ export default function OverviewSelector() {
               styles.card,
               {
                 borderColor: color,
-                shadowColor: color,
+                shadowColor: color + "22",
                 width: maxWidth,
               },
             ]}
           >
-            <Logo width={54} height={26} />
+            {/* Logo à esquerda */}
+            <Logo width={56} height={28} />
 
+            {/* Ícone central */}
             <View style={styles.centerIcon}>
               <MaterialIcons name="remove-red-eye" size={26} color={color} />
             </View>
 
+            {/* Botão iOS-like */}
             <TouchableOpacity
               style={[
                 styles.button,
-                { backgroundColor: color, borderColor: "#999" },
+                {
+                  backgroundColor: color,
+                  shadowColor: color + "33",
+                },
               ]}
-              onPress={() =>
-                router.push(
-                  `/generator/states/new_york/${route}/overview/index`
-                )
-              }
+              activeOpacity={0.82}
+              onPress={() => {
+                if (route === "megamillions") {
+                  router.push(
+                    "/generator/states/new_york/megamillions/overview/drawingsince"
+                  );
+                } else {
+                  router.push(
+                    `/generator/states/new_york/${route}/overview/index`
+                  );
+                }
+              }}
             >
               <Text style={styles.buttonText}>View Overview</Text>
             </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
-
       <BottomNav />
     </View>
   );
@@ -98,48 +109,54 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     textAlign: "center",
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: "800",
     color: "#0E4CA1",
-    marginTop: 10,
+    marginTop: 16,
     marginBottom: 12,
+    letterSpacing: 0.2,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   scrollContent: {
-    paddingBottom: 100,
+    paddingBottom: 90,
     alignItems: "center",
-    gap: 12,
+    gap: 14,
   },
   card: {
     backgroundColor: "#fff",
     borderWidth: 2,
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 15,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    shadowOpacity: 0.18,
-    shadowRadius: 4,
+    shadowOpacity: 0.13,
+    shadowRadius: 7,
     shadowOffset: { width: 0, height: 3 },
     elevation: 4,
+    marginBottom: 2,
+    maxWidth: 480,
+    width: "100%",
   },
   centerIcon: {
     flex: 1,
     alignItems: "center",
   },
   button: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 24,
-    borderWidth: 1,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 22,
+    borderWidth: 0,
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
     shadowOffset: { width: 0, height: 2 },
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "600",
-    fontSize: 13,
+    fontWeight: "700",
+    fontSize: 14,
+    letterSpacing: 0.2,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
 });

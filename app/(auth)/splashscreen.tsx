@@ -1,47 +1,62 @@
 import React, { useEffect, useRef } from "react";
-import { View, StyleSheet, Animated, Image } from "react-native";
-import { Colors } from "@/theme";
+import { View, StyleSheet, Animated, useColorScheme } from "react-native";
 import Logo from "@/assets/images/logo.png";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 
 export default function SplashScreen() {
   const opacity = useRef(new Animated.Value(0)).current;
-  const scale = useRef(new Animated.Value(0.8)).current;
+  const scale = useRef(new Animated.Value(0.85)).current;
   const router = useRouter();
+  const colorScheme = useColorScheme();
 
   useEffect(() => {
-    // Aqui pode entrar a verificação de token/autenticação futura:
-    // Exemplo:
-    // 1. Verifique se o usuário já está logado via AsyncStorage/SecureStore/JWT
-    // 2. Se estiver logado: router.replace("/home");
-    // 3. Se não: router.replace("/login");
-
     Animated.sequence([
       Animated.parallel([
         Animated.timing(opacity, {
           toValue: 1,
-          duration: 1200,
+          duration: 950,
           useNativeDriver: true,
         }),
         Animated.spring(scale, {
           toValue: 1,
-          friction: 5,
-          tension: 70,
+          friction: 6,
+          tension: 38,
           useNativeDriver: true,
         }),
       ]),
-      Animated.delay(900),
+      Animated.delay(1100),
     ]).start(() => {
-      // 👉 Aqui faz a navegação real:
-      router.replace("/auth/login"); // Mantenha assim se o login é a próxima tela!
+      router.replace("/login");
     });
   }, []);
 
+  // Escolhe cor de fundo pelo tema
+  const gradientColors =
+    colorScheme === "dark" ? ["#021529", "#223354"] : ["#007AFF", "#42A1F7"];
+
   return (
     <View style={styles.wrapper}>
+      <LinearGradient
+        colors={gradientColors}
+        style={StyleSheet.absoluteFill}
+        start={{ x: 0.2, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      />
       <Animated.Image
         source={Logo}
-        style={[styles.logo, { opacity, transform: [{ scale }] }]}
+        style={[
+          styles.logo,
+          {
+            opacity,
+            transform: [{ scale }],
+            shadowColor: "#00294A",
+            shadowOffset: { width: 0, height: 8 },
+            shadowRadius: 18,
+            shadowOpacity: 0.2,
+            elevation: 9,
+          },
+        ]}
         resizeMode="contain"
       />
     </View>
@@ -51,12 +66,14 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: "#007AFF", // Pode usar Colors.primary ou gradiente
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#007AFF",
   },
   logo: {
     width: 220,
     height: 110,
+    borderRadius: 28,
+    backgroundColor: "transparent",
   },
 });

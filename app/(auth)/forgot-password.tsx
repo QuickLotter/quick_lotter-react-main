@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Platform,
 } from "react-native";
 import HeaderLoginLogo from "@/components/generator/layout/HeaderLoginLogo";
 import { Colors, Typography } from "@/theme";
@@ -28,18 +29,6 @@ export default function ForgotPasswordScreen() {
     }
     setError("");
     // --- INTEGRAÇÃO COM API DE RECUPERAÇÃO DE SENHA ---
-    // try {
-    //   const res = await api.forgotPassword({ email });
-    //   if (res.success) {
-    //     router.replace("/verify-code");
-    //   } else {
-    //     setError(res.message);
-    //   }
-    // } catch (e) {
-    //   setError("Network or server error");
-    // }
-
-    // MOCK: redireciona direto para verificação de código
     setTimeout(() => {
       router.replace("/verify-code");
     }, 800);
@@ -67,14 +56,18 @@ export default function ForgotPasswordScreen() {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
+            autoCorrect={false}
           />
           {error ? <Text style={styles.errorText}>⚠️ {error}</Text> : null}
 
-          <TouchableOpacity style={styles.button} onPress={handleForgot}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleForgot}
+            activeOpacity={0.82}
+          >
             <Text style={styles.buttonText}>Send Reset Link</Text>
           </TouchableOpacity>
 
-          {/* Links para Login e Signup */}
           <Text style={styles.footerText}>
             Remembered your password?{" "}
             <Text style={styles.link} onPress={() => router.push("/login")}>
@@ -96,7 +89,7 @@ export default function ForgotPasswordScreen() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: "#F6F7FB", // iOS background
   },
   scrollContainer: {
     flexGrow: 1,
@@ -107,62 +100,92 @@ const styles = StyleSheet.create({
   },
   responsiveContainer: {
     width: "100%",
-    maxWidth: 768,
+    maxWidth: 370, // Mais iOS-like
     alignSelf: "center",
     padding: 24,
+    backgroundColor: "#fff",
+    borderRadius: 18,
+    marginTop: 22,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#00397A22",
+        shadowOpacity: 0.12,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 6 },
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
   title: {
-    ...Typography.heading,
-    fontSize: 20,
+    fontSize: 22,
+    fontWeight: "800",
     textAlign: "center",
-    marginBottom: 12,
-    color: Colors.text,
+    marginBottom: 10,
+    color: "#0E4CA1",
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   subtitle: {
-    color: Colors.textMuted,
-    fontSize: 14,
+    color: "#7B859B",
+    fontSize: 15,
     textAlign: "center",
-    marginBottom: 24,
+    marginBottom: 26,
+    fontWeight: "400",
+    lineHeight: 22,
   },
   input: {
-    borderWidth: 1,
-    borderColor: Colors.border,
-    backgroundColor: "#fff",
-    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: "#DEE4F2",
+    backgroundColor: "#F9FAFB",
+    borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    fontSize: 14,
-    marginBottom: 16,
-    color: Colors.text,
+    fontSize: 15,
+    marginBottom: 12,
+    color: "#181A20",
+    shadowColor: "#00397A22",
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
   },
   inputError: {
-    borderColor: Colors.danger,
+    borderColor: "#FF3B30",
+    backgroundColor: "#FFF2F2",
   },
   errorText: {
-    color: Colors.danger,
+    color: "#FF3B30",
     fontSize: 12,
-    marginBottom: 12,
+    marginBottom: 8,
     marginLeft: 4,
+    textAlign: "center",
   },
   button: {
-    backgroundColor: Colors.primary,
+    backgroundColor: "#0E4CA1",
     paddingVertical: 16,
     borderRadius: 30,
     alignItems: "center",
     marginTop: 8,
-    marginBottom: 24,
+    marginBottom: 16,
+    shadowColor: "#0E4CA1",
+    shadowOpacity: 0.11,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "bold",
-    fontSize: 15,
+    fontWeight: "700",
+    fontSize: 16,
+    letterSpacing: 0.2,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   link: {
-    color: Colors.primary,
+    color: "#007AFF",
     fontWeight: "600",
+    textDecorationLine: "underline",
   },
   footerText: {
-    color: Colors.textMuted,
+    color: "#8C94A5",
     textAlign: "center",
     marginTop: 2,
     marginBottom: 2,

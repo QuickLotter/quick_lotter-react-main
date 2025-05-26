@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import { Colors, Typography } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import ResponsiveContainer from "@/components/shared/responsivecontainer"; // ⬅️ Importa o container de 768px
+import ResponsiveContainer from "@/components/shared/responsivecontainer";
 
 export default function Profile() {
   const router = useRouter();
@@ -24,17 +24,15 @@ export default function Profile() {
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: insets.top + 0 },
+          { paddingTop: insets.top },
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* ✅ Espaço seguro abaixo do header */}
-        <View style={{ height: insets.top + 10 }} />
-
         <ResponsiveContainer>
           <Text style={styles.title}>My Profile</Text>
 
-          <View style={styles.optionsList}>
+          {/* 🟦 SECTION 1 */}
+          <View style={styles.card}>
             <Option
               icon="person-outline"
               label="Personal Data"
@@ -46,15 +44,14 @@ export default function Profile() {
               route="/edit-phone"
             />
             <Option
-              icon="credit-card"
-              label="Payment Method"
-              route="/payment-method"
-            />
-            <Option
               icon="receipt-long"
-              label="Transactions"
-              route="/transactions"
+              label="Subscriptions"
+              route="/subscriptions"
             />
+          </View>
+
+          {/* 🟪 SECTION 2 */}
+          <View style={styles.card}>
             <Option icon="settings" label="Settings" route="/settings" />
             <Option
               icon="campaign"
@@ -86,12 +83,12 @@ function Option({
   const router = useRouter();
   return (
     <TouchableOpacity
-      style={styles.menuItem}
+      style={styles.option}
       onPress={() => router.push(route)}
       activeOpacity={0.7}
     >
-      <MaterialIcons name={icon} size={22} color={Colors.primary} />
-      <Text style={styles.menuText}>{label}</Text>
+      <MaterialIcons name={icon} size={20} color={Colors.primary} />
+      <Text style={styles.optionText}>{label}</Text>
     </TouchableOpacity>
   );
 }
@@ -99,40 +96,41 @@ function Option({
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: "#F2F2F7", // iOS-like background
   },
   scrollContent: {
-    paddingBottom: 48,
+    paddingBottom: 60,
   },
   title: {
     ...Typography.heading,
-    textAlign: "center",
     fontSize: 18,
-    marginBottom: 16,
     color: Colors.text,
+    marginVertical: 16,
+    textAlign: "center",
   },
-  optionsList: {
-    gap: 5, // ⬅️ Espaço de 2px entre os pads
-  },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: Colors.white,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    borderRadius: 1,
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    marginBottom: 20,
+    overflow: "hidden",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 2,
   },
-  menuText: {
-    color: Colors.text,
+  option: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 18,
+    paddingHorizontal: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: "#EEE",
+  },
+  optionText: {
     fontSize: 15,
-    fontWeight: "600",
+    color: "#000",
+    marginLeft: 12,
+    fontWeight: "500",
   },
 });
-
-export default Profile;

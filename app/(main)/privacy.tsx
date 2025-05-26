@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, View } from "react-native";
+import { ScrollView, Text, StyleSheet, View, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
@@ -102,16 +102,18 @@ export default function PrivacyPolicyScreen() {
         showsVerticalScrollIndicator={false}
       >
         <ResponsiveContainer>
-          <View style={{ height: insets.top + 20 }} />
-          <Text style={styles.title}>Quick Lotter Privacy Policy</Text>
+          <View style={{ height: insets.top + 12 }} />
+          <Text style={styles.title}>Privacy Policy</Text>
+          <Text style={styles.subtitle}>
+            Your privacy is important to us. Please read this policy carefully.
+          </Text>
 
           {sections.map((section, idx) => (
             <View key={idx} style={styles.card}>
               <Text style={styles.cardTitle}>{section.title}</Text>
-              {/* Para a seção 2, que tem subtópicos */}
               {Array.isArray(section.content) ? (
                 section.content.map((item, i) => (
-                  <View key={i}>
+                  <View key={i} style={styles.subtopicBox}>
                     <Text style={styles.sectionSubtitle}>{item.subtitle}</Text>
                     <Text style={styles.cardContent}>{item.text}</Text>
                   </View>
@@ -128,15 +130,33 @@ export default function PrivacyPolicyScreen() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { flex: 1, backgroundColor: Colors.background },
-  scrollContent: { paddingBottom: 48 },
+  wrapper: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
+  scrollContent: {
+    paddingBottom: 60,
+  },
   title: {
     ...Typography.heading,
-    fontSize: 28,
-    fontWeight: "bold",
+    fontSize: 27,
+    fontWeight: "800",
     color: "#05549E",
-    marginBottom: 16,
+    marginBottom: 4,
+    marginTop: 10,
     textAlign: "center",
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    letterSpacing: -0.7,
+  },
+  subtitle: {
+    fontSize: 15,
+    textAlign: "center",
+    color: "#007AFF",
+    marginBottom: 22,
+    marginTop: 0,
+    fontWeight: "500",
+    letterSpacing: 0,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   card: {
     backgroundColor: "#fff",
@@ -144,28 +164,36 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 20,
     shadowColor: "#1e2333",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 7 },
-    shadowRadius: 16,
-    elevation: 6,
+    shadowOpacity: 0.07,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 12,
+    elevation: 3,
   },
   cardTitle: {
-    fontSize: 19,
+    fontSize: 18,
     fontWeight: "700",
-    marginBottom: 10,
+    marginBottom: 7,
     color: "#05549E",
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    letterSpacing: 0.2,
   },
   cardContent: {
     fontSize: 15,
-    color: "#222",
+    color: "#23242A",
     lineHeight: 22,
-    marginBottom: 4,
+    marginBottom: 2,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   sectionSubtitle: {
     fontSize: 16,
     fontWeight: "700",
     color: "#007AFF",
-    marginBottom: 6,
-    marginTop: 8,
+    marginBottom: 4,
+    marginTop: 10,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+  },
+  subtopicBox: {
+    marginBottom: 8,
+    marginTop: 3,
   },
 });

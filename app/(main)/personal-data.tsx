@@ -5,13 +5,13 @@ import {
   StyleSheet,
   ScrollView,
   TextInput,
-  Pressable,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
+import { useRouter } from "expo-router";
 import { Colors, Typography } from "@/theme";
 import { MaterialIcons } from "@expo/vector-icons";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
-import { useRouter } from "expo-router";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -26,109 +26,111 @@ export default function PersonalData() {
   const [phone, setPhone] = useState("");
 
   return (
-    <View style={styles.wrapper}>
-      <HeaderLogoBack />
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <SafeAreaView style={styles.wrapper}>
+      <HeaderLogoBack title="" />
+      <ScrollView contentContainerStyle={styles.scroll}>
         <ResponsiveContainer>
-          <View style={{ height: insets.top + 20 }} />
-          <Text style={styles.pageTitle}>Personal Data</Text>
+          <View style={{ height: insets.top + 10 }} />
+          <Text style={styles.title}>Personal Data</Text>
 
-          <View style={styles.card}>
-            {/* NAME */}
-            <Text style={styles.label}>Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Full Name"
-              placeholderTextColor={Colors.textMuted}
+          {/* SECTION 1 */}
+          <View style={styles.section}>
+            <Field
+              label="Name"
               value={name}
-              onChangeText={setName}
+              onChange={setName}
+              placeholder="Full Name"
             />
-            <View style={styles.divider} />
-
-            {/* ADDRESS */}
-            <Text style={styles.label}>Address</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Street Address, City, State"
-              placeholderTextColor={Colors.textMuted}
+            <Field
+              label="Address"
               value={address}
-              onChangeText={setAddress}
+              onChange={setAddress}
+              placeholder="Street, City, State"
             />
-            <View style={styles.divider} />
-
-            {/* BIRTHDATE */}
-            <Text style={styles.label}>Date of Birth</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="MM/DD/YYYY"
-              placeholderTextColor={Colors.textMuted}
+            <Field
+              label="Date of Birth"
               value={birthDate}
-              onChangeText={setBirthDate}
+              onChange={setBirthDate}
+              placeholder="MM/DD/YYYY"
               keyboardType="numeric"
             />
-            <View style={styles.divider} />
+          </View>
 
-            {/* EMAIL */}
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Email Address"
-              placeholderTextColor={Colors.textMuted}
+          {/* SECTION 2 */}
+          <View style={styles.section}>
+            <Field
+              label="Email"
               value={email}
-              onChangeText={setEmail}
+              onChange={setEmail}
+              placeholder="Email Address"
               keyboardType="email-address"
               autoCapitalize="none"
             />
-            <View style={styles.divider} />
+            <Field
+              label="Phone Number"
+              value={phone}
+              onChange={setPhone}
+              placeholder="Phone Number"
+              keyboardType="phone-pad"
+              rightIcon={
+                <TouchableOpacity onPress={() => router.push("/edit-phone")}>
+                  <MaterialIcons name="edit" size={20} color={Colors.primary} />
+                </TouchableOpacity>
+              }
+            />
+          </View>
 
-            {/* PHONE */}
-            <View style={styles.rowBetween}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>Phone Number</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Phone Number"
-                  placeholderTextColor={Colors.textMuted}
-                  value={phone}
-                  onChangeText={setPhone}
-                  keyboardType="phone-pad"
-                />
-              </View>
-              <Pressable
-                onPress={() => router.push("/edit-phone")}
-                style={({ pressed }) => [
-                  styles.editBtn,
-                  pressed && { opacity: 0.5 },
-                ]}
-              >
-                <MaterialIcons name="edit" size={20} color={Colors.textMuted} />
-              </Pressable>
+          {/* VERIFY ALERT */}
+          <View style={styles.alertBox}>
+            <View style={styles.alertRow}>
+              <MaterialIcons name="shield" size={18} color="#F4C430" />
+              <Text style={styles.alertText}>Your phone is not verified</Text>
             </View>
-
-            {/* VERIFY CARD */}
-            <View style={styles.verifyBox}>
-              <View style={styles.verifyRow}>
-                <MaterialIcons name="shield" size={20} color={Colors.primary} />
-                <Text style={styles.verifyTitle}>
-                  Your phone number is not verified
-                </Text>
-              </View>
-              <Text style={styles.verifyDesc}>
-                To keep your account more secure please verify your phone
-                number.
-              </Text>
-              <TouchableOpacity
-                style={({ pressed }) => [
-                  styles.verifyButton,
-                  pressed && { opacity: 0.7 },
-                ]}
-              >
-                <Text style={styles.verifyButtonText}>Verify</Text>
-              </TouchableOpacity>
-            </View>
+            <Text style={styles.alertDesc}>
+              To keep your account more secure, please verify your phone number.
+            </Text>
+            <TouchableOpacity style={styles.alertBtn}>
+              <Text style={styles.alertBtnText}>Verify</Text>
+            </TouchableOpacity>
           </View>
         </ResponsiveContainer>
       </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+function Field({
+  label,
+  value,
+  onChange,
+  placeholder,
+  keyboardType,
+  autoCapitalize,
+  rightIcon,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  keyboardType?: any;
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
+  rightIcon?: React.ReactNode;
+}) {
+  return (
+    <View style={styles.field}>
+      <Text style={styles.label}>{label}</Text>
+      <View style={styles.inputRow}>
+        <TextInput
+          style={styles.input}
+          value={value}
+          onChangeText={onChange}
+          placeholder={placeholder}
+          placeholderTextColor="#A2A2A2"
+          keyboardType={keyboardType}
+          autoCapitalize={autoCapitalize}
+        />
+        {rightIcon && <View style={styles.icon}>{rightIcon}</View>}
+      </View>
     </View>
   );
 }
@@ -136,99 +138,87 @@ export default function PersonalData() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: "#F2F2F7",
   },
-  scrollContent: {
-    paddingBottom: 80,
+  scroll: {
+    paddingBottom: 60,
   },
-  pageTitle: {
-    ...Typography.heading,
-    fontSize: 20,
-    fontWeight: "700",
-    color: Colors.text,
+  title: {
+    fontSize: 18,
+    fontWeight: "600",
     textAlign: "center",
+    marginBottom: 18,
+    color: "#000",
+  },
+  section: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    overflow: "hidden",
     marginBottom: 24,
   },
-  card: {
-    backgroundColor: Colors.white,
-    borderRadius: 5,
-    padding: 20,
-    gap: 12,
-    maxWidth: 500,
-    alignSelf: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.07,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 10,
-    elevation: 2,
+  field: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E5EA",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   label: {
-    ...Typography.subheading,
-    color: Colors.textMuted,
-    fontWeight: "600",
+    fontSize: 13,
+    color: "#6D6D72",
+    marginBottom: 4,
+  },
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   input: {
-    color: Colors.text,
-    fontSize: 15,
-    paddingVertical: 8,
-    paddingHorizontal: 0,
-    backgroundColor: "transparent",
+    fontSize: 16,
+    color: "#000",
+    flex: 1,
+    paddingVertical: 4,
   },
-  divider: {
-    height: 1,
-    backgroundColor: Colors.border,
-    marginVertical: 4,
-  },
-  rowBetween: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  editBtn: {
-    padding: 6,
+  icon: {
     marginLeft: 8,
-    borderRadius: 999,
   },
-  verifyBox: {
-    marginTop: 16,
-    backgroundColor: "#FFFBE6",
-    borderRadius: 12,
+  alertBox: {
+    backgroundColor: "#FFF8CC",
     padding: 16,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#EAD940",
-    shadowColor: "#F7D33E",
-    shadowOpacity: 0.04,
+    borderColor: "#F4C430",
+    shadowColor: "#F4C430",
     shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
   },
-  verifyRow: {
+  alertRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 6,
     marginBottom: 8,
   },
-  verifyTitle: {
-    fontWeight: "700",
-    color: Colors.text,
+  alertText: {
     fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
   },
-  verifyDesc: {
-    color: Colors.textMuted,
+  alertDesc: {
     fontSize: 13,
+    color: "#666",
     marginBottom: 12,
   },
-  verifyButton: {
-    borderWidth: 2,
-    borderColor: Colors.text,
-    borderRadius: 999,
-    paddingVertical: 8,
-    paddingHorizontal: 24,
-    alignSelf: "flex-start",
+  alertBtn: {
     backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#000",
+    paddingHorizontal: 24,
+    paddingVertical: 8,
+    borderRadius: 999,
+    alignSelf: "flex-start",
   },
-  verifyButtonText: {
+  alertBtnText: {
+    fontSize: 14,
     fontWeight: "600",
-    color: Colors.text,
-    fontSize: 15,
+    color: "#000",
   },
 });

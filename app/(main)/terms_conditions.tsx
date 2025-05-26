@@ -1,17 +1,10 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  Dimensions,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import { Colors, Typography } from "@/theme";
 
-const MAX_WIDTH = 768;
+const MAX_WIDTH = 520;
 
 export default function TermsOfUseScreen() {
   const insets = useSafeAreaInsets();
@@ -22,197 +15,208 @@ export default function TermsOfUseScreen() {
       <ScrollView
         contentContainerStyle={[
           styles.container,
-          { paddingTop: insets.top + 20 },
+          { paddingTop: insets.top + 18 },
         ]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.inner}>
-          {/* ⚠️ CLAUSE 1: Disclaimer */}
-          <View style={[styles.card, styles.disclaimerCard]}>
-            <Text style={styles.disclaimerTitle}>
-              Important Disclaimer: No Lottery Betting or Processing
-            </Text>
-            <Text style={styles.disclaimerText}>
-              <Text style={{ fontWeight: "bold" }}>
-                WE DO NOT PROCESS OR FACILITATE ANY LOTTERY BETS OR GAMES OF
-                CHANCE.
+          {/* iOS-style Title */}
+          <Text style={styles.title}>Terms of Use</Text>
+
+          {/* 1. Disclaimer – Highlighted */}
+          <View style={styles.alertBox}>
+            <Text style={styles.alertTitle}>Disclaimer</Text>
+            <Text style={styles.alertText}>
+              <Text style={{ fontWeight: "bold", color: "#007AFF" }}>
+                We do not process or facilitate any lottery bets or games of
+                chance.
               </Text>
               {"\n\n"}
-              We do not sell luck or promise any winnings. Our platform does not
-              participate in, accept, or process any lottery games, tickets, or
-              wagers from any U.S. state or jurisdiction. We only provide
-              combinatorial analysis, educational resources, tools, and
-              strategies to help users better understand the mathematical
-              aspects and probabilities involved in various lottery games.
+              Quick Lotter does not sell luck or promise any winnings. Our
+              platform does not participate in, accept, or process any lottery
+              games, tickets, or wagers. We provide only educational tools and
+              combinatorial analysis for entertainment and learning purposes.
             </Text>
           </View>
 
-          {/* 2. Introduction */}
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>2. Introduction</Text>
-            <Text style={styles.text}>
-              Welcome to Quick Lotter. By accessing or using our website, tools,
-              and services, you agree to comply with and be bound by these Terms
-              and Conditions ("Terms"). If you do not agree with these Terms,
-              please do not use our services.
-            </Text>
-          </View>
+          {/* 2. Sections (styled like iOS settings/legal) */}
+          <Section
+            number="2."
+            title="Introduction"
+            text={
+              "By accessing or using Quick Lotter, you agree to these Terms. Please do not use our services if you do not agree."
+            }
+          />
+          <Section
+            number="3."
+            title="Use of Services"
+            text={
+              "Quick Lotter offers tools for generating, filtering, and printing lottery numbers. These are for entertainment and informational purposes only."
+            }
+          />
+          <Section
+            number="4."
+            title="No Guarantee of Wins"
+            text={
+              "We make no guarantees, warranties, or representations regarding winnings. All lottery outcomes are based on chance. Play responsibly."
+            }
+          />
+          <Section
+            number="5."
+            title="User Responsibilities"
+            text={
+              "• Age: You must be at least 18 years old.\n" +
+              "• Compliance: You are responsible for following all local laws.\n" +
+              "• Personal Use: Tools are for personal, non-commercial use only."
+            }
+          />
+          <Section
+            number="6."
+            title="Intellectual Property"
+            text={
+              "All content, tools, and features on Quick Lotter are our property. You may not reproduce or exploit them without written permission."
+            }
+          />
+          <Section
+            number="7."
+            title="Limitation of Liability"
+            text={
+              "Quick Lotter is not liable for any damages arising from use of our services."
+            }
+          />
+          <Section
+            number="8."
+            title="Disclaimers"
+            text={
+              "• No Professional Advice: Information provided is for reference only.\n" +
+              "• No Warranties: All services are provided 'as is', without warranty."
+            }
+          />
+          <Section
+            number="9."
+            title="Changes to Terms"
+            text={
+              "We may update these Terms at any time. Continued use means you accept the current version."
+            }
+          />
+          <Section
+            number="10."
+            title="Contact"
+            text={
+              "Questions or concerns? Contact us at:\ncontact@quicklotter.com"
+            }
+          />
 
-          {/* 3. Use of Services */}
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>3. Use of Services</Text>
-            <Text style={styles.text}>
-              Quick Lotter provides tools for generating, filtering, and
-              printing numbers for lottery wheels ("Services"). These tools are
-              intended for entertainment and informational purposes only.
-            </Text>
-          </View>
-
-          {/* 4. No Guarantee of Wins */}
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>4. No Guarantee of Wins</Text>
-            <Text style={styles.text}>
-              Quick Lotter makes no guarantee, warranty, or representation that
-              using our Services will result in winning any lottery or other
-              game of chance. All outcomes are purely based on chance, and users
-              should be aware of the risks associated with gambling.
-            </Text>
-          </View>
-
-          {/* 5. User Responsibilities */}
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>5. User Responsibilities</Text>
-            <Text style={styles.text}>
-              - <Text style={styles.bold}>Age Requirement:</Text> Users must be
-              at least 18 years old to use our Services.{"\n"}-{" "}
-              <Text style={styles.bold}>Compliance with Laws:</Text> Users are
-              responsible for ensuring that their use of our Services complies
-              with all applicable laws and regulations in their jurisdiction.
-              {"\n"}- <Text style={styles.bold}>Personal Use:</Text> The
-              Services are for personal and non-commercial use only. Users may
-              not use the Services for any unlawful or unauthorized purposes.
-            </Text>
-          </View>
-
-          {/* 6. Intellectual Property */}
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>6. Intellectual Property</Text>
-            <Text style={styles.text}>
-              All content, tools, and features provided on the Quick Lotter
-              website are the property of Quick Lotter and are protected by
-              intellectual property laws. Users may not reproduce, distribute,
-              or otherwise exploit any part of our website without our express
-              written consent.
-            </Text>
-          </View>
-
-          {/* 7. Limitation of Liability */}
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>7. Limitation of Liability</Text>
-            <Text style={styles.text}>
-              To the fullest extent permitted by law, Quick Lotter shall not be
-              liable for any direct, indirect, incidental, or consequential
-              damages arising out of or in connection with the use of our
-              Services.
-            </Text>
-          </View>
-
-          {/* 8. Disclaimers */}
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>8. Disclaimers</Text>
-            <Text style={styles.text}>
-              - <Text style={styles.bold}>No Professional Advice:</Text> The
-              content on Quick Lotter does not constitute professional advice
-              and should not be relied upon as such.{"\n"}-{" "}
-              <Text style={styles.bold}>No Warranties:</Text> The Services are
-              provided "as is" without warranties of any kind, either express or
-              implied.
-            </Text>
-          </View>
-
-          {/* 9. Changes to Terms */}
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>9. Changes to Terms</Text>
-            <Text style={styles.text}>
-              Quick Lotter reserves the right to update or modify these Terms at
-              any time. Users are encouraged to review the Terms periodically.
-              Continued use of our Services after any changes constitutes
-              acceptance of the new Terms.
-            </Text>
-          </View>
-
-          {/* 10. Contact Information */}
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>10. Contact Information</Text>
-            <Text style={styles.text}>
-              For any questions or concerns regarding these Terms, please
-              contact us at:{"\n"}
-              <Text style={styles.bold}>Email:</Text> contact@quicklotter.com
-            </Text>
-          </View>
+          <Text style={styles.lastUpdated}>Last updated: May 2025</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
+// iOS Section Component
+function Section({ number, title, text }) {
+  return (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>
+        <Text style={styles.sectionNumber}>{number} </Text>
+        {title}
+      </Text>
+      <Text style={styles.sectionText}>{text}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: "#ECF1FF",
+    backgroundColor: "#F8F9FB",
   },
   container: {
     alignItems: "center",
-    paddingBottom: 40,
+    paddingBottom: 32,
     minHeight: "100%",
   },
   inner: {
     width: "100%",
-    maxWidth: 768,
+    maxWidth: MAX_WIDTH,
     alignSelf: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
   },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
+  title: {
+    ...Typography.heading,
+    fontSize: 23,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 18,
+    color: "#0E4CA1",
+    fontFamily: Typography.fontFamily,
+    letterSpacing: -0.5,
+  },
+  alertBox: {
+    backgroundColor: "#EAF3FF",
+    borderLeftWidth: 4,
+    borderLeftColor: "#007AFF",
+    borderRadius: 13,
+    padding: 17,
+    marginBottom: 18,
+    shadowColor: "#007AFF",
+    shadowOpacity: 0.06,
     shadowRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
-  disclaimerCard: {
-    borderLeftWidth: 5,
-    borderLeftColor: "#007AFF",
-    backgroundColor: "#F7FAFF",
-    marginBottom: 18,
-  },
-  disclaimerTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
+  alertTitle: {
     color: "#007AFF",
-    marginBottom: 10,
+    fontWeight: "700",
+    fontSize: 15,
+    marginBottom: 6,
+    fontFamily: Typography.fontFamily,
   },
-  disclaimerText: {
+  alertText: {
     color: "#222",
     fontSize: 15,
-    lineHeight: 22,
+    lineHeight: 21,
+    fontFamily: Typography.fontFamily,
+    fontWeight: "400",
+  },
+  section: {
+    backgroundColor: "#fff",
+    borderRadius: 13,
+    padding: 17,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.03,
+    shadowRadius: 7,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 1,
   },
   sectionTitle: {
-    fontSize: 17,
-    fontWeight: "bold",
-    color: "#0E4CA1",
+    color: "#222",
+    fontSize: 16,
+    fontWeight: "700",
+    fontFamily: Typography.fontFamily,
     marginBottom: 6,
   },
-  text: {
+  sectionNumber: {
+    color: "#007AFF",
+    fontWeight: "700",
+    fontSize: 15,
+    fontFamily: Typography.fontFamily,
+  },
+  sectionText: {
     color: "#444",
     fontSize: 15,
-    lineHeight: 22,
+    lineHeight: 21,
+    fontFamily: Typography.fontFamily,
+    fontWeight: "400",
   },
-  bold: {
-    fontWeight: "700",
-    color: "#0E4CA1",
+  lastUpdated: {
+    color: "#B0B7C3",
+    fontSize: 13,
+    textAlign: "center",
+    marginTop: 30,
+    fontFamily: Typography.fontFamily,
+    marginBottom: 12,
   },
 });

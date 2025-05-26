@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Platform,
 } from "react-native";
 import HeaderLoginLogo from "@/components/generator/layout/HeaderLoginLogo";
 import { Colors, Typography } from "@/theme";
@@ -44,29 +45,36 @@ export default function ResetPasswordScreen() {
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         <ResponsiveContainer>
-          <Text style={styles.title}>Set a new password</Text>
+          <Text style={styles.title}>Reset your password</Text>
           <Text style={styles.subtitle}>
             Enter and confirm your new password below.
           </Text>
+          <Text style={styles.label}>New Password</Text>
           <TextInput
             style={[styles.input, error && styles.inputError]}
-            placeholder="New Password"
+            placeholder="Create a new password"
             placeholderTextColor={Colors.textMuted}
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
           />
+          <Text style={styles.label}>Confirm Password</Text>
           <TextInput
             style={[styles.input, error && styles.inputError]}
-            placeholder="Confirm New Password"
+            placeholder="Repeat your new password"
             placeholderTextColor={Colors.textMuted}
             value={confirm}
             onChangeText={setConfirm}
             secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
           />
-          {error ? <Text style={styles.errorText}>⚠️ {error}</Text> : null}
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
           <TouchableOpacity style={styles.button} onPress={handleReset}>
             <Text style={styles.buttonText}>Reset Password</Text>
@@ -80,65 +88,93 @@ export default function ResetPasswordScreen() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: "#F6F7FB",
   },
   scrollContainer: {
     flexGrow: 1,
     alignItems: "center",
     minHeight: "100%",
-    paddingTop: 8,
-    paddingBottom: 40,
+    paddingTop: 12,
+    paddingBottom: 36,
   },
   responsiveContainer: {
     width: "100%",
-    maxWidth: 768,
+    maxWidth: 370,
     alignSelf: "center",
-    padding: 24,
+    padding: 28,
+    backgroundColor: "#fff",
+    borderRadius: 18,
+    marginTop: 18,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#00397A22",
+        shadowOpacity: 0.14,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 7 },
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
   title: {
-    ...Typography.heading,
-    fontSize: 20,
+    fontSize: 21,
+    fontWeight: "800",
     textAlign: "center",
-    marginBottom: 12,
-    color: Colors.text,
+    marginBottom: 6,
+    color: "#007AFF",
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   subtitle: {
-    color: Colors.textMuted,
+    color: "#8CA1D2",
     fontSize: 14,
     textAlign: "center",
-    marginBottom: 24,
+    marginBottom: 14,
+    marginTop: 2,
+  },
+  label: {
+    color: "#2D3A5C",
+    marginBottom: 6,
+    marginTop: 15,
+    fontSize: 15,
+    fontWeight: "700",
   },
   input: {
-    borderWidth: 1,
-    borderColor: Colors.border,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 14,
-    marginBottom: 16,
-    color: Colors.text,
+    backgroundColor: "#F9FAFB",
+    padding: 14,
+    borderRadius: 12,
+    color: "#222",
+    marginBottom: 8,
+    borderWidth: 1.2,
+    borderColor: "#DEE4F2",
+    fontSize: 16,
   },
   inputError: {
-    borderColor: Colors.danger,
+    borderColor: "#FF3B30",
   },
   errorText: {
-    color: Colors.danger,
+    color: "#FF3B30",
     fontSize: 12,
-    marginBottom: 12,
-    marginLeft: 4,
+    marginBottom: 14,
+    textAlign: "center",
+    marginTop: 6,
   },
   button: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 16,
-    borderRadius: 30,
+    backgroundColor: "#007AFF",
+    paddingVertical: 15,
+    borderRadius: 14,
     alignItems: "center",
-    marginTop: 8,
-    marginBottom: 24,
+    marginTop: 12,
+    marginBottom: 2,
+    shadowColor: "#007AFF",
+    shadowOpacity: 0.11,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
   },
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 15,
+    fontSize: 16,
+    letterSpacing: 0.1,
   },
 });

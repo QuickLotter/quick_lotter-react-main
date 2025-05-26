@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
@@ -22,9 +23,13 @@ import Win4Evening from "@/assets/images/ny_game_logo/win4_evening.svg";
 import NumbersMidday from "@/assets/images/ny_game_logo/numbers_midday.svg";
 import NumbersEvening from "@/assets/images/ny_game_logo/numbers_evening.svg";
 
+// iOS-style colors
+const BG = "#F6F7FB";
+const CARD = "#FFF";
+
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const MAX_CARD_WIDTH = Math.min(359, SCREEN_WIDTH - 16);
-const CARD_HEIGHT = 72;
+const MAX_CARD_WIDTH = Math.min(370, SCREEN_WIDTH - 16);
+const CARD_HEIGHT = 74;
 
 const gameCards = [
   {
@@ -143,7 +148,7 @@ export default function ResultsPage() {
     <View style={styles.container}>
       <HeaderLogoBack title="" />
 
-      <Text style={styles.sectionTitle}>NEW YORK GAMES RESULTS</Text>
+      <Text style={styles.sectionTitle}>New York Games Results</Text>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {gameCards.map((game) => {
@@ -158,14 +163,14 @@ export default function ResultsPage() {
                 styles.cardWrapper,
                 {
                   borderColor: game.color,
-                  shadowColor: game.color,
+                  shadowColor: game.color + "44",
                   width: MAX_CARD_WIDTH,
                 },
               ]}
             >
               {/* Logo */}
               <View style={styles.logoArea}>
-                <Logo width={48} height={22} />
+                <Logo width={50} height={24} />
               </View>
 
               {/* Info */}
@@ -179,19 +184,17 @@ export default function ResultsPage() {
                   <Text style={styles.drawStartedOutline}>Draw Started</Text>
                 )}
                 {drawStatus === "soon" && (
-                  <Text style={styles.drawStartSoonOutline}>
-                    Draw Start Soon
-                  </Text>
+                  <Text style={styles.drawStartSoonOutline}>Draw Soon</Text>
                 )}
               </View>
 
-              {/* Botão "Past Results" com fundo colorido */}
+              {/* Botão iOS Past Results */}
               <TouchableOpacity
                 style={[
                   styles.pastResultButton,
                   { backgroundColor: game.color },
                 ]}
-                activeOpacity={0.9}
+                activeOpacity={0.8}
                 onPress={() => router.push(`/results/${game.route}`)}
               >
                 <Text style={styles.pastResultText}>Past Results</Text>
@@ -207,43 +210,45 @@ export default function ResultsPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: BG,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 19,
+    fontWeight: "700",
     color: "#0E4CA1",
     textAlign: "center",
-    marginTop: 12,
-    marginBottom: 12,
+    marginTop: 14,
+    marginBottom: 16,
     textTransform: "uppercase",
-    letterSpacing: 0.8,
+    letterSpacing: 1.1,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   scrollContent: {
     alignItems: "center",
-    paddingVertical: 10,
-    paddingBottom: 36,
+    paddingVertical: 12,
+    paddingBottom: 42,
     minWidth: "100%",
   },
   cardWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF",
-    borderRadius: 14,
+    backgroundColor: CARD,
+    borderRadius: 18,
     borderWidth: 2,
-    marginBottom: 12,
-    shadowOpacity: 0.19,
-    shadowRadius: 7,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 11,
-    paddingHorizontal: 8,
+    marginBottom: 16,
+    shadowOpacity: 0.13,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 4,
+    paddingHorizontal: 12,
     height: CARD_HEIGHT,
+    width: "98%",
+    maxWidth: 370,
   },
   logoArea: {
-    width: 56,
+    width: 60,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 2,
     height: CARD_HEIGHT,
   },
   infoArea: {
@@ -251,53 +256,66 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: CARD_HEIGHT,
-    paddingHorizontal: 2,
+    paddingHorizontal: 3,
   },
   nextDrawLabel: {
     fontSize: 13,
-    fontWeight: "bold",
-    color: "#222",
+    fontWeight: "600",
+    color: "#23242A",
     textAlign: "center",
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   nextDrawDay: {
     fontWeight: "bold",
-    color: "#222",
+    color: "#23242A",
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   nextDrawDate: {
     fontSize: 13,
     color: "#222",
     fontWeight: "400",
     textAlign: "center",
+    marginBottom: 2,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   drawStartedOutline: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#00FFB0",
-    textShadowColor: "#00955A",
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#1ABC9C",
+    textShadowColor: "#12AB90",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
-    marginTop: 2,
+    marginTop: 3,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   drawStartSoonOutline: {
-    fontSize: 12,
-    fontWeight: "bold",
+    fontSize: 13,
+    fontWeight: "700",
     color: "#FF5F5F",
     textShadowColor: "#A61A1A",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
-    marginTop: 2,
+    marginTop: 3,
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
   },
   pastResultButton: {
-    borderRadius: 24,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
+    borderRadius: 22,
+    paddingHorizontal: 18,
+    paddingVertical: 7,
     height: 36,
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    marginLeft: 12,
   },
   pastResultText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "600",
     color: "#FFF",
+    fontFamily: Platform.OS === "ios" ? "System" : undefined,
+    letterSpacing: 0.3,
   },
 });
