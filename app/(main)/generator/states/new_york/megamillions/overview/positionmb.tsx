@@ -91,10 +91,13 @@ export default function PositionMB() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <GameHeader
-        logo={<MegamillionsLogo width={120} height={40} />}
-        title="Overview"
-        subtitle="New York Mega Millions"
-        headerColor="#0E4CA1"
+  logo={<MegamillionsLogo width={100} height={40} />}
+  title="Overview"
+  subtitle="New York Mega Millions"
+  headerColor="#0E4CA1"
+  backTo="/generator/states/new_york/megamillions/overview/overviewselector"
+/>
+
       />
       <DrawingSinceTabs />
       <View style={styles.fixedHeader}>
