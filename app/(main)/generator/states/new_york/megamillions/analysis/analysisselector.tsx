@@ -64,10 +64,12 @@ export default function AnalysisSelector() {
           >
             {/* Logo à esquerda */}
             <Logo width={56} height={28} />
+
             {/* Ícone analytics central */}
             <View style={styles.centerIcon}>
               <MaterialIcons name="analytics" size={26} color={color} />
             </View>
+
             {/* Botão iOS-like */}
             <TouchableOpacity
               style={[
@@ -77,12 +79,18 @@ export default function AnalysisSelector() {
                   shadowColor: color + "33",
                 },
               ]}
-              activeOpacity={0.8}
-              onPress={() =>
-                router.push(
-                  `/generator/states/new_york/${route}/analysis/index`
-                )
-              }
+              activeOpacity={0.82}
+              onPress={() => {
+                if (route === "megamillions") {
+                  router.push(
+                    "/generator/states/new_york/megamillions/analysis/sum"
+                  );
+                } else {
+                  router.push(
+                    `/generator/states/new_york/${route}/analysis/index`
+                  );
+                }
+              }}
             >
               <Text style={styles.buttonText}>Start Analysis</Text>
             </TouchableOpacity>

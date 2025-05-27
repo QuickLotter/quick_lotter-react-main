@@ -1,4 +1,4 @@
-// drawingsince.tsx
+// position1.tsx
 
 import React, { useState, useRef } from "react";
 import {
@@ -15,24 +15,28 @@ import GameHeader from "@/components/generator/header/gameheader";
 import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
 import DrawingSinceTabs from "@/components/drawingsincetabs";
 
-// ====== HEADERS DE CADA POSITION ======
+// ====== HEADER PARA POSITION 01 ======
 const POSITION_HEADERS = {
-  "DRAWING SINCE": Array.from({ length: 70 }, (_, i) => i + 1),
+  "POSITION 01": [
+    3, 1, 4, 2, 8, 10, 7, 6, 11, 5, 9, 15, 14, 12, 13, 16, 17, 20, 21, 18, 19,
+    29, 23, 28, 27, 25, 34, 22, 24, 33, 26, 30, 36, 46, 39, 38, 32, 31, 56, 52,
+    41, 40, 37,
+  ],
 };
 
 // MOCK DATA (trocar pelo fetch do Supabase futuramente)
 const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  values: Array(70)
+  values: Array(POSITION_HEADERS["POSITION 01"].length)
     .fill(0)
     .map(() => Math.round(Math.random())),
 }));
-const FREQ_70 = Array.from(
-  { length: 70 },
+const FREQ = Array.from(
+  { length: POSITION_HEADERS["POSITION 01"].length },
   () => Math.floor(Math.random() * 350) + 10
 );
 
-export default function DrawingSince() {
+export default function Position1() {
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1)); // 05/01/2025
   const [toDate, setToDate] = useState(new Date(2025, 4, 20)); // 05/20/2025
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
@@ -51,9 +55,8 @@ export default function DrawingSince() {
   };
 
   // Substituir pelo fetch da API do Supabase aqui:
-  const HEADER = POSITION_HEADERS["DRAWING SINCE"];
+  const HEADER = POSITION_HEADERS["POSITION 01"];
   const ROWS = DATA_ROWS;
-  const FREQ = FREQ_70;
   const filteredRows = ROWS; // <-- no futuro: filtrar pelo intervalo de datas escolhido
   const drawCount = filteredRows.length;
 

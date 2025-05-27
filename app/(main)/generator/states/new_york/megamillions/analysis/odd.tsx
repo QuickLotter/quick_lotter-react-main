@@ -4,53 +4,84 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  ActivityIndicator,
 } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
 import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import AnalysisTabs from "@/components/analysistabs";
 
 const HEADER_HEIGHT = 375;
 const FOOTER_HEIGHT = 70;
 
-const rows = Array.from({ length: 30 }, () => ({
-  date: "10/08/24",
-  odd: 3,
-  values: [1, 1, 1, 1, 1, 1],
+const ODD_RANGES = [
+  { label: "0", bgColor: "#ff0000", textColor: "#FFF" },
+  { label: "1", bgColor: "#03b9F4", textColor: "#000" },
+  { label: "2", bgColor: "#FFFB3B", textColor: "#000" },
+  { label: "3", bgColor: "#EC407A", textColor: "#FFF" },
+  { label: "4", bgColor: "#000", textColor: "#FFF" },
+  { label: "5", bgColor: "#fff", textColor: "#000" },
+];
+
+// MOCK DATA – troque depois pelo fetch da API/Supabase!
+const MOCK_ROWS = Array.from({ length: 30 }, (_, i) => ({
+  date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
+  odd: i % 6, // só para simular
+  values: Array(6)
+    .fill(0)
+    .map(() => Math.round(Math.random())),
 }));
-
-const filterButtons = [
-  { label: "SUM", color: "#B9B9B9", textColor: "#000" },
-  { label: "ODD", color: "#4CAF50", textColor: "#000" }, //0-5
-  { label: "LOW", color: "#9575CD", textColor: "#000" }, //0-5
-  { label: "PRIME", color: "#009BDE", textColor: "#000" }, //0-4
-  { label: "FIBONACCI", color: "#E1058C", textColor: "#FFF" }, //0-3
-  { label: "MULT. OF 3", color: "#4DD0E1", textColor: "#000" }, //0-5
-  { label: "VERTICAL", color: "#B71C1C", textColor: "#FFF" }, //0-5
-  { label: "ADJACENT", color: "#8BC34A", textColor: "#000" }, //0-3
-  { label: "SEQUENCE", color: "#000000", textColor: "#FFF" }, //0-2
-  { label: "REPEATED", color: "#FF9800", textColor: "#000" }, //0-3
-  { label: "DIGITS", color: "#CDDC39", textColor: "#000" }, //4-9
-  { label: "LINES", color: "#005BAA", textColor: "#FFF" }, //2-5
-  { label: "COLUMNS", color: "#ff0004", textColor: "#fff" }, //2-5
-];
-
-const valueBoxes = [
-  { label: "0", bgColor: "#ff0000", textColor: "#FFF" }, //0
-  { label: "1", bgColor: "#03b9F4", textColor: "#000" }, //1
-  { label: "2", bgColor: "#FFFB3B", textColor: "#000" }, //2
-  { label: "3", bgColor: "#EC407A", textColor: "#FFF" }, //3
-  { label: "4", bgColor: "#000", textColor: "#FFF" }, //4
-  { label: "5", bgColor: "#fff", textColor: "#000" }, //5
-];
+const MOCK_FREQ = [95, 78, 50, 49, 30, 29];
 
 export default function AnalysisOdd() {
-  const [active, setActive] = useState("ODD");
-  const scrollRef = useRef<ScrollView>(null);
+  // Data range
+  const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
+  const [toDate, setToDate] = useState(new Date(2025, 4, 30));
+  const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
+
+  // MOCK – substitua pelo estado dos dados da API
+  const rows = MOCK_ROWS;
+  const freq = MOCK_FREQ;
+  const loading = false;
+
+  // Date picker helpers
+  const formatDate = (date: Date) => {
+    if (!date) return "";
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    const yy = String(date.getFullYear()).slice(-2);
+    return `${mm}/${dd}/${yy}`;
+  };
+  const showPicker = (mode: "from" | "to") => setPickerMode(mode);
+  const onDateChange = (event, selectedDate) => {
+    setPickerMode(null);
+    if (event.type === "set" && selectedDate) {
+      if (pickerMode === "from") {
+        setFromDate(selectedDate);
+        if (selectedDate > toDate) setToDate(selectedDate);
+      } else if (pickerMode === "to") {
+        setToDate(selectedDate);
+        if (selectedDate < fromDate) setFromDate(selectedDate);
+      }
+    }
+  };
+
+  // Ponto para plug da API:
+  // useEffect(() => {
+  //   setLoading(true);
+  //   fetchOddAnalysis(fromDate, toDate).then(({ rows, freq }) => {
+  //     setRows(rows);
+  //     setFreq(freq);
+  //     setLoading(false);
+  //   });
+  // }, [fromDate, toDate]);
 
   return (
-    <View style={styles.wrapper}>
-      {/* 🔵 Header com logo e título */}
+    <SafeAreaView style={styles.wrapper}>
+      {/* HEADER FIXO */}
       <View style={styles.fixedHeader}>
         <GameHeader
           logo={<MegamillionsLogo width={100} height={40} />}
@@ -59,72 +90,53 @@ export default function AnalysisOdd() {
           headerColor="#0E4CA1"
         />
 
-        {/* 🔵 Barra de filtros com scroll horizontal */}
-        <View style={styles.filtersPad}>
-          <View style={styles.filtersInner}>
-            <ScrollView
-              horizontal
-              ref={scrollRef}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.sliderRow}
-            >
-              {filterButtons.map((btn, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={(e) => {
-                    setActive(btn.label);
-                    if (scrollRef.current) {
-                      e.target.measureLayout(
-                        scrollRef.current.getInnerViewNode(),
-                        (x) => {
-                          scrollRef.current?.scrollTo({
-                            x: x - 100,
-                            animated: true,
-                          });
-                        },
-                        () => {}
-                      );
-                    }
-                  }}
-                >
-                  <View
-                    style={[
-                      styles.filterButton,
-                      {
-                        backgroundColor: btn.color,
-                        opacity: active === btn.label ? 1 : 0.3,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.filterButtonText,
-                        { color: btn.textColor },
-                      ]}
-                    >
-                      {btn.label}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
+        {/* TABS DE FILTRO */}
+        <AnalysisTabs />
 
-        {/* 🔵 Campos de data */}
+        {/* CAMPOS DE DATA + DRAW COUNT */}
         <View style={styles.datesPad}>
           <View style={styles.filtersInner}>
             <View style={styles.datesRow}>
-              <Text style={styles.dateLabel}>Drawn date:</Text>
-              <TextInput style={styles.input} value="05/12/25" />
-              <Text style={styles.dateLabel}>to the</Text>
-              <TextInput style={styles.input} value="05/12/25" />
-              <TextInput style={styles.input} value="1000" />
+              <Text style={styles.dateLabel}>From:</Text>
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => showPicker("from")}
+              >
+                <Text style={styles.inputText}>{formatDate(fromDate)}</Text>
+              </TouchableOpacity>
+              <Text style={styles.dateLabel}>To</Text>
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => showPicker("to")}
+              >
+                <Text style={styles.inputText}>{formatDate(toDate)}</Text>
+              </TouchableOpacity>
+              <View style={[styles.input, { backgroundColor: "#F1F3F7" }]}>
+                <Text
+                  style={[
+                    styles.inputText,
+                    { color: "#0E4CA1", fontWeight: "700" },
+                  ]}
+                >
+                  {rows.length}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
 
-        {/* 🔵 Cabeçalho da tabela */}
+        {(pickerMode === "from" || pickerMode === "to") && (
+          <DateTimePicker
+            value={pickerMode === "from" ? fromDate : toDate}
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            onChange={onDateChange}
+            maximumDate={pickerMode === "from" ? toDate : undefined}
+            minimumDate={pickerMode === "to" ? fromDate : undefined}
+          />
+        )}
+
+        {/* CABEÇALHO DA TABELA */}
         <View style={styles.tableContent}>
           <View style={styles.tableRow}>
             <View style={styles.dateBox}>
@@ -133,7 +145,7 @@ export default function AnalysisOdd() {
             <View style={styles.oddBoxGreen}>
               <Text style={styles.headerText}>ODD</Text>
             </View>
-            {valueBoxes.map((box, i) => (
+            {ODD_RANGES.map((box, i) => (
               <View
                 key={i}
                 style={[
@@ -153,34 +165,38 @@ export default function AnalysisOdd() {
         </View>
       </View>
 
-      {/* 🟩 Conteúdo principal com scroll vertical */}
+      {/* DADOS PRINCIPAIS */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.tableContent}>
-          {rows.map((row, i) => (
-            <View key={i} style={styles.tableRow}>
-              <View style={styles.dateBox}>
-                <Text style={styles.dateText}>{row.date}</Text>
-              </View>
-              <View style={styles.oddBoxGreen}>
-                <Text style={styles.oddBoxGreenText}>{row.odd}</Text>
-              </View>
-              {row.values.map((val, j) => (
-                <View key={j} style={styles.greenBox}>
-                  <Text style={styles.greenText}>{val}</Text>
+          {loading ? (
+            <ActivityIndicator color="#0E4CA1" style={{ marginTop: 40 }} />
+          ) : (
+            rows.map((row, i) => (
+              <View key={i} style={styles.tableRow}>
+                <View style={styles.dateBox}>
+                  <Text style={styles.dateText}>{row.date}</Text>
                 </View>
-              ))}
-            </View>
-          ))}
+                <View style={styles.oddBoxGreen}>
+                  <Text style={styles.oddBoxGreenText}>{row.odd}</Text>
+                </View>
+                {row.values.map((val, j) => (
+                  <View key={j} style={styles.greenBox}>
+                    <Text style={styles.greenText}>{val}</Text>
+                  </View>
+                ))}
+              </View>
+            ))
+          )}
         </View>
       </ScrollView>
 
-      {/* 🔻 Rodapé com frequência */}
+      {/* RODAPÉ - FREQUENCY */}
       <View style={styles.footer}>
         <View style={styles.tableRow}>
           <View style={styles.freqLabel}>
             <Text style={styles.freqLabelText}>FREQUENCY</Text>
           </View>
-          {[95, 78, 50, 49, 30, 29].map((val, i) => (
+          {freq.map((val, i) => (
             <View
               key={i}
               style={[
@@ -202,9 +218,10 @@ export default function AnalysisOdd() {
           ))}
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   wrapper: { flex: 1, backgroundColor: "#ECF1FF" },
 
@@ -279,6 +296,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     fontSize: 13,
     textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inputText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#222",
+    textAlign: "center",
   },
 
   scrollContent: {
@@ -298,8 +323,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
-    marginBottom: 6,
+    gap: 4, //espaço lateral das caixas
+    marginBottom: 4, //espaço embaixo das caixas
   },
 
   dateBox: {

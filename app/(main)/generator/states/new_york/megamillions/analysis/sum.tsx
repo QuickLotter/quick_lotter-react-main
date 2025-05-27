@@ -4,44 +4,97 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  ActivityIndicator,
 } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
 import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import AnalysisTabs from "@/components/analysistabs";
 
 const HEADER_HEIGHT = 370;
 const FOOTER_HEIGHT = 70;
 
-const rows = Array.from({ length: 50 }, () => ({
-  date: "10/08/24",
-  sum: 335,
-  values: [1, 1, 1, 1],
-}));
-
-const filterButtons = [
-  { label: "SUM", color: "#E0E0E0" },
-  { label: "ODD", color: "#4CAF50" }, //0-5
-  { label: "LOW", color: "#9575CD" }, //0-5
-  { label: "PRIME", color: "#009BDE" }, //0-4
-  { label: "FIBONACCI", color: "#E1058C" }, //0-3
-  { label: "MULT. OF 3", color: "#4DD0E1" }, //0-5
-  { label: "VERTICAL", color: "#B71C1C" }, //0-5
-  { label: "ADJACENT", color: "#8BC34A" }, //0-3
-  { label: "SEQUENCE", color: "#000000" }, //0-2
-  { label: "REPEATED", color: "#FF9800" }, //0-3
-  { label: "DIGITS", color: "#CDDC39" }, //4-9
-  { label: "LINES", color: "#005BAA" }, //2-5
-  { label: "COLUMNS", color: "#F8C1D9" }, //2-5
+// Ranges fixos de SUM para exemplo visual (cores/intervalos)
+const SUM_RANGES = [
+  { top: "15", bottom: "129", color: "#FFEB3B" },
+  { top: "130", bottom: "175", color: "#00B0FF" },
+  { top: "176", bottom: "220", color: "#388E3C" },
+  { top: "221", bottom: "335", color: "#F44336" },
 ];
 
-export default function AnalysisMegaMillions() {
-  const [active, setActive] = useState("SUM");
-  const scrollRef = useRef<ScrollView>(null);
+// MOCK DATA (remova depois e troque pelo resultado do fetch do Supabase)
+const MOCK_ROWS = Array.from({ length: 32 }, (_, i) => ({
+  date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
+  sum: 129 + ((i * 7) % 210),
+  values: [
+    Math.round(Math.random()), // 0/1 para box1
+    Math.round(Math.random()), // 0/1 para box2
+    Math.round(Math.random()), // 0/1 para box3
+    Math.round(Math.random()), // 0/1 para box4
+  ],
+}));
+const MOCK_FREQ = [12, 22, 15, 9]; // Frequências por faixa de sum
+
+export default function AnalysisSum() {
+  // Datas do filtro
+  const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
+  const [toDate, setToDate] = useState(new Date(2025, 4, 20));
+  const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
+
+  // SCROLL SYNC refs (para quando tiver rolagem horizontal, se quiser)
+  const headerScrollRef = useRef(null);
+
+  // *** QUANDO CONECTAR NO SUPABASE:
+  // const [rows, setRows] = useState([]);
+  // const [freq, setFreq] = useState([0,0,0,0]);
+  // const [loading, setLoading] = useState(false);
+
+  // Função para formatar datas no padrão MM/DD/YY
+  const formatDate = (date: Date) => {
+    if (!date) return "";
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    const yy = String(date.getFullYear()).slice(-2);
+    return `${mm}/${dd}/${yy}`;
+  };
+
+  // *** DESCOMENTAR E USAR DEPOIS ***
+  // useEffect(() => {
+  //   setLoading(true);
+  //   // Exemplo: fetch do Supabase conforme datas selecionadas
+  //   fetchSumAnalysis(fromDate, toDate).then(({ rows, freq }) => {
+  //     setRows(rows);
+  //     setFreq(freq);
+  //     setLoading(false);
+  //   });
+  // }, [fromDate, toDate]);
+
+  // Date Picker
+  const showPicker = (mode: "from" | "to") => setPickerMode(mode);
+  const onDateChange = (event, selectedDate) => {
+    setPickerMode(null);
+    if (event.type === "set" && selectedDate) {
+      if (pickerMode === "from") {
+        setFromDate(selectedDate);
+        if (selectedDate > toDate) setToDate(selectedDate);
+      } else if (pickerMode === "to") {
+        setToDate(selectedDate);
+        if (selectedDate < fromDate) setFromDate(selectedDate);
+      }
+    }
+  };
+
+  // MOCK enquanto não tem API
+  const rows = MOCK_ROWS;
+  const freq = MOCK_FREQ;
+  const loading = false; // troque para "loading" da API quando plugar
 
   return (
-    <View style={styles.wrapper}>
-      {/* HEADER FIXO */}
+    <SafeAreaView style={styles.wrapper}>
+      {/* HEADER */}
       <View style={styles.fixedHeader}>
         <GameHeader
           logo={<MegamillionsLogo width={100} height={40} />}
@@ -50,72 +103,54 @@ export default function AnalysisMegaMillions() {
           headerColor="#0E4CA1"
         />
 
-        {/* BOTOES FILTROS */}
-        <View style={styles.filtersPad}>
-          <View style={styles.innerWrapper}>
-            <ScrollView
-              horizontal
-              ref={scrollRef}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.sliderRow}
-            >
-              {filterButtons.map((btn, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={(e) => {
-                    setActive(btn.label);
-                    if (scrollRef.current) {
-                      e.target.measureLayout(
-                        scrollRef.current.getInnerViewNode(),
-                        (x) => {
-                          scrollRef.current?.scrollTo({
-                            x: x - 100,
-                            animated: true,
-                          });
-                        },
-                        () => {}
-                      );
-                    }
-                  }}
-                >
-                  <View
-                    style={[
-                      styles.filterButton,
-                      {
-                        backgroundColor: btn.color,
-                        opacity: active === btn.label ? 1 : 0.3,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.filterButtonText,
-                        btn.color === "#000000" && { color: "#FFF" },
-                      ]}
-                    >
-                      {btn.label}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
+        {/* TABS DE FILTRO */}
+        <AnalysisTabs />
 
-        {/* CAMPOS DE DATA */}
+        {/* FILTRO DE DATA + DRAW COUNT */}
         <View style={styles.datesPad}>
           <View style={styles.innerWrapper}>
             <View style={styles.datesRow}>
-              <Text style={styles.dateLabel}>Drawn date:</Text>
-              <TextInput style={styles.input} value="05/12/25" />
-              <Text style={styles.dateLabel}>to the</Text>
-              <TextInput style={styles.input} value="05/12/25" />
-              <TextInput style={styles.input} value="1000" />
+              <Text style={styles.dateLabel}>From:</Text>
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => showPicker("from")}
+              >
+                <Text style={styles.inputText}>{formatDate(fromDate)}</Text>
+              </TouchableOpacity>
+              <Text style={styles.dateLabel}>To</Text>
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => showPicker("to")}
+              >
+                <Text style={styles.inputText}>{formatDate(toDate)}</Text>
+              </TouchableOpacity>
+              <View style={[styles.input, { backgroundColor: "#F1F3F7" }]}>
+                <Text
+                  style={[
+                    styles.inputText,
+                    { color: "#0E4CA1", fontWeight: "700" },
+                  ]}
+                >
+                  {rows.length}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
 
-        {/* CABEÇALHO GRADE */}
+        {/* DateTimePicker */}
+        {(pickerMode === "from" || pickerMode === "to") && (
+          <DateTimePicker
+            value={pickerMode === "from" ? fromDate : toDate}
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            onChange={onDateChange}
+            maximumDate={pickerMode === "from" ? toDate : undefined}
+            minimumDate={pickerMode === "to" ? fromDate : undefined}
+          />
+        )}
+
+        {/* CABEÇALHO DA GRADE */}
         <View style={styles.innerWrapper}>
           <View style={styles.gridHeader}>
             <View style={styles.dateBox}>
@@ -124,12 +159,7 @@ export default function AnalysisMegaMillions() {
             <View style={styles.sumBox}>
               <Text style={styles.headerText}>SUM</Text>
             </View>
-            {[
-              { top: "15", bottom: "129", color: "#FFEB3B" },
-              { top: "130", bottom: "175", color: "#00B0FF" },
-              { top: "176", bottom: "220", color: "#388E3C" },
-              { top: "221", bottom: "335", color: "#F44336" },
-            ].map((item, i) => (
+            {SUM_RANGES.map((item, i) => (
               <View
                 key={i}
                 style={[
@@ -146,35 +176,39 @@ export default function AnalysisMegaMillions() {
         </View>
       </View>
 
-      {/* DADOS */}
+      {/* GRADE DE DADOS */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.innerWrapper}>
-          {rows.map((row, i) => (
-            <View key={i} style={styles.row}>
-              <View style={styles.dateBox}>
-                <Text style={styles.dateText}>{row.date}</Text>
-              </View>
-              <View style={styles.sumBox}>
-                <Text style={styles.sumText}>{row.sum}</Text>
-              </View>
-              {row.values.map((val, j) => (
-                <View key={j} style={styles.greenBox}>
-                  <Text style={styles.greenText}>{val}</Text>
+          {loading ? (
+            <ActivityIndicator color="#0E4CA1" style={{ marginTop: 40 }} />
+          ) : (
+            rows.map((row, i) => (
+              <View key={i} style={styles.row}>
+                <View style={styles.dateBox}>
+                  <Text style={styles.dateText}>{row.date}</Text>
                 </View>
-              ))}
-            </View>
-          ))}
+                <View style={styles.sumBox}>
+                  <Text style={styles.sumText}>{row.sum}</Text>
+                </View>
+                {row.values.map((val, j) => (
+                  <View key={j} style={styles.greenBox}>
+                    <Text style={styles.greenText}>{val}</Text>
+                  </View>
+                ))}
+              </View>
+            ))
+          )}
         </View>
       </ScrollView>
 
-      {/* RODAPÉ */}
+      {/* RODAPÉ FREQUENCIES */}
       <View style={styles.footer}>
         <View style={styles.innerWrapper}>
           <View style={styles.row}>
             <View style={styles.freqLabel}>
               <Text style={styles.freqLabelText}>FREQUENCY</Text>
             </View>
-            {[335, 258, 120, 69].map((val, i) => (
+            {freq.map((val, i) => (
               <View
                 key={i}
                 style={[
@@ -195,10 +229,11 @@ export default function AnalysisMegaMillions() {
           </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
+// ==== Styles
 const styles = StyleSheet.create({
   wrapper: { flex: 1, backgroundColor: "#ECF1FF" },
   fixedHeader: {
@@ -207,12 +242,6 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: 10,
     backgroundColor: "#ECF1FF",
-  },
-  filtersPad: {
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 6,
-    borderBottomColor: "#DDD",
-    borderBottomWidth: 1,
   },
   datesPad: {
     backgroundColor: "#FFFFFF",
@@ -226,24 +255,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingHorizontal: 16,
   },
-  sliderRow: { flexDirection: "row", gap: 8 },
-  filterButton: {
-    width: 124,
-    height: 38,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  filterButtonText: {
-    fontWeight: "bold",
-    color: "#000",
-    fontSize: 14,
-  },
   datesRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
+    gap: 8,
   },
   dateLabel: {
     fontWeight: "bold",
@@ -251,7 +267,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   input: {
-    height: 32,
+    height: 30,
     width: 75,
     backgroundColor: "#FFF",
     borderRadius: 6,
@@ -260,13 +276,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     fontSize: 13,
     textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inputText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#222",
+    textAlign: "center",
   },
   gridHeader: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 10,
-    gap: 8,
+    gap: 5,
   },
   scrollContent: {
     paddingTop: HEADER_HEIGHT - 80,
@@ -276,14 +300,14 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 6,
-    gap: 8,
+    marginBottom: 3,
+    gap: 5,
     justifyContent: "center",
   },
   dateBox: {
     width: 80,
     backgroundColor: "#FFF",
-    paddingVertical: 6,
+    paddingVertical: 12,
     paddingHorizontal: 10,
     borderRadius: 5,
     borderWidth: 1,
@@ -291,7 +315,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  dateText: { fontSize: 14 },
+  dateText: { fontSize: 13 },
   sumBox: {
     width: 50,
     height: 45,
@@ -349,8 +373,8 @@ const styles = StyleSheet.create({
   freqLabel: {
     backgroundColor: "#F5F5F5",
     borderRadius: 6,
-    paddingHorizontal: 22,
-    paddingVertical: 6,
+    paddingHorizontal: 28,
+    paddingVertical: 10,
     borderWidth: 1,
     borderColor: "#AAA",
   },

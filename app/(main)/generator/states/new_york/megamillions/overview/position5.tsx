@@ -1,4 +1,4 @@
-// drawingsince.tsx
+// position5.tsx
 
 import React, { useState, useRef } from "react";
 import {
@@ -15,33 +15,36 @@ import GameHeader from "@/components/generator/header/gameheader";
 import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
 import DrawingSinceTabs from "@/components/drawingsincetabs";
 
-// ====== HEADERS DE CADA POSITION ======
+// HEADER PARA POSITION 05
 const POSITION_HEADERS = {
-  "DRAWING SINCE": Array.from({ length: 70 }, (_, i) => i + 1),
+  "POSITION 05": [
+    70, 66, 69, 64, 68, 67, 62, 65, 61, 63, 59, 57, 58, 60, 55, 56, 52, 53, 54,
+    43, 48, 51, 45, 46, 50, 38, 49, 44, 47, 42, 39, 41, 40, 31, 33, 27, 34, 32,
+    37, 29, 28, 30, 25, 18, 35, 36, 24, 22, 17, 23,
+  ],
 };
 
-// MOCK DATA (trocar pelo fetch do Supabase futuramente)
+// MOCK DATA
 const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  values: Array(70)
+  values: Array(POSITION_HEADERS["POSITION 05"].length)
     .fill(0)
     .map(() => Math.round(Math.random())),
 }));
-const FREQ_70 = Array.from(
-  { length: 70 },
+const FREQ = Array.from(
+  { length: POSITION_HEADERS["POSITION 05"].length },
   () => Math.floor(Math.random() * 350) + 10
 );
 
-export default function DrawingSince() {
-  const [fromDate, setFromDate] = useState(new Date(2025, 4, 1)); // 05/01/2025
-  const [toDate, setToDate] = useState(new Date(2025, 4, 20)); // 05/20/2025
+export default function Position5() {
+  const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
+  const [toDate, setToDate] = useState(new Date(2025, 4, 20));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
 
   const headerScrollRef = useRef(null);
   const dataRowsRefs = useRef([]);
   const footerScrollRef = useRef(null);
 
-  // Formatação MM/DD/YY
   const formatDate = (date: Date) => {
     if (!date) return "";
     const mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -50,11 +53,9 @@ export default function DrawingSince() {
     return `${mm}/${dd}/${yy}`;
   };
 
-  // Substituir pelo fetch da API do Supabase aqui:
-  const HEADER = POSITION_HEADERS["DRAWING SINCE"];
+  const HEADER = POSITION_HEADERS["POSITION 05"];
   const ROWS = DATA_ROWS;
-  const FREQ = FREQ_70;
-  const filteredRows = ROWS; // <-- no futuro: filtrar pelo intervalo de datas escolhido
+  const filteredRows = ROWS;
   const drawCount = filteredRows.length;
 
   if (dataRowsRefs.current.length !== filteredRows.length) {
@@ -63,7 +64,6 @@ export default function DrawingSince() {
       .map((_, i) => dataRowsRefs.current[i] || React.createRef());
   }
 
-  // Sincronização horizontal header/grid/footer
   const handleScroll = (event) => {
     const scrollX = event.nativeEvent.contentOffset.x;
     if (headerScrollRef.current)
@@ -75,7 +75,6 @@ export default function DrawingSince() {
       footerScrollRef.current.scrollTo({ x: scrollX, animated: false });
   };
 
-  // Manipulação do Date Picker
   const showPicker = (mode: "from" | "to") => setPickerMode(mode);
   const onDateChange = (event, selectedDate) => {
     setPickerMode(null);
@@ -92,18 +91,13 @@ export default function DrawingSince() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* HEADER PRINCIPAL */}
       <GameHeader
         logo={<MegamillionsLogo width={120} height={40} />}
         title="Overview"
         subtitle="New York Mega Millions"
         headerColor="#0E4CA1"
       />
-
-      {/* TABS */}
       <DrawingSinceTabs />
-
-      {/* Data Range Picker */}
       <View style={styles.fixedHeader}>
         <View style={styles.filtersPad}>
           <View style={styles.datesRow}>
@@ -137,7 +131,6 @@ export default function DrawingSince() {
         </View>
       </View>
 
-      {/* Picker Modal */}
       {(pickerMode === "from" || pickerMode === "to") && (
         <DateTimePicker
           value={pickerMode === "from" ? fromDate : toDate}
@@ -149,7 +142,6 @@ export default function DrawingSince() {
         />
       )}
 
-      {/* Header da tabela */}
       <View style={styles.tableHeaderRow}>
         <View style={styles.dateBoxHeader}>
           <Text style={styles.headerText}>DATE</Text>
@@ -178,8 +170,6 @@ export default function DrawingSince() {
           </View>
         </ScrollView>
       </View>
-
-      {/* Data Rows */}
       <ScrollView style={{ flex: 1 }}>
         {filteredRows.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.gridRow}>
@@ -205,8 +195,6 @@ export default function DrawingSince() {
           </View>
         ))}
       </ScrollView>
-
-      {/* Frequencies */}
       <View style={styles.footerPad}>
         <View style={styles.footerContent}>
           <View style={styles.freqLabel}>

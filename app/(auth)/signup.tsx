@@ -148,7 +148,7 @@ export default function SignUp() {
             </Pressable>
           </Animated.View>
 
-          <Text style={styles.or}>──────── Or Continue With ────────</Text>
+          <Text style={styles.or}>───── Or Continue With ─────</Text>
           <View style={styles.socialRow}>
             <TouchableOpacity style={styles.socialButton}>
               <GoogleIcon width={20} height={20} />

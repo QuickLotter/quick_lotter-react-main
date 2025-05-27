@@ -8,21 +8,35 @@ import {
   ScrollView,
   Platform,
   SafeAreaView,
+  useWindowDimensions,
 } from "react-native";
 import { Colors, Typography } from "@/theme";
 import HeaderLoginLogo from "@/components/generator/layout/HeaderLoginLogo";
 import { useRouter } from "expo-router";
 
 // Componente para limitar largura e centralizar
-const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => (
-  <View style={styles.responsiveContainer}>{children}</View>
-);
+const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => {
+  const { width } = useWindowDimensions();
+  // Para iPad ou telas grandes, mantém 370px central; em telas menores, reduz padding
+  const pad = width < 420 ? 12 : 28;
+  return (
+    <View
+      style={[
+        styles.responsiveContainer,
+        { padding: pad, maxWidth: 370, width: "100%" },
+      ]}
+    >
+      {children}
+    </View>
+  );
+};
 
 export default function VerifyCode() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const inputs = useRef<any[]>([]);
   const router = useRouter();
+  const { width } = useWindowDimensions();
 
   const handleChange = (text: string, index: number) => {
     if (/^\d*$/.test(text)) {
@@ -43,18 +57,6 @@ export default function VerifyCode() {
     const fullCode = code.join("");
     if (fullCode.length === 6) {
       setError("");
-      // ---- INTEGRAÇÃO COM API DE VERIFICAÇÃO DE CÓDIGO ----
-      // try {
-      //   const res = await api.verifyCode({ code: fullCode });
-      //   if (res.success) {
-      //     router.replace("/reset-password");
-      //   } else {
-      //     setError(res.message);
-      //   }
-      // } catch (e) {
-      //   setError("Network or server error");
-      // }
-      // MOCK: vai direto para reset de senha
       setTimeout(() => {
         router.replace("/reset-password");
       }, 700);
@@ -62,6 +64,11 @@ export default function VerifyCode() {
       setError("Please enter all 6 digits.");
     }
   };
+
+  // Responsivo: Tamanho do input diminui em telas muito pequenas
+  const codeInputWidth = width < 375 ? 40 : 48;
+  const codeInputHeight = width < 375 ? 46 : 58;
+  const codeInputFont = width < 375 ? 18 : 22;
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -83,6 +90,11 @@ export default function VerifyCode() {
                 style={[
                   styles.codeInput,
                   digit ? styles.codeInputFilled : null,
+                  {
+                    width: codeInputWidth,
+                    height: codeInputHeight,
+                    fontSize: codeInputFont,
+                  },
                 ]}
                 value={digit}
                 maxLength={1}
@@ -105,7 +117,6 @@ export default function VerifyCode() {
           <TouchableOpacity
             style={styles.resendLink}
             onPress={() => {
-              // Aqui vai a chamada para reenviar o código pela API
               alert("A new code will be sent to your email/phone!");
             }}
           >
@@ -130,14 +141,11 @@ const styles = StyleSheet.create({
     paddingBottom: 38,
   },
   responsiveContainer: {
-    width: "100%",
-    maxWidth: 370,
-    alignSelf: "center",
-    padding: 28,
     backgroundColor: "#fff",
     borderRadius: 18,
     marginTop: 28,
     alignItems: "center",
+    alignSelf: "center",
     ...Platform.select({
       ios: {
         shadowColor: "#00397A22",
@@ -173,13 +181,10 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   codeInput: {
-    width: 48,
-    height: 58,
     borderWidth: 2,
     borderColor: "#DEE4F2",
     borderRadius: 13,
     textAlign: "center",
-    fontSize: 22,
     color: "#222",
     backgroundColor: "#F9FAFB",
     marginHorizontal: 3,
@@ -188,7 +193,7 @@ const styles = StyleSheet.create({
   codeInputFilled: {
     borderColor: "#007AFF",
     backgroundColor: "#F1F6FF",
-    color: "#0E4CA1",
+    color: "#F69134",
   },
   button: {
     backgroundColor: "#007AFF",
