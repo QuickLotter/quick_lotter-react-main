@@ -105,7 +105,7 @@ export default function OverviewSelector() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ECF1FF",
+    backgroundColor: "#F6F6F8",
   },
   pageTitle: {
     textAlign: "center",

@@ -70,9 +70,9 @@ export default function MenuDrawer({ onClose }: { onClose?: () => void }) {
           onPress={() => handleNavigate("/profile")}
         />
         <MenuItem
-          icon="sports-esports"
-          label="Results"
-          onPress={() => handleNavigate("/results")}
+          icon="games"
+          label="My-lines "
+          onPress={() => handleNavigate("/my-lines")}
         />
         <MenuItem
           icon="location-pin"

@@ -95,7 +95,7 @@ export default function HeaderLogoBack({
   const isHome = pathname === "/home";
 
   // Inclua aqui as rotas onde NÃO quer mostrar seta back
-  const hideBackRoutes = ["/analysis", "/overview", "/my-lines", "/checker"];
+  const hideBackRoutes = ["/analysis", "/overview", "/checker"];
   const showBackButton = !hideBackRoutes.includes(pathname);
 
   let logoContainerAlign: "flex-start" | "center" | "flex-end";

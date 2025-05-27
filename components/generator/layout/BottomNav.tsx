@@ -49,10 +49,10 @@ const NAV_ITEMS = [
     ),
   },
   {
-    route: "/my-lines",
-    label: "My Lines",
+    route: "/results",
+    label: "Results",
     icon: (color: string) => (
-      <MaterialIcons name="list-alt" size={24} color={color} />
+      <MaterialIcons name="emoji-events" size={24} color={color} />
     ),
   },
 ];
