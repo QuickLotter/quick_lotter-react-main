@@ -1,6 +1,3 @@
-// ✅ Path: components/generator/header/gameheader.tsx
-// Atualizado para aceitar rota de voltar customizada (ex: OverviewSelector) e seguir padrão iOS
-
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -38,7 +35,7 @@ export default function GameHeader({
       <ResponsiveContainer style={styles.inner}>
         {/* 🔙 Botão de voltar */}
         <Pressable
-          onPress={() => router.push(backTo)}
+          onPress={() => router.replace(backTo)}
           style={styles.backButton}
         >
           <MaterialIcons name="arrow-back-ios" size={22} color={textColor} />

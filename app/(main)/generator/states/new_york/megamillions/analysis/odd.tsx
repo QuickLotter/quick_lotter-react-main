@@ -84,10 +84,13 @@ export default function AnalysisOdd() {
       {/* HEADER FIXO */}
       <View style={styles.fixedHeader}>
         <GameHeader
-          logo={<MegamillionsLogo width={100} height={40} />}
-          title="Analysis"
-          subtitle="New York Mega Millions"
-          headerColor="#0E4CA1"
+  logo={<MegamillionsLogo width={100} height={40} />}
+  title="Analysis"
+  subtitle="New York Mega Millions"
+  headerColor="#0E4CA1"
+  backTo="/generator/states/new_york/megamillions/analysis/analysisselector"
+/>
+
         />
 
         {/* TABS DE FILTRO */}

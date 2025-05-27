@@ -83,7 +83,9 @@ export default function AnalysisLow() {
           title="Analysis"
           subtitle="New York Mega Millions"
           headerColor="#0E4CA1"
+          backTo="/generator/states/new_york/megamillions/analysis/analysisselector"
         />
+
         <AnalysisTabs />
 
         {/* Campos de data com picker */}

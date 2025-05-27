@@ -82,7 +82,9 @@ export default function AnalysisPrime() {
           title="Analysis"
           subtitle="New York Mega Millions"
           headerColor="#0E4CA1"
+          backTo="/generator/states/new_york/megamillions/analysis/analysisselector"
         />
+
         <AnalysisTabs />
 
         {/* CAMPOS DE DATA + DRAW COUNT */}
