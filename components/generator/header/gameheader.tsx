@@ -9,9 +9,12 @@ type Props = {
   logo: React.ReactNode;
   title: string;
   subtitle: string;
-  headerColor: string; // 🎨 cor de fundo (dinâmica por jogo)
-  textColor?: string; // 🖋️ cor do texto (opcional, padrão branco)
-  backTo?: string; // 🛣️ rota para voltar (opcional)
+  headerColor: string;
+  // NOVAS PROPS:
+  titleColor?: string; // cor do título "Results"
+  subtitleColor?: string; // cor do subtítulo "New York Pick 10"
+  backIconColor?: string; // cor da seta de voltar
+  backTo?: string;
 };
 
 export default function GameHeader({
@@ -19,8 +22,10 @@ export default function GameHeader({
   title,
   subtitle,
   headerColor,
-  textColor = "#FFFFFF", // padrão branco
-  backTo = "/home", // padrão: home
+  titleColor = "#FFF", // padrão: branco
+  subtitleColor = "#FFF", // padrão: branco
+  backIconColor = "#FFF", // padrão: branco
+  backTo = "/home",
 }: Props) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -38,15 +43,24 @@ export default function GameHeader({
           onPress={() => router.replace(backTo)}
           style={styles.backButton}
         >
-          <MaterialIcons name="arrow-back-ios" size={22} color={textColor} />
+          {/* seta customizada */}
+          <MaterialIcons
+            name="arrow-back-ios"
+            size={22}
+            color={backIconColor}
+          />
         </Pressable>
 
         {/* 🧩 Logo e título */}
         <View style={styles.logoAndTitle}>
           {logo}
-          <Text style={[styles.title, { color: textColor }]}>
-            {title} –{" "}
-            <Text style={[styles.bold, { color: textColor }]}>{subtitle}</Text>
+          {/* Título e subtítulo com cores independentes */}
+          <Text style={[styles.title, { color: titleColor }]}>
+            {title}
+            <Text style={[styles.subtitle, { color: subtitleColor }]}>
+              {" – "}
+              {subtitle}
+            </Text>
           </Text>
         </View>
 
@@ -82,8 +96,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     marginTop: 4,
+    fontWeight: "normal",
   },
-  bold: {
-    fontWeight: "bold",
+  subtitle: {
+    fontWeight: "bold", // Subtítulo sem bold
+    fontSize: 14,
   },
 });

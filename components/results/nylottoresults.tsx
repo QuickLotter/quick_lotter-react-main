@@ -1,46 +1,39 @@
 import React from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import NYLottoLogo from "@/assets/images/ny_game_logo/nylotto.svg";
 
 const results = [
   {
-    date: "Tuesday, Apr 22, 2025",
+    date: "Saturday, Apr 22, 2025",
     jackpot: "$50 Million",
-    numbers: [25, 39, 49, 52, 65],
-    megaBall: 22,
+    numbers: [25, 39, 49, 52, 60],
+    megaBall: 2,
   },
   {
-    date: "Friday, Apr 18, 2025",
+    date: "Monday, Apr 18, 2025",
     jackpot: "$112 Million",
     numbers: [5, 13, 15, 17, 28],
     megaBall: 1,
   },
   {
-    date: "Tuesday, Apr 15, 2025",
+    date: "Wednesday, Apr 15, 2025",
     jackpot: "$96 Million",
-    numbers: [6, 10, 13, 24, 63],
+    numbers: [6, 10, 13, 24, 59],
     megaBall: 2,
   },
   {
-    date: "Friday, Apr 11, 2025",
+    date: "Saturday, Apr 11, 2025",
     jackpot: "$72 Million",
     numbers: [15, 37, 38, 56, 58],
-    megaBall: 19,
+    megaBall: 3,
   },
   {
     date: "Tuesday, Apr 8, 2025",
     jackpot: "$54 Million",
-    numbers: [10, 16, 50, 60, 61],
-    megaBall: 17,
+    numbers: [10, 16, 43, 50, 51],
+    megaBall: 4,
   },
 ];
 
@@ -49,9 +42,10 @@ export default function ResultsPage() {
     <View style={styles.wrapper}>
       <GameHeader
         title="Results"
-        subtitle="New York Mega Millions"
-        logo={<MegamillionsLogo width={120} height={48} />}
-        headerColor="#0E4CA1"
+        subtitle="New York NY Lotto"
+        logo={<NYLottoLogo width={120} height={48} />}
+        headerColor="#D40F41"
+        backTo="/results" // ✅ CERTO //volta para tela resultsselector
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>
@@ -59,7 +53,7 @@ export default function ResultsPage() {
           {results.map((item, index) => (
             <View key={index} style={styles.card}>
               <View style={styles.headerRow}>
-                <View>
+                <View style={styles.dateWrapper}>
                   <Text style={styles.dayText}>{item.date.split(",")[0]},</Text>
                   <Text style={styles.dateText}>
                     {item.date.split(",")[1].trim()}
@@ -69,7 +63,6 @@ export default function ResultsPage() {
                   <Text style={styles.jackpotLabel}>Est. jackpot</Text>
                   <Text style={styles.jackpotValue}>{item.jackpot}</Text>
                 </View>
-                <FontAwesome name="chevron-right" size={20} color="#666" />
               </View>
 
               {/* Linha separadora */}
@@ -101,7 +94,7 @@ export default function ResultsPage() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: "#ECF1FF",
+    backgroundColor: "#F6F6F8",
   },
   contentWrapper: {
     paddingVertical: 16,
@@ -112,12 +105,20 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
+    shadowColor: "#222",
+    shadowOpacity: 0.12,
+    shadowRadius: 13,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 5,
   },
   headerRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 12,
+  },
+  dateWrapper: {
+    flex: 1,
+    justifyContent: "flex-start",
   },
   dayText: {
     fontWeight: "600",
@@ -128,7 +129,9 @@ const styles = StyleSheet.create({
     color: "#444",
   },
   jackpotWrapper: {
-    alignItems: "flex-end",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   jackpotLabel: {
     fontSize: 12,
@@ -154,7 +157,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#0E4CA1",
+    backgroundColor: "#155095",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -162,7 +165,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#FFC107",
+    backgroundColor: "#D40F41",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1.5,
@@ -176,6 +179,6 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   ballTextBlack: {
-    color: "#000",
+    color: "#fff",
   },
 });

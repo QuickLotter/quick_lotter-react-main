@@ -27,7 +27,6 @@ import NumbersEvening from "@/assets/images/ny_game_logo/numbers_evening.svg";
 // iOS-style colors
 const BG = "#F6F6F8";
 const CARD = "#FFF";
-
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const MAX_CARD_WIDTH = Math.min(370, SCREEN_WIDTH - 16);
 const CARD_HEIGHT = 74;
@@ -130,7 +129,6 @@ function getDrawStatus(drawDate: Date) {
   const oneHourBefore = new Date(drawDate.getTime() - 60 * 60 * 1000);
   const oneMinuteBefore = new Date(drawDate.getTime() - 1 * 60 * 1000);
   const thirtyMinutesAfter = new Date(drawDate.getTime() + 30 * 60 * 1000);
-
   if (now >= oneHourBefore && now < oneMinuteBefore) return "soon";
   if (now >= oneMinuteBefore && now <= thirtyMinutesAfter) return "started";
   return "none";
@@ -139,23 +137,19 @@ function getDrawStatus(drawDate: Date) {
 export default function ResultsSelector() {
   const router = useRouter();
   const [blinking, setBlinking] = useState(true);
-
   useEffect(() => {
     const interval = setInterval(() => setBlinking((b) => !b), 700);
     return () => clearInterval(interval);
   }, []);
-
   return (
     <View style={styles.container}>
       <HeaderLogoBack title="" showMenu={false} showStateSelector />
-      {/* Título no padrão Overview/Analysis */}
       <Text style={styles.pageTitle}>Select Game to View Results</Text>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {gameCards.map((game) => {
           const Logo = game.logo;
           const drawDate = parseDrawDate(game.nextDrawDate);
           const drawStatus = getDrawStatus(drawDate);
-
           return (
             <View
               key={game.route}
@@ -168,12 +162,9 @@ export default function ResultsSelector() {
                 },
               ]}
             >
-              {/* Logo */}
               <View style={styles.logoArea}>
                 <Logo width={50} height={24} />
               </View>
-
-              {/* Info */}
               <View style={styles.infoArea}>
                 <Text style={styles.nextDrawLabel}>
                   Next Draw:{" "}
@@ -187,34 +178,30 @@ export default function ResultsSelector() {
                   <Text style={styles.drawStartSoonOutline}>Draw Soon</Text>
                 )}
               </View>
-
-              {/* Botão iOS Past Results */}
               <TouchableOpacity
                 style={[
                   styles.pastResultButton,
                   { backgroundColor: game.color },
                 ]}
                 activeOpacity={0.8}
-                onPress={() => router.push(`/results/${game.route}`)}
+                onPress={() => {
+                  router.push(`/results/new_york/${game.route}`);
+                }}
               >
                 <Text style={styles.pastResultText}>Past Results</Text>
               </TouchableOpacity>
             </View>
           );
         })}
-        {/* Espaço extra para o BottomNav */}
         <View style={{ height: 80 }} />
       </ScrollView>
-      <BottomNav /> {/* Mantém o bottomnav fixo como nas outras telas */}
+      <BottomNav />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: BG,
-  },
+  container: { flex: 1, backgroundColor: BG },
   pageTitle: {
     textAlign: "center",
     fontSize: 20,
@@ -228,7 +215,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     alignItems: "center",
     paddingVertical: 12,
-    paddingBottom: 0, // padding extra NÃO é mais necessário
+    paddingBottom: 0,
     minWidth: "100%",
   },
   cardWrapper: {
