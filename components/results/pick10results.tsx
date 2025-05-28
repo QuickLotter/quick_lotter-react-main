@@ -1,69 +1,25 @@
-import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  TouchableOpacity,
+} from "react-native";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import Pick10Logo from "@/assets/images/ny_game_logo/pick10.svg";
 
-const results = [
-  {
-    date: "Saturday, Apr 22, 2025",
-    jackpot: "$50 Million",
-    numbers: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    ],
-    megaBall: "",
-  },
-  {
-    date: "Saturday, Apr 22, 2025",
-    jackpot: "$50 Million",
-    numbers: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    ],
-    megaBall: "",
-  },
-  {
-    date: "Saturday, Apr 22, 2025",
-    jackpot: "$50 Million",
-    numbers: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    ],
-    megaBall: "",
-  },
-  {
-    date: "Saturday, Apr 22, 2025",
-    jackpot: "$50 Million",
-    numbers: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    ],
-    megaBall: "",
-  },
-  {
-    date: "Saturday, Apr 22, 2025",
-    jackpot: "$50 Million",
-    numbers: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    ],
-    megaBall: "",
-  },
-  {
-    date: "Saturday, Apr 22, 2025",
-    jackpot: "$50 Million",
-    numbers: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    ],
-    megaBall: "",
-  },
-  {
-    date: "Saturday, Apr 22, 2025",
-    jackpot: "$50 Million",
-    numbers: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    ],
-    megaBall: "",
-  },
-];
+// Simulação: muitos resultados para paginação
+const allResults = Array.from({ length: 50 }).map((_, idx) => ({
+  date: "Saturday, Apr 22, 2025",
+  jackpot: "$500,000",
+  numbers: Array.from({ length: 20 }, (_, i) => i + 1),
+  megaBall: "",
+}));
 
-// Helper: Split numbers into arrays of N
+// Helper: Split numbers into arrays of N (ex: 7 por linha)
 function chunkArray(array, size) {
   const result = [];
   for (let i = 0; i < array.length; i += size) {
@@ -73,6 +29,24 @@ function chunkArray(array, size) {
 }
 
 export default function ResultsPage() {
+  const { width } = useWindowDimensions();
+  const cardMaxWidth = Math.min(width - 32, 480);
+
+  // Pagination state
+  const PAGE_SIZE = 20;
+  const [displayCount, setDisplayCount] = useState(PAGE_SIZE);
+
+  // Only show as many as displayCount
+  const results = allResults.slice(0, displayCount);
+
+  // True se ainda há mais jogos para mostrar
+  const hasMore = displayCount < allResults.length;
+
+  // Handler para carregar mais jogos
+  function handleLoadMore() {
+    setDisplayCount((c) => Math.min(c + PAGE_SIZE, allResults.length));
+  }
+
   return (
     <View style={styles.wrapper}>
       <GameHeader
@@ -89,7 +63,13 @@ export default function ResultsPage() {
       <ScrollView contentContainerStyle={styles.contentWrapper}>
         <ResponsiveContainer>
           {results.map((item, index) => (
-            <View key={index} style={styles.card}>
+            <View
+              key={index}
+              style={[
+                styles.card,
+                { width: cardMaxWidth, alignSelf: "center" },
+              ]}
+            >
               <View style={styles.headerRow}>
                 <View style={styles.dateWrapper}>
                   <Text style={styles.dayText}>{item.date.split(",")[0]},</Text>
@@ -98,7 +78,7 @@ export default function ResultsPage() {
                   </Text>
                 </View>
                 <View style={styles.jackpotWrapper}>
-                  <Text style={styles.jackpotLabel}>Est. jackpot</Text>
+                  <Text style={styles.jackpotLabel}>Top Prize</Text>
                   <Text style={styles.jackpotValue}>{item.jackpot}</Text>
                 </View>
               </View>
@@ -124,6 +104,16 @@ export default function ResultsPage() {
               </View>
             </View>
           ))}
+
+          {/* LOAD MORE */}
+          {hasMore && (
+            <TouchableOpacity
+              style={styles.loadMoreBtn}
+              onPress={handleLoadMore}
+            >
+              <Text style={styles.loadMoreText}>Load More</Text>
+            </TouchableOpacity>
+          )}
         </ResponsiveContainer>
       </ScrollView>
     </View>
@@ -149,14 +139,18 @@ const styles = StyleSheet.create({
     shadowRadius: 13,
     shadowOffset: { width: 0, height: 8 },
     elevation: 5,
+    maxWidth: 480,
+    width: "100%",
+    alignSelf: "center",
   },
   headerRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 12,
+    width: "100%",
   },
   dateWrapper: {
-    flex: 1,
+    flexShrink: 1,
     justifyContent: "flex-start",
   },
   dayText: {
@@ -168,18 +162,22 @@ const styles = StyleSheet.create({
     color: "#444",
   },
   jackpotWrapper: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-end",
+    justifyContent: "flex-start",
+    minWidth: 220,
+    flex: 0,
   },
   jackpotLabel: {
     fontSize: 12,
     color: "#555",
+    textAlign: "right",
   },
   jackpotValue: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 18,
     color: "#000",
+    textAlign: "right",
+    marginTop: -2,
   },
   separator: {
     height: 1,
@@ -191,17 +189,17 @@ const styles = StyleSheet.create({
   },
   numbersRow: {
     flexDirection: "row",
-    justifyContent: "center", // <-- Centraliza cada linha!
+    justifyContent: "center", // Centraliza cada linha!
     marginBottom: 4,
   },
   whiteBall: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: "#FFE363",
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 4, // espaçamento lateral entre as bolas
+    marginHorizontal: 4,
   },
   ballText: {
     fontWeight: "bold",
@@ -209,5 +207,25 @@ const styles = StyleSheet.create({
   },
   ballTextWhite: {
     color: "#000",
+  },
+  // LOAD MORE styles
+  loadMoreBtn: {
+    marginTop: 16,
+    marginBottom: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 34,
+    borderRadius: 22,
+    backgroundColor: "#FFE363",
+    alignSelf: "center",
+    shadowColor: "#FFD70044",
+    shadowOpacity: 0.09,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  loadMoreText: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "#222",
+    letterSpacing: 0.1,
   },
 });

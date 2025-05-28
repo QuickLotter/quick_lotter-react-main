@@ -1,43 +1,38 @@
-import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  TouchableOpacity,
+} from "react-native";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import PowerballLogo from "@/assets/images/ny_game_logo/powerball.svg";
 
-const results = [
-  {
-    date: "Saturday, Apr 22, 2025",
-    jackpot: "$50 Million",
-    numbers: [25, 39, 49, 52, 65],
-    megaBall: 22,
-  },
-  {
-    date: "Monday, Apr 18, 2025",
-    jackpot: "$112 Million",
-    numbers: [5, 13, 15, 17, 28],
-    megaBall: 1,
-  },
-  {
-    date: "Wednesday, Apr 15, 2025",
-    jackpot: "$96 Million",
-    numbers: [6, 10, 13, 24, 63],
-    megaBall: 2,
-  },
-  {
-    date: "Saturday, Apr 11, 2025",
-    jackpot: "$72 Million",
-    numbers: [15, 37, 38, 56, 58],
-    megaBall: 19,
-  },
-  {
-    date: "Tuesday, Apr 8, 2025",
-    jackpot: "$54 Million",
-    numbers: [10, 16, 50, 60, 61],
-    megaBall: 17,
-  },
-];
+// MOCK: muitos sorteios para testar "Load More"
+const allResults = Array.from({ length: 42 }).map((_, idx) => ({
+  date: "Saturday, Apr 22, 2025",
+  jackpot: "$50 Million",
+  numbers: [5, 39, 49, 52, 59],
+  megaBall: (idx % 4) + 1,
+}));
+
+const PAGE_SIZE = 20;
 
 export default function ResultsPage() {
+  const { width } = useWindowDimensions();
+  const cardMaxWidth = Math.min(width - 32, 480);
+
+  // Paginação: quantos jogos mostrar
+  const [visibleResults, setVisibleResults] = useState(PAGE_SIZE);
+  const canLoadMore = visibleResults < allResults.length;
+
+  function handleLoadMore() {
+    setVisibleResults((v) => Math.min(v + PAGE_SIZE, allResults.length));
+  }
+
   return (
     <View style={styles.wrapper}>
       <GameHeader
@@ -45,13 +40,19 @@ export default function ResultsPage() {
         subtitle="New York Powerball"
         logo={<PowerballLogo width={120} height={48} />}
         headerColor="#C7102E"
-        backTo="/results" // ✅ CERTO //volta para tela resultsselector
+        backTo="/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>
         <ResponsiveContainer>
-          {results.map((item, index) => (
-            <View key={index} style={styles.card}>
+          {allResults.slice(0, visibleResults).map((item, index) => (
+            <View
+              key={index}
+              style={[
+                styles.card,
+                { width: cardMaxWidth, alignSelf: "center" },
+              ]}
+            >
               <View style={styles.headerRow}>
                 <View style={styles.dateWrapper}>
                   <Text style={styles.dayText}>{item.date.split(",")[0]},</Text>
@@ -68,23 +69,33 @@ export default function ResultsPage() {
               {/* Linha separadora */}
               <View style={styles.separator} />
 
-              {/* Números */}
+              {/* Bolas Powerball (5 pretas + 1 vermelha, todos 2 dígitos) */}
               <View style={styles.numbersRow}>
                 {item.numbers.map((n, i) => (
                   <View key={`white-${index}-${i}`} style={styles.whiteBall}>
                     <Text style={[styles.ballText, styles.ballTextWhite]}>
-                      {n}
+                      {n.toString().padStart(2, "0")}
                     </Text>
                   </View>
                 ))}
                 <View style={styles.megaBall}>
                   <Text style={[styles.ballText, styles.ballTextBlack]}>
-                    {item.megaBall}
+                    {item.megaBall.toString().padStart(2, "0")}
                   </Text>
                 </View>
               </View>
             </View>
           ))}
+
+          {/* Botão Load More */}
+          {canLoadMore && (
+            <TouchableOpacity
+              style={styles.loadMoreBtn}
+              onPress={handleLoadMore}
+            >
+              <Text style={styles.loadMoreText}>Load More</Text>
+            </TouchableOpacity>
+          )}
         </ResponsiveContainer>
       </ScrollView>
     </View>
@@ -110,11 +121,15 @@ const styles = StyleSheet.create({
     shadowRadius: 13,
     shadowOffset: { width: 0, height: 8 },
     elevation: 5,
+    maxWidth: 480,
+    width: "100%",
+    alignSelf: "center",
   },
   headerRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 12,
+    width: "100%",
   },
   dateWrapper: {
     flex: 1,
@@ -129,18 +144,23 @@ const styles = StyleSheet.create({
     color: "#444",
   },
   jackpotWrapper: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-end",
+    justifyContent: "flex-start",
+    minWidth: 112,
+    flex: 0,
   },
   jackpotLabel: {
     fontSize: 12,
     color: "#555",
+    textAlign: "right",
+    marginBottom: 0,
   },
   jackpotValue: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 18,
     color: "#000",
+    textAlign: "right",
+    marginTop: -2,
   },
   separator: {
     height: 1,
@@ -150,24 +170,27 @@ const styles = StyleSheet.create({
   numbersRow: {
     flexDirection: "row",
     justifyContent: "center",
-    flexWrap: "wrap",
-    gap: 8,
+    alignItems: "center",
+    marginVertical: 3,
+    gap: 2,
   },
   whiteBall: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#000",
+    backgroundColor: "#000", // Bola preta Powerball
     justifyContent: "center",
     alignItems: "center",
+    marginHorizontal: 4,
   },
   megaBall: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#C7102E",
+    backgroundColor: "#C7102E", // Bola vermelha Powerball
     justifyContent: "center",
     alignItems: "center",
+    marginHorizontal: 4,
     borderWidth: 1.5,
     borderColor: "#000",
   },
@@ -180,5 +203,23 @@ const styles = StyleSheet.create({
   },
   ballTextBlack: {
     color: "#fff",
+  },
+  loadMoreBtn: {
+    marginVertical: 12,
+    alignSelf: "center",
+    backgroundColor: "#C7102E",
+    borderRadius: 22,
+    paddingVertical: 12,
+    paddingHorizontal: 36,
+    shadowColor: "#222",
+    shadowOpacity: 0.08,
+    shadowRadius: 7,
+    elevation: 3,
+  },
+  loadMoreText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    letterSpacing: 1,
   },
 });
