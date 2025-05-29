@@ -11,15 +11,13 @@ import {
 } from "react-native";
 import { useRouter, usePathname } from "expo-router";
 
-/**
- * Cores principais por jogo
- */
+// Cores padrão por jogo (usadas se não houver override por tab)
 const GAME_COLORS: Record<string, string> = {
   powerball: "#C7102E",
   megamillions: "#0E4CA1",
   cash4life: "#2D7F67",
   nylotto: "#D31245",
-  pick10: "#E7CE5C",
+  pick10: "#FFE363",
   take5_midday: "#CA3092",
   take5_evening: "#CA3092",
   win4_midday: "#7E0C6E",
@@ -28,28 +26,7 @@ const GAME_COLORS: Record<string, string> = {
   numbers_evening: "#2E73B5",
 };
 
-/**
- * Cores dos tabs especiais MB/PB/CB etc
- */
-const TAB_COLORS: Record<
-  string, // game
-  Record<string, { backgroundColor?: string; color?: string }>
-> = {
-  powerball: {
-    "POSITION PB": { backgroundColor: "#000", color: "#fff" },
-  },
-  megamillions: {
-    "POSITION MB": { backgroundColor: "#FDB927", color: "#000" },
-  },
-  cash4life: {
-    "POSITION CB": { backgroundColor: "#3E4982", color: "#fff" },
-  },
-};
-
-/**
- * Quantidade de tabs por jogo NY
- * Altere aqui se quiser que Pick 10 tenha 10, Pick 20 tenha 20, Lotto tenha 6, etc.
- */
+// Quantidade de tabs por jogo NY
 const GAME_TAB_COUNT: Record<string, number> = {
   powerball: 5,
   megamillions: 5,
@@ -64,9 +41,7 @@ const GAME_TAB_COUNT: Record<string, number> = {
   numbers_evening: 3,
 };
 
-/**
- * Gera as tabs corretamente para cada jogo
- */
+// Gera as tabs para cada jogo
 function getTabs(game: string) {
   const tabs = [
     {
@@ -74,7 +49,6 @@ function getTabs(game: string) {
       path: `/generator/states/new_york/${game}/overview/drawingsince`,
     },
   ];
-
   // Adiciona POSITION 01 até o total do jogo
   const maxPos = GAME_TAB_COUNT[game] ?? 5;
   for (let i = 1; i <= maxPos; i++) {
@@ -83,8 +57,7 @@ function getTabs(game: string) {
       path: `/generator/states/new_york/${game}/overview/position${i}`,
     });
   }
-
-  // Adiciona tabs especiais se for o jogo certo
+  // Tabs especiais
   if (game === "megamillions") {
     tabs.push({
       label: "POSITION MB",
@@ -103,11 +76,24 @@ function getTabs(game: string) {
       path: `/generator/states/new_york/${game}/overview/positioncb`,
     });
   }
-
   return tabs;
 }
 
-export default function DrawingSinceTabs() {
+/**
+ * Props:
+ * - tabColors: objeto { [label]: { backgroundColor, color } } para sobrescrever a cor de QUALQUER botão
+ * Exemplo de uso:
+ * <DrawingSinceTabs tabColors={{
+ *   "DRAWING SINCE": { backgroundColor: "#000", color: "#fff" },
+ *   "POSITION 01": { backgroundColor: "#FFD700", color: "#333" },
+ *   "POSITION PB": { backgroundColor: "#000", color: "#fff" }
+ * }} />
+ */
+export default function DrawingSinceTabs({
+  tabColors = {}, // Pode passar customização por label
+}: {
+  tabColors?: Record<string, { backgroundColor?: string; color?: string }>;
+}) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -140,14 +126,14 @@ export default function DrawingSinceTabs() {
       >
         {TABS.map((tab, idx) => {
           const isActive = idx === activeIndex;
-          // Busca customização do tab especial (PB/MB/CB etc)
-          const tabColors =
-            (TAB_COLORS[game] && TAB_COLORS[game][tab.label]) || {};
-          // Cor de fundo/fonte do botão ativo
+          // Procura customização de cor no tabColors OU fallback para cor padrão
+          const customColors = tabColors[tab.label] || {};
           const bgColor = isActive
-            ? tabColors.backgroundColor || mainColor
+            ? customColors.backgroundColor || mainColor
             : "#fff";
-          const fontColor = isActive ? tabColors.color || "#fff" : mainColor;
+          const fontColor = isActive
+            ? customColors.color || "#fff"
+            : customColors.backgroundColor || mainColor;
 
           return (
             <TouchableOpacity

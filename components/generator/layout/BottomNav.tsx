@@ -30,14 +30,14 @@ const NAV_ITEMS = [
     icon: (color: string) => <Ionicons name="home" size={24} color={color} />,
   },
   {
-    route: "/analysis",
+    route: "/analysis/new_york/analysis",
     label: "Analysis",
     icon: (color: string) => (
       <MaterialIcons name="analytics" size={24} color={color} />
     ),
   },
   {
-    route: "/overview",
+    route: "/overview/new_york/overview",
     label: "Overview",
     icon: (color: string) => <Entypo name="eye" size={24} color={color} />,
   },

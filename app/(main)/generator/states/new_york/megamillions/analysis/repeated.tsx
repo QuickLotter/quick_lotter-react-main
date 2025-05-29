@@ -78,7 +78,7 @@ export default function AnalysisRepeated() {
           title="Analysis"
           subtitle="New York Mega Millions"
           headerColor="#0E4CA1"
-          backTo="/generator/states/new_york/megamillions/analysis/analysisselector"
+          backTo="/analysis/new_york/analysis"
         />
 
         <AnalysisTabs />

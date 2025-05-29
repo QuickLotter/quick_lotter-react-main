@@ -10,30 +10,27 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import NYLottoLogo from "@/assets/images/ny_game_logo/nylotto.svg";
+import Win4MiddayLogo from "@/assets/images/ny_game_logo/win4_midday.svg";
 import DrawingSinceTabs from "@/components/drawingsincetabs";
 
-// ====== HEADER PARA POSITION 04 ======
+// ====== HEADER PARA POSITION 01 ======
 const POSITION_HEADERS = {
-  "POSITION 04": [
-    3, 1, 4, 2, 8, 10, 7, 6, 11, 5, 9, 15, 14, 12, 13, 16, 17, 20, 21, 18, 19,
-    29, 23, 28, 27, 25, 34, 22, 24,
-  ],
+  "POSITION 01": [3, 1, 4, 2, 8, 0, 7, 8, 5, 9],
 };
 
 // MOCK DATA (trocar pelo fetch do Supabase futuramente)
 const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  values: Array(POSITION_HEADERS["POSITION 04"].length)
+  values: Array(POSITION_HEADERS["POSITION 01"].length)
     .fill(0)
     .map(() => Math.round(Math.random())),
 }));
 const FREQ = Array.from(
-  { length: POSITION_HEADERS["POSITION 04"].length },
+  { length: POSITION_HEADERS["POSITION 01"].length },
   () => Math.floor(Math.random() * 350) + 10
 );
 
-export default function Position1NYLotto() {
+export default function Position1take5midday() {
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1)); // 05/01/2025
   const [toDate, setToDate] = useState(new Date(2025, 4, 20)); // 05/20/2025
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
@@ -51,7 +48,7 @@ export default function Position1NYLotto() {
     return `${mm}/${dd}/${yy}`;
   };
 
-  const HEADER = POSITION_HEADERS["POSITION 04"];
+  const HEADER = POSITION_HEADERS["POSITION 01"];
   const ROWS = DATA_ROWS;
   const filteredRows = ROWS;
   const drawCount = filteredRows.length;
@@ -93,11 +90,11 @@ export default function Position1NYLotto() {
     <SafeAreaView style={styles.safeArea}>
       {/* HEADER PRINCIPAL */}
       <GameHeader
-        logo={<NYLottoLogo width={100} height={40} />}
+        logo={<Win4MiddayLogo width={100} height={40} />}
         title="Overview"
-        subtitle="NY Lotto"
-        headerColor="#155095"
-        backTo="/overview"
+        subtitle="Win 4 Midday"
+        headerColor="#7E0C6E"
+        backTo="/overview/new_york/overview"
       />
 
       {/* TABS */}
@@ -107,7 +104,7 @@ export default function Position1NYLotto() {
       <View style={styles.fixedHeader}>
         <View style={styles.filtersPad}>
           <View style={styles.datesRow}>
-            <Text style={[styles.dateLabel, { color: "#155095" }]}>From</Text>
+            <Text style={[styles.dateLabel, { color: "#7E0C6E" }]}>From</Text>
             <TouchableOpacity
               style={styles.input}
               onPress={() => showPicker("from")}
@@ -115,7 +112,7 @@ export default function Position1NYLotto() {
             >
               <Text style={styles.inputText}>{formatDate(fromDate)}</Text>
             </TouchableOpacity>
-            <Text style={[styles.dateLabel, { color: "#155095" }]}>To</Text>
+            <Text style={[styles.dateLabel, { color: "#7E0C6E" }]}>To</Text>
             <TouchableOpacity
               style={styles.input}
               onPress={() => showPicker("to")}
@@ -151,7 +148,7 @@ export default function Position1NYLotto() {
 
       {/* Header da tabela */}
       <View style={styles.tableHeaderRow}>
-        <View style={[styles.dateBoxHeader, { backgroundColor: "#155095" }]}>
+        <View style={[styles.dateBoxHeader, { backgroundColor: "#7E0C6E" }]}>
           <Text style={styles.headerText}>DATE</Text>
         </View>
         <View style={styles.headerSeparator} />
@@ -183,7 +180,7 @@ export default function Position1NYLotto() {
       <ScrollView style={{ flex: 1 }}>
         {filteredRows.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.gridRow}>
-            <View style={[styles.dateBoxGrid, { backgroundColor: "#155095" }]}>
+            <View style={[styles.dateBoxGrid, { backgroundColor: "#7E0C6E" }]}>
               <Text style={styles.dateText}>{row.date}</Text>
             </View>
             <View style={styles.rowSeparator} />
@@ -308,7 +305,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 3,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#155095",
+    shadowColor: "#7E0C6E",
     shadowOpacity: 0.07,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
@@ -333,7 +330,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   headerNumberBoxBlue: {
-    backgroundColor: "#155095",
+    backgroundColor: "#7E0C6E",
   },
   headerNumberText: {
     fontWeight: "bold",
@@ -410,7 +407,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   freqLabel: {
-    backgroundColor: "#155095",
+    backgroundColor: "#7E0C6E",
     borderRadius: 3,
     paddingHorizontal: 8,
     paddingVertical: 10,

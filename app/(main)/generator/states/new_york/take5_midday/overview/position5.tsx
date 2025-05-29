@@ -97,7 +97,7 @@ export default function Position1NYLotto() {
         title="Overview"
         subtitle="NY Lotto"
         headerColor="#155095"
-        backTo="/overview"
+        backTo="/overview/new_york/overview"
       />
 
       {/* TABS */}
