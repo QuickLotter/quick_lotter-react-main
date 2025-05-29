@@ -12,7 +12,7 @@ import {
 import { useRouter, usePathname } from "expo-router";
 
 /**
- * Cores principais por jogo (para botões padrões)
+ * Cores principais por jogo
  */
 const GAME_COLORS: Record<string, string> = {
   powerball: "#C7102E",
@@ -29,79 +29,83 @@ const GAME_COLORS: Record<string, string> = {
 };
 
 /**
- * Defina aqui as cores individuais dos botões especiais (pode expandir se quiser)
- * Se não definir, usa a cor principal do jogo e fonte branca.
+ * Cores dos tabs especiais MB/PB/CB etc
  */
 const TAB_COLORS: Record<
   string, // game
-  Record<
-    string, // tab label
-    { backgroundColor?: string; color?: string }
-  >
+  Record<string, { backgroundColor?: string; color?: string }>
 > = {
   powerball: {
-    "POSITION PB": { backgroundColor: "#000", color: "#fff" }, // vermelho, fonte branca
+    "POSITION PB": { backgroundColor: "#000", color: "#fff" },
   },
   megamillions: {
-    "POSITION MB": { backgroundColor: "#FDB927", color: "#000" }, // amarelo, fonte azul
+    "POSITION MB": { backgroundColor: "#FDB927", color: "#000" },
   },
   cash4life: {
-    "POSITION CB": { backgroundColor: "#3E4982", color: "#fff" }, // amarelo claro, fonte preta
+    "POSITION CB": { backgroundColor: "#3E4982", color: "#fff" },
   },
-  // Você pode adicionar mais customizações se quiser
 };
 
 /**
- * Gera tabs dinâmicos por jogo.
- * Só adiciona PB, MB, CB se for o jogo certo.
+ * Quantidade de tabs por jogo NY
+ * Altere aqui se quiser que Pick 10 tenha 10, Pick 20 tenha 20, Lotto tenha 6, etc.
  */
-const getTabs = (game: string) => {
-  // Tabs comuns para todos
+const GAME_TAB_COUNT: Record<string, number> = {
+  powerball: 5,
+  megamillions: 5,
+  cash4life: 5,
+  nylotto: 6,
+  pick10: 20,
+  take5_midday: 5,
+  take5_evening: 5,
+  win4_midday: 4,
+  win4_evening: 4,
+  numbers_midday: 3,
+  numbers_evening: 3,
+};
+
+/**
+ * Gera as tabs corretamente para cada jogo
+ */
+function getTabs(game: string) {
   const tabs = [
     {
       label: "DRAWING SINCE",
       path: `/generator/states/new_york/${game}/overview/drawingsince`,
     },
-    {
-      label: "POSITION 01",
-      path: `/generator/states/new_york/${game}/overview/position1`,
-    },
-    {
-      label: "POSITION 02",
-      path: `/generator/states/new_york/${game}/overview/position2`,
-    },
-    {
-      label: "POSITION 03",
-      path: `/generator/states/new_york/${game}/overview/position3`,
-    },
-    {
-      label: "POSITION 04",
-      path: `/generator/states/new_york/${game}/overview/position4`,
-    },
-    {
-      label: "POSITION 05",
-      path: `/generator/states/new_york/${game}/overview/position5`,
-    },
   ];
-  // Tab especial de cada jogo (Mega Ball, Power Ball, Cash Ball)
+
+  // Adiciona POSITION 01 até o total do jogo
+  const maxPos = GAME_TAB_COUNT[game] ?? 5;
+  for (let i = 1; i <= maxPos; i++) {
+    tabs.push({
+      label: `POSITION ${i.toString().padStart(2, "0")}`,
+      path: `/generator/states/new_york/${game}/overview/position${i}`,
+    });
+  }
+
+  // Adiciona tabs especiais se for o jogo certo
   if (game === "megamillions") {
     tabs.push({
       label: "POSITION MB",
       path: `/generator/states/new_york/${game}/overview/positionmb`,
     });
-  } else if (game === "powerball") {
+  }
+  if (game === "powerball") {
     tabs.push({
       label: "POSITION PB",
       path: `/generator/states/new_york/${game}/overview/positionpb`,
     });
-  } else if (game === "cash4life") {
+  }
+  if (game === "cash4life") {
     tabs.push({
       label: "POSITION CB",
       path: `/generator/states/new_york/${game}/overview/positioncb`,
     });
   }
+
   return tabs;
-};
+}
 
 export default function DrawingSinceTabs() {
   const router = useRouter();
@@ -112,13 +116,12 @@ export default function DrawingSinceTabs() {
   const game = match ? match[1] : "megamillions";
   const mainColor = GAME_COLORS[game] || "#0E4CA1";
 
-  // Tabs dinâmicos conforme jogo
   const TABS = getTabs(game);
   const activeIndex = TABS.findIndex(
     (tab) => tab.path.toLowerCase() === pathname?.toLowerCase()
   );
 
-  // Scroll automático para tab ativo
+  // Scroll automático para tab ativa
   const scrollRef = useRef<ScrollView>(null);
   useEffect(() => {
     if (scrollRef.current && activeIndex > -1) {
@@ -137,16 +140,13 @@ export default function DrawingSinceTabs() {
       >
         {TABS.map((tab, idx) => {
           const isActive = idx === activeIndex;
-
-          // Busca customização do tab especial
+          // Busca customização do tab especial (PB/MB/CB etc)
           const tabColors =
             (TAB_COLORS[game] && TAB_COLORS[game][tab.label]) || {};
-
-          // Cor de fundo do botão ativo (custom ou cor padrão)
+          // Cor de fundo/fonte do botão ativo
           const bgColor = isActive
             ? tabColors.backgroundColor || mainColor
             : "#fff";
-          // Cor da fonte do botão ativo (custom ou branca)
           const fontColor = isActive ? tabColors.color || "#fff" : mainColor;
 
           return (

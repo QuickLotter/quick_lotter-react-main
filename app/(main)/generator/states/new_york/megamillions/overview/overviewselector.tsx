@@ -13,7 +13,7 @@ import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import BottomNav from "@/components/generator/layout/BottomNav";
 import { MaterialIcons } from "@expo/vector-icons";
 
-// Logos
+// Logos de NY
 import Powerball from "@/assets/images/ny_game_logo/powerball.svg";
 import MegaMillions from "@/assets/images/ny_game_logo/megamillions.svg";
 import Cash4Life from "@/assets/images/ny_game_logo/cash4life.svg";
@@ -26,18 +26,54 @@ import Win4Evening from "@/assets/images/ny_game_logo/win4_evening.svg";
 import NumbersMidday from "@/assets/images/ny_game_logo/numbers_midday.svg";
 import NumbersEvening from "@/assets/images/ny_game_logo/numbers_evening.svg";
 
+// Todos os jogos de New York
 const GAMES = [
-  { route: "powerball", Logo: Powerball, color: "#C7102E" },
-  { route: "megamillions", Logo: MegaMillions, color: "#0E4CA1" },
-  { route: "cash4life", Logo: Cash4Life, color: "#2D7F67" },
-  { route: "nylotto", Logo: NYLotto, color: "#D31245" },
-  { route: "pick10", Logo: Pick10, color: "#E7CE5C" },
-  { route: "take5_midday", Logo: Take5Midday, color: "#CA3092" },
-  { route: "take5_evening", Logo: Take5Evening, color: "#CA3092" },
-  { route: "win4_midday", Logo: Win4Midday, color: "#7E0C6E" },
-  { route: "win4_evening", Logo: Win4Evening, color: "#7E0C6E" },
-  { route: "numbers_midday", Logo: NumbersMidday, color: "#2E73B5" },
-  { route: "numbers_evening", Logo: NumbersEvening, color: "#2E73B5" },
+  { route: "powerball", Logo: Powerball, color: "#C7102E", label: "Powerball" },
+  {
+    route: "megamillions",
+    Logo: MegaMillions,
+    color: "#0E4CA1",
+    label: "Mega Millions",
+  },
+  { route: "cash4life", Logo: Cash4Life, color: "#2D7F67", label: "Cash4Life" },
+  { route: "nylotto", Logo: NYLotto, color: "#D31245", label: "NY Lotto" },
+  { route: "pick10", Logo: Pick10, color: "#E7CE5C", label: "Pick 10" },
+  {
+    route: "take5_midday",
+    Logo: Take5Midday,
+    color: "#CA3092",
+    label: "Take 5 Midday",
+  },
+  {
+    route: "take5_evening",
+    Logo: Take5Evening,
+    color: "#CA3092",
+    label: "Take 5 Evening",
+  },
+  {
+    route: "win4_midday",
+    Logo: Win4Midday,
+    color: "#7E0C6E",
+    label: "Win 4 Midday",
+  },
+  {
+    route: "win4_evening",
+    Logo: Win4Evening,
+    color: "#7E0C6E",
+    label: "Win 4 Evening",
+  },
+  {
+    route: "numbers_midday",
+    Logo: NumbersMidday,
+    color: "#2E73B5",
+    label: "Numbers Midday",
+  },
+  {
+    route: "numbers_evening",
+    Logo: NumbersEvening,
+    color: "#2E73B5",
+    label: "Numbers Evening",
+  },
 ];
 
 export default function OverviewSelector() {
@@ -45,9 +81,69 @@ export default function OverviewSelector() {
   const { width } = useWindowDimensions();
   const maxWidth = Math.min(width - 32, 480);
 
+  // Lógica de navegação específica por jogo
+  const handleNavigate = (route: string) => {
+    switch (route) {
+      case "megamillions":
+        router.push(
+          "/generator/states/new_york/megamillions/overview/drawingsince"
+        );
+        break;
+      case "powerball":
+        router.push(
+          "/generator/states/new_york/powerball/overview/drawingsince"
+        );
+        break;
+      case "cash4life":
+        router.push(
+          "/generator/states/new_york/cash4life/overview/drawingsince"
+        );
+        break;
+      case "nylotto":
+        router.push("/generator/states/new_york/nylotto/overview/drawingsince");
+        break;
+      case "pick10":
+        router.push("/generator/states/new_york/pick10/overview/drawingsince");
+        break;
+      case "take5_midday":
+        router.push(
+          "/generator/states/new_york/take5_midday/overview/drawingsince"
+        );
+        break;
+      case "take5_evening":
+        router.push(
+          "/generator/states/new_york/take5_evening/overview/drawingsince"
+        );
+        break;
+      case "win4_midday":
+        router.push(
+          "/generator/states/new_york/win4_midday/overview/drawingsince"
+        );
+        break;
+      case "win4_evening":
+        router.push(
+          "/generator/states/new_york/win4_evening/overview/drawingsince"
+        );
+        break;
+      case "numbers_midday":
+        router.push(
+          "/generator/states/new_york/numbers_midday/overview/drawingsince"
+        );
+        break;
+      case "numbers_evening":
+        router.push(
+          "/generator/states/new_york/numbers_evening/overview/drawingsince"
+        );
+        break;
+      default:
+        // Se não encontrar, vai para overview geral (pode customizar!)
+        router.push("/overview");
+        break;
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {/* Voltar para /overview */}
       <HeaderLogoBack
         title=""
         showMenu={false}
@@ -56,7 +152,7 @@ export default function OverviewSelector() {
       />
       <Text style={styles.pageTitle}>Select Game to View Overview</Text>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {GAMES.map(({ route, Logo, color }) => (
+        {GAMES.map(({ route, Logo, color, label }) => (
           <View
             key={route}
             style={[
@@ -76,7 +172,7 @@ export default function OverviewSelector() {
               <MaterialIcons name="remove-red-eye" size={26} color={color} />
             </View>
 
-            {/* Botão iOS-like */}
+            {/* Botão */}
             <TouchableOpacity
               style={[
                 styles.button,
@@ -86,22 +182,7 @@ export default function OverviewSelector() {
                 },
               ]}
               activeOpacity={0.82}
-              onPress={() => {
-                // 👇 ESSA É A LÓGICA QUE VOCÊ DEVE USAR!
-                if (route === "megamillions") {
-                  router.push(
-                    "/generator/states/new_york/megamillions/overview/drawingsince"
-                  );
-                } else if (route === "powerball") {
-                  router.push(
-                    "/generator/states/new_york/powerball/overview/drawingsince"
-                  );
-                } else {
-                  router.push(
-                    `/generator/states/new_york/${route}/overview/index`
-                  );
-                }
-              }}
+              onPress={() => handleNavigate(route)}
             >
               <Text style={styles.buttonText}>View Overview</Text>
             </TouchableOpacity>
