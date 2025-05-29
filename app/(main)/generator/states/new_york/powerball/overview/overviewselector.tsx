@@ -27,7 +27,7 @@ import NumbersMidday from "@/assets/images/ny_game_logo/numbers_midday.svg";
 import NumbersEvening from "@/assets/images/ny_game_logo/numbers_evening.svg";
 
 const GAMES = [
-  { route: "powerball", Logo: Powerball, color: "#C7102E" },
+  { route: "powerball", Logo: Powerball, color: "#D0021B" },
   { route: "megamillions", Logo: MegaMillions, color: "#0E4CA1" },
   { route: "cash4life", Logo: Cash4Life, color: "#2D7F67" },
   { route: "nylotto", Logo: NYLotto, color: "#D31245" },

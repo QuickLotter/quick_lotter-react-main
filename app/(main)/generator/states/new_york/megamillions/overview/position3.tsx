@@ -102,7 +102,7 @@ export default function Position3() {
   title="Overview"
   subtitle="New York Mega Millions"
   headerColor="#0E4CA1"
-  backTo="/generator/states/new_york/megamillions/overview/overviewselector"
+  backTo="/overview"
 />
 
       />

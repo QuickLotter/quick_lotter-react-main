@@ -1,4 +1,4 @@
-// position4.tsx
+// position2.tsx
 
 import React, { useState, useRef } from "react";
 import {
@@ -12,32 +12,31 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import PowerballLogo from "@/assets/images/ny_game_logo/powerball.svg";
 import DrawingSinceTabs from "@/components/drawingsincetabs";
 
-// HEADER PARA POSITION 04
+// HEADER PARA POSITION 02
 const POSITION_HEADERS = {
-  "POSITION 04": [
-    46, 52, 42, 58, 54, 48, 44, 38, 57, 59, 61, 41, 49, 51, 62, 53, 43, 56, 60,
-    39, 47, 45, 64, 40, 32, 55, 50, 63, 35, 31, 37, 33, 36, 65, 29, 27, 34, 24,
-    28, 66, 30, 68, 25, 18, 22, 67, 26, 19, 17, 21, 69, 20, 23, 16, 15, 13, 10,
-    12, 8,
+  "POSITION 02": [
+    22, 17, 14, 20, 19, 24, 10, 15, 16, 12, 11, 13, 18, 26, 30, 31, 9, 23, 28,
+    35, 29, 25, 37, 8, 5, 33, 21, 32, 7, 34, 43, 6, 38, 27, 36, 41, 40, 4, 3,
+    45, 39, 47, 44, 42, 2, 46, 54, 50, 52, 55, 53, 49, 48, 66, 62, 60, 59, 58,
   ],
 };
 
 // MOCK DATA
 const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  values: Array(POSITION_HEADERS["POSITION 04"].length)
+  values: Array(POSITION_HEADERS["POSITION 02"].length)
     .fill(0)
     .map(() => Math.round(Math.random())),
 }));
 const FREQ = Array.from(
-  { length: POSITION_HEADERS["POSITION 04"].length },
+  { length: POSITION_HEADERS["POSITION 02"].length },
   () => Math.floor(Math.random() * 350) + 10
 );
 
-export default function Position4() {
+export default function Position2() {
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1)); // 05/01/2025
   const [toDate, setToDate] = useState(new Date(2025, 4, 20)); // 05/20/2025
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
@@ -56,7 +55,7 @@ export default function Position4() {
   };
 
   // Substituir pelo fetch da API do Supabase aqui:
-  const HEADER = POSITION_HEADERS["POSITION 04"];
+  const HEADER = POSITION_HEADERS["POSITION 02"];
   const ROWS = DATA_ROWS;
   const filteredRows = ROWS; // <-- no futuro: filtrar pelo intervalo de datas escolhido
   const drawCount = filteredRows.length;
@@ -98,10 +97,10 @@ export default function Position4() {
     <SafeAreaView style={styles.safeArea}>
       {/* HEADER PRINCIPAL */}
       <GameHeader
-  logo={<MegamillionsLogo width={100} height={40} />}
+  logo={<PowerballLogo width={100} height={40} />}
   title="Overview"
   subtitle="New York Mega Millions"
-  headerColor="#0E4CA1"
+  headerColor="#D0021B"
   backTo="/overview"
 />
 
@@ -134,7 +133,7 @@ export default function Position4() {
               <Text
                 style={[
                   styles.inputText,
-                  { color: "#0E4CA1", fontWeight: "700" },
+                  { color: "#D0021B", fontWeight: "700" },
                 ]}
               >
                 {drawCount}
@@ -274,7 +273,7 @@ const styles = StyleSheet.create({
   dateLabel: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#0E4CA1",
+    color: "#D0021B",
     letterSpacing: 0.05,
   },
   input: {
@@ -312,12 +311,12 @@ const styles = StyleSheet.create({
   dateBoxHeader: {
     width: 75,
     height: CELL_SIZE,
-    backgroundColor: "#0E4CA1",
+    backgroundColor: "#D0021B",
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#0E4CA1",
+    shadowColor: "#D0021B",
     shadowOpacity: 0.07,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
@@ -342,7 +341,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   headerNumberBoxBlue: {
-    backgroundColor: "#0E4CA1",
+    backgroundColor: "#D0021B",
   },
   headerNumberText: {
     fontWeight: "bold",
@@ -364,7 +363,7 @@ const styles = StyleSheet.create({
   dateBoxGrid: {
     width: 75,
     height: CELL_SIZE,
-    backgroundColor: "#0E4CA1",
+    backgroundColor: "#D0021B",
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,
     justifyContent: "center",
@@ -420,7 +419,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   freqLabel: {
-    backgroundColor: "#0E4CA1",
+    backgroundColor: "#D0021B",
     borderRadius: 3,
     paddingHorizontal: 8,
     paddingVertical: 10,

@@ -1,3 +1,4 @@
+// DrawingSinceTabs.tsx
 import React, { useRef, useEffect } from "react";
 import {
   ScrollView,
@@ -10,70 +11,52 @@ import {
 } from "react-native";
 import { useRouter, usePathname } from "expo-router";
 
-// MAPA DE CORES por jogo
-const GAME_COLORS: Record<string, string> = {
-  powerball: "#C7102E",
-  megamillions: "#0E4CA1",
-  cash4life: "#2D7F67",
-  nylotto: "#D31245",
-  pick10: "#E7CE5C",
-  take5_midday: "#CA3092",
-  take5_evening: "#CA3092",
-  win4_midday: "#7E0C6E",
-  win4_evening: "#7E0C6E",
-  numbers_midday: "#2E73B5",
-  numbers_evening: "#2E73B5",
-};
-
-const getTabs = (game: string) => [
+// Tabs e rotas
+const TABS = [
   {
     label: "DRAWING SINCE",
-    path: `/generator/states/new_york/${game}/overview/drawingsince`,
+    path: "/generator/states/new_york/powerball/overview/drawingsince",
   },
   {
     label: "POSITION 01",
-    path: `/generator/states/new_york/${game}/overview/position1`,
+    path: "/generator/states/new_york/powerball/overview/position1",
   },
   {
     label: "POSITION 02",
-    path: `/generator/states/new_york/${game}/overview/position2`,
+    path: "/generator/states/new_york/powerball/overview/position2",
   },
   {
     label: "POSITION 03",
-    path: `/generator/states/new_york/${game}/overview/position3`,
+    path: "/generator/states/new_york/powerball/overview/position3",
   },
   {
     label: "POSITION 04",
-    path: `/generator/states/new_york/${game}/overview/position4`,
+    path: "/generator/states/new_york/powerball/overview/position4",
   },
   {
     label: "POSITION 05",
-    path: `/generator/states/new_york/${game}/overview/position5`,
+    path: "/generator/states/new_york/powerball/overview/position5",
   },
   {
     label: "POSITION MB",
-    path: `/generator/states/new_york/${game}/overview/positionmb`,
+    path: "/generator/states/new_york/powerball/overview/positionmb",
   },
 ];
 
 export default function DrawingSinceTabs() {
   const router = useRouter();
   const pathname = usePathname();
+  const scrollRef = useRef<ScrollView>(null);
 
-  // Extrai o nome do jogo da URL (ex: /generator/states/new_york/powerball/...)
-  const match = pathname?.match(/\/generator\/states\/new_york\/([^\/]+)/);
-  const game = match ? match[1] : "megamillions";
-  const mainColor = GAME_COLORS[game] || "#0E4CA1";
-
-  const TABS = getTabs(game);
+  // Tab ativa baseada em path EXATO
   const activeIndex = TABS.findIndex(
     (tab) => tab.path.toLowerCase() === pathname?.toLowerCase()
   );
 
   // Scroll automático pro tab ativo
-  const scrollRef = useRef<ScrollView>(null);
   useEffect(() => {
     if (scrollRef.current && activeIndex > -1) {
+      // 130 = largura aprox. do botão + gap, ajuste se mudar o style!
       scrollRef.current.scrollTo({ x: activeIndex * 130 - 12, animated: true });
     }
   }, [activeIndex]);
@@ -103,13 +86,10 @@ export default function DrawingSinceTabs() {
               <Animated.View
                 style={[
                   styles.tabButton,
-                  isActive && {
-                    backgroundColor: mainColor,
-                    borderColor: mainColor,
-                    shadowColor: mainColor,
-                    shadowOpacity: 0.18,
-                    elevation: 5,
-                  },
+                  isActive &&
+                    (tab.label === "POSITION MB"
+                      ? styles.tabButtonActiveYellow
+                      : styles.tabButtonActiveBlue),
                   {
                     transform: [{ scale: isActive ? 1.1 : 1 }],
                   },
@@ -119,14 +99,10 @@ export default function DrawingSinceTabs() {
                   style={[
                     styles.tabButtonText,
                     isActive
-                      ? {
-                          color:
-                            tab.label === "POSITION MB" &&
-                            mainColor === "#E7CE5C"
-                              ? "#222"
-                              : "#fff",
-                        }
-                      : { color: mainColor },
+                      ? tab.label === "POSITION MB"
+                        ? { color: "#222" }
+                        : { color: "#fff" }
+                      : { color: "#D0021B" },
                   ]}
                 >
                   {tab.label}
@@ -159,10 +135,26 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 15,
-    shadowColor: "#0E4CA1",
+    shadowColor: "#D0021B",
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 2,
+  },
+  tabButtonActiveBlue: {
+    backgroundColor: "#D0021B",
+    borderColor: "#D0021B",
+    shadowColor: "#D0021B",
+    shadowOpacity: 0.13,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  tabButtonActiveYellow: {
+    backgroundColor: "#FDB927",
+    borderColor: "#FDB927",
+    shadowColor: "#FDB927",
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 4,
   },
   tabButtonText: {
     fontWeight: "700",
