@@ -41,7 +41,7 @@ export default function VerifySuccess() {
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.push("/completed")}
+            onPress={() => router.replace("/auth/PostLoginGate")} // <-- Aqui!
           >
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>

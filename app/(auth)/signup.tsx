@@ -56,8 +56,9 @@ export default function SignUp() {
       return;
     }
     setError("");
+    // Aqui você pode chamar sua API de cadastro real!
     setTimeout(() => {
-      router.replace("/verify-code");
+      router.replace("/auth/PostLoginGate"); // <--- Troquei para ir para o gate do estado!
     }, 800);
   };
 

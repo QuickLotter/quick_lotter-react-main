@@ -58,7 +58,7 @@ export default function VerifyCode() {
     if (fullCode.length === 6) {
       setError("");
       setTimeout(() => {
-        router.replace("/reset-password");
+        router.replace("/auth/PostLoginGate"); // <-- Aqui!
       }, 700);
     } else {
       setError("Please enter all 6 digits.");

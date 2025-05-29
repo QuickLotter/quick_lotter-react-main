@@ -54,8 +54,9 @@ export default function Login() {
       return;
     }
     setError("");
+    // Aqui você pode chamar sua API de autenticação real!
     setTimeout(() => {
-      router.replace("/main/home");
+      router.replace("/auth/PostLoginGate"); // Após login, vai para o "gate" do estado!
     }, 800);
   };
 

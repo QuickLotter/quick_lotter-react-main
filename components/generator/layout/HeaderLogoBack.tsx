@@ -17,6 +17,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import { LinearGradient } from "expo-linear-gradient";
 
+// Importa o contexto de localização!
+import { useLocation } from "@/app/(main)/context/LocationContext"; // ajuste se o path mudar
+
 const STATES = [
   "AZ",
   "AR",
@@ -68,7 +71,7 @@ const STATES = [
 
 type Props = {
   onMenuPress?: () => void;
-  onBack?: () => void; // <--- NOVO!
+  onBack?: () => void;
   showMenu?: boolean;
   showStateSelector?: boolean;
   transparent?: boolean;
@@ -89,12 +92,11 @@ export default function HeaderLogoBack({
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
 
-  const [state, setState] = React.useState("NY");
+  // Usa o contexto global:
+  const { state, setState } = useLocation();
   const [modalVisible, setModalVisible] = React.useState(false);
 
   const isHome = pathname === "/home";
-
-  // Inclua aqui as rotas onde NÃO quer mostrar seta back
   const hideBackRoutes = ["/analysis", "/overview", "/checker"];
   const showBackButton = !hideBackRoutes.includes(pathname);
 
@@ -123,7 +125,6 @@ export default function HeaderLogoBack({
         {/* Botão de menu ou voltar */}
         {showMenu ? (
           <Pressable
-            // Só usa onBack se passar, senão usa padrão
             onPress={
               isHome
                 ? onMenuPress
@@ -169,7 +170,7 @@ export default function HeaderLogoBack({
             style={styles.stateButton}
           >
             <Entypo name="location-pin" size={20} color="#fff" />
-            <Text style={styles.stateText}>{state}</Text>
+            <Text style={styles.stateText}>{state || "??"}</Text>
             <MaterialIcons name="arrow-drop-down" size={22} color="#fff" />
           </Pressable>
         ) : (
@@ -199,7 +200,7 @@ export default function HeaderLogoBack({
                       isSelected && styles.stateItemSelected,
                     ]}
                     onPress={() => {
-                      setState(item);
+                      setState(item); // Usa o contexto global!
                       setModalVisible(false);
                     }}
                     activeOpacity={0.7}
