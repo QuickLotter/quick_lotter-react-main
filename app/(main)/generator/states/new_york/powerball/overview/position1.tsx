@@ -101,7 +101,7 @@ export default function Position1() {
   title="Overview"
   subtitle="New York Powerball"
   headerColor="#D0021B"
-  backTo="/overvier"
+  backTo="/overview"
 />
 
       />

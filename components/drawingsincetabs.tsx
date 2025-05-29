@@ -1,3 +1,4 @@
+// components/drawingsincetabs.tsx
 import React, { useRef, useEffect } from "react";
 import {
   ScrollView,
@@ -10,7 +11,9 @@ import {
 } from "react-native";
 import { useRouter, usePathname } from "expo-router";
 
-// MAPA DE CORES por jogo
+/**
+ * Cores principais por jogo (para botões padrões)
+ */
 const GAME_COLORS: Record<string, string> = {
   powerball: "#C7102E",
   megamillions: "#0E4CA1",
@@ -25,36 +28,80 @@ const GAME_COLORS: Record<string, string> = {
   numbers_evening: "#2E73B5",
 };
 
-const getTabs = (game: string) => [
-  {
-    label: "DRAWING SINCE",
-    path: `/generator/states/new_york/${game}/overview/drawingsince`,
+/**
+ * Defina aqui as cores individuais dos botões especiais (pode expandir se quiser)
+ * Se não definir, usa a cor principal do jogo e fonte branca.
+ */
+const TAB_COLORS: Record<
+  string, // game
+  Record<
+    string, // tab label
+    { backgroundColor?: string; color?: string }
+  >
+> = {
+  powerball: {
+    "POSITION PB": { backgroundColor: "#000", color: "#fff" }, // vermelho, fonte branca
   },
-  {
-    label: "POSITION 01",
-    path: `/generator/states/new_york/${game}/overview/position1`,
+  megamillions: {
+    "POSITION MB": { backgroundColor: "#FDB927", color: "#000" }, // amarelo, fonte azul
   },
-  {
-    label: "POSITION 02",
-    path: `/generator/states/new_york/${game}/overview/position2`,
+  cash4life: {
+    "POSITION CB": { backgroundColor: "#3E4982", color: "#fff" }, // amarelo claro, fonte preta
   },
-  {
-    label: "POSITION 03",
-    path: `/generator/states/new_york/${game}/overview/position3`,
-  },
-  {
-    label: "POSITION 04",
-    path: `/generator/states/new_york/${game}/overview/position4`,
-  },
-  {
-    label: "POSITION 05",
-    path: `/generator/states/new_york/${game}/overview/position5`,
-  },
-  {
-    label: "POSITION MB",
-    path: `/generator/states/new_york/${game}/overview/positionmb`,
-  },
-];
+  // Você pode adicionar mais customizações se quiser
+};
+
+/**
+ * Gera tabs dinâmicos por jogo.
+ * Só adiciona PB, MB, CB se for o jogo certo.
+ */
+const getTabs = (game: string) => {
+  // Tabs comuns para todos
+  const tabs = [
+    {
+      label: "DRAWING SINCE",
+      path: `/generator/states/new_york/${game}/overview/drawingsince`,
+    },
+    {
+      label: "POSITION 01",
+      path: `/generator/states/new_york/${game}/overview/position1`,
+    },
+    {
+      label: "POSITION 02",
+      path: `/generator/states/new_york/${game}/overview/position2`,
+    },
+    {
+      label: "POSITION 03",
+      path: `/generator/states/new_york/${game}/overview/position3`,
+    },
+    {
+      label: "POSITION 04",
+      path: `/generator/states/new_york/${game}/overview/position4`,
+    },
+    {
+      label: "POSITION 05",
+      path: `/generator/states/new_york/${game}/overview/position5`,
+    },
+  ];
+  // Tab especial de cada jogo (Mega Ball, Power Ball, Cash Ball)
+  if (game === "megamillions") {
+    tabs.push({
+      label: "POSITION MB",
+      path: `/generator/states/new_york/${game}/overview/positionmb`,
+    });
+  } else if (game === "powerball") {
+    tabs.push({
+      label: "POSITION PB",
+      path: `/generator/states/new_york/${game}/overview/positionpb`,
+    });
+  } else if (game === "cash4life") {
+    tabs.push({
+      label: "POSITION CB",
+      path: `/generator/states/new_york/${game}/overview/positioncb`,
+    });
+  }
+  return tabs;
+};
 
 export default function DrawingSinceTabs() {
   const router = useRouter();
@@ -65,12 +112,13 @@ export default function DrawingSinceTabs() {
   const game = match ? match[1] : "megamillions";
   const mainColor = GAME_COLORS[game] || "#0E4CA1";
 
+  // Tabs dinâmicos conforme jogo
   const TABS = getTabs(game);
   const activeIndex = TABS.findIndex(
     (tab) => tab.path.toLowerCase() === pathname?.toLowerCase()
   );
 
-  // Scroll automático pro tab ativo
+  // Scroll automático para tab ativo
   const scrollRef = useRef<ScrollView>(null);
   useEffect(() => {
     if (scrollRef.current && activeIndex > -1) {
@@ -89,6 +137,18 @@ export default function DrawingSinceTabs() {
       >
         {TABS.map((tab, idx) => {
           const isActive = idx === activeIndex;
+
+          // Busca customização do tab especial
+          const tabColors =
+            (TAB_COLORS[game] && TAB_COLORS[game][tab.label]) || {};
+
+          // Cor de fundo do botão ativo (custom ou cor padrão)
+          const bgColor = isActive
+            ? tabColors.backgroundColor || mainColor
+            : "#fff";
+          // Cor da fonte do botão ativo (custom ou branca)
+          const fontColor = isActive ? tabColors.color || "#fff" : mainColor;
+
           return (
             <TouchableOpacity
               key={tab.label}
@@ -104,9 +164,9 @@ export default function DrawingSinceTabs() {
                 style={[
                   styles.tabButton,
                   isActive && {
-                    backgroundColor: mainColor,
-                    borderColor: mainColor,
-                    shadowColor: mainColor,
+                    backgroundColor: bgColor,
+                    borderColor: bgColor,
+                    shadowColor: bgColor,
                     shadowOpacity: 0.18,
                     elevation: 5,
                   },
@@ -115,20 +175,7 @@ export default function DrawingSinceTabs() {
                   },
                 ]}
               >
-                <Text
-                  style={[
-                    styles.tabButtonText,
-                    isActive
-                      ? {
-                          color:
-                            tab.label === "POSITION MB" &&
-                            mainColor === "#E7CE5C"
-                              ? "#222"
-                              : "#fff",
-                        }
-                      : { color: mainColor },
-                  ]}
-                >
+                <Text style={[styles.tabButtonText, { color: fontColor }]}>
                   {tab.label}
                 </Text>
               </Animated.View>

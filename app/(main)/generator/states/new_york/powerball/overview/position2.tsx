@@ -99,7 +99,7 @@ export default function Position2() {
       <GameHeader
   logo={<PowerballLogo width={100} height={40} />}
   title="Overview"
-  subtitle="New York Mega Millions"
+  subtitle="New York Powerball"
   headerColor="#D0021B"
   backTo="/overview"
 />

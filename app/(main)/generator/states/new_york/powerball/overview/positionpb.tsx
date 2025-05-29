@@ -1,4 +1,4 @@
-// positionmb.tsx
+// positionPB.tsx
 
 import React, { useState, useRef } from "react";
 import {
@@ -12,12 +12,12 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import PowerballLogo from "@/assets/images/ny_game_logo/powerball.svg";
 import DrawingSinceTabs from "@/components/drawingsincetabs";
 
-// HEADER PARA POSITION MB (Mega Ball)
+// HEADER PARA POSITION PB (Mega Ball)
 const POSITION_HEADERS = {
-  "POSITION MB": [
+  "POSITION PB": [
     22, 11, 18, 24, 25, 9, 19, 13, 4, 17, 1, 3, 20, 16, 10, 14, 2, 12, 21, 6, 7,
     15, 23, 8, 5,
   ],
@@ -26,16 +26,16 @@ const POSITION_HEADERS = {
 // MOCK DATA
 const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  values: Array(POSITION_HEADERS["POSITION MB"].length)
+  values: Array(POSITION_HEADERS["POSITION PB"].length)
     .fill(0)
     .map(() => Math.round(Math.random())),
 }));
 const FREQ = Array.from(
-  { length: POSITION_HEADERS["POSITION MB"].length },
+  { length: POSITION_HEADERS["POSITION PB"].length },
   () => Math.floor(Math.random() * 350) + 10
 );
 
-export default function PositionMB() {
+export default function PositionPB() {
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
   const [toDate, setToDate] = useState(new Date(2025, 4, 20));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
@@ -52,7 +52,7 @@ export default function PositionMB() {
     return `${mm}/${dd}/${yy}`;
   };
 
-  const HEADER = POSITION_HEADERS["POSITION MB"];
+  const HEADER = POSITION_HEADERS["POSITION PB"];
   const ROWS = DATA_ROWS;
   const filteredRows = ROWS;
   const drawCount = filteredRows.length;
@@ -91,10 +91,10 @@ export default function PositionMB() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <GameHeader
-  logo={<MegamillionsLogo width={100} height={40} />}
+  logo={<PowerballLogo width={100} height={40} />}
   title="Overview"
   subtitle="New York Mega Millions"
-  headerColor="#0E4CA1"
+  headerColor="#D0021B"
   backTo="/overview"
 />
 
@@ -123,7 +123,7 @@ export default function PositionMB() {
               <Text
                 style={[
                   styles.inputText,
-                  { color: "#0E4CA1", fontWeight: "700" },
+                  { color: "#D0021B", fontWeight: "700" },
                 ]}
               >
                 {drawCount}
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   dateLabel: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#0E4CA1",
+    color: "#D0021B",
     letterSpacing: 0.05,
   },
   input: {
@@ -295,12 +295,12 @@ const styles = StyleSheet.create({
   dateBoxHeader: {
     width: 75,
     height: CELL_SIZE,
-    backgroundColor: "#FDB927",
+    backgroundColor: "#000",
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#FDB927",
+    shadowColor: "#000",
     shadowOpacity: 0.07,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#000",
+    color: "#fff",
     letterSpacing: 0.08,
   },
   headerSeparator: {
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   headerNumberBoxBlue: {
-    backgroundColor: "#FDB927",
+    backgroundColor: "#000",
   },
   headerNumberText: {
     fontWeight: "bold",
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.1,
   },
   headerNumberTextBlue: {
-    color: "#00",
+    color: "#fff",
   },
   gridRow: {
     flexDirection: "row",
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   dateBoxGrid: {
     width: 75,
     height: CELL_SIZE,
-    backgroundColor: "#FDB927",
+    backgroundColor: "#000",
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,
     justifyContent: "center",
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#000",
+    color: "#fff",
     letterSpacing: 0.1,
   },
   footerPad: {
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   freqLabel: {
-    backgroundColor: "#FDB927",
+    backgroundColor: "#000",
     borderRadius: 3,
     paddingHorizontal: 8,
     paddingVertical: 10,
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
   freqLabelText: {
     fontWeight: "700",
     fontSize: 10.5,
-    color: "#000",
+    color: "#fff",
     letterSpacing: 0.04,
   },
   freqBox: {

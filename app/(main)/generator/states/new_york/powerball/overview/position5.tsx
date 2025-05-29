@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import PowerballLogo from "@/assets/images/ny_game_logo/powerball.svg";
 import DrawingSinceTabs from "@/components/drawingsincetabs";
 
 // HEADER PARA POSITION 05
@@ -92,10 +92,10 @@ export default function Position5() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <GameHeader
-  logo={<MegamillionsLogo width={100} height={40} />}
+  logo={<PowerballLogo width={100} height={40} />}
   title="Overview"
-  subtitle="New York Mega Millions"
-  headerColor="#0E4CA1"
+  subtitle="New York Powerball"
+  headerColor="#D0021B"
   backTo="/overview"
 />
 
@@ -124,7 +124,7 @@ export default function Position5() {
               <Text
                 style={[
                   styles.inputText,
-                  { color: "#0E4CA1", fontWeight: "700" },
+                  { color: "#D0021B", fontWeight: "700" },
                 ]}
               >
                 {drawCount}
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   dateLabel: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#0E4CA1",
+    color: "#D0021B",
     letterSpacing: 0.05,
   },
   input: {
@@ -296,12 +296,12 @@ const styles = StyleSheet.create({
   dateBoxHeader: {
     width: 75,
     height: CELL_SIZE,
-    backgroundColor: "#0E4CA1",
+    backgroundColor: "#D0021B",
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#0E4CA1",
+    shadowColor: "#D0021B",
     shadowOpacity: 0.07,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   headerNumberBoxBlue: {
-    backgroundColor: "#0E4CA1",
+    backgroundColor: "#D0021B",
   },
   headerNumberText: {
     fontWeight: "bold",
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   dateBoxGrid: {
     width: 75,
     height: CELL_SIZE,
-    backgroundColor: "#0E4CA1",
+    backgroundColor: "#D0021B",
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,
     justifyContent: "center",
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   freqLabel: {
-    backgroundColor: "#0E4CA1",
+    backgroundColor: "#D0021B",
     borderRadius: 3,
     paddingHorizontal: 8,
     paddingVertical: 10,
