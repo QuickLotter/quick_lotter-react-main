@@ -17,10 +17,31 @@ type Props = {
 };
 
 /**
- * A propriedade data.numbers deve ser:
- * - [num1, num2, num3, num4, num5, megaBall] se tiver extra ball
- * - [num1, num2, num3, num4, num5] se não tiver
- * A configuração extra ball é automática via ui.lastBallTextColor
+ * Renderiza o logo corretamente, seja SVG (React.ComponentType) ou string (URL)
+ */
+function renderLogo(logo: GameData["logo"], width: number, height: number) {
+  if (!logo) return null;
+
+  if (typeof logo === "string") {
+    // URL ou local file string
+    return (
+      <Image
+        source={{ uri: logo }}
+        style={{
+          width,
+          height,
+          resizeMode: "contain",
+        }}
+      />
+    );
+  } else {
+    // SVG importado como React.ComponentType
+    return React.createElement(logo, { width, height });
+  }
+}
+
+/**
+ * Card de jogo de loteria com design responsivo
  */
 export default function GameCard({ data, onPress }: Props) {
   const { width } = useWindowDimensions();
@@ -46,27 +67,7 @@ export default function GameCard({ data, onPress }: Props) {
     >
       {/* Logo centralizado */}
       <View style={[styles.logoWrapper, { marginBottom: 8 * scale }]}>
-        {typeof data.logo === "string" ? (
-          <Image
-            source={{ uri: data.logo }}
-            style={{
-              width: 200 * scale,
-              height: 60 * scale,
-              resizeMode: "contain",
-            }}
-          />
-        ) : (
-          <View
-            style={{
-              width: 160 * scale,
-              height: 48 * scale,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {data.logo}
-          </View>
-        )}
+        {renderLogo(data.logo, 200 * scale, 60 * scale)}
       </View>
 
       {/* Barra gradiente */}

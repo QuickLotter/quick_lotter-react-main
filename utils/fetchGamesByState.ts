@@ -1,7 +1,5 @@
 // utils/fetchGamesByState.ts
 
-import { fetchAlabamaGames } from "@/states/alabama/games";
-import { fetchAlaskaGames } from "@/states/alaska/games";
 import { fetchArizonaGames } from "@/states/arizona/games";
 import { fetchArkansasGames } from "@/states/arkansas/games";
 import { fetchCaliforniaGames } from "@/states/california/games";
@@ -10,7 +8,6 @@ import { fetchConnecticutGames } from "@/states/connecticut/games";
 import { fetchDelawareGames } from "@/states/delaware/games";
 import { fetchFloridaGames } from "@/states/florida/games";
 import { fetchGeorgiaGames } from "@/states/georgia/games";
-import { fetchHawaiiGames } from "@/states/hawaii/games";
 import { fetchIdahoGames } from "@/states/idaho/games";
 import { fetchIllinoisGames } from "@/states/illinois/games";
 import { fetchIndianaGames } from "@/states/indiana/games";
@@ -27,7 +24,6 @@ import { fetchMississippiGames } from "@/states/mississippi/games";
 import { fetchMissouriGames } from "@/states/missouri/games";
 import { fetchMontanaGames } from "@/states/montana/games";
 import { fetchNebraskaGames } from "@/states/nebraska/games";
-import { fetchNevadaGames } from "@/states/nevada/games";
 import { fetchNewHampshireGames } from "@/states/new_hampshire/games";
 import { fetchNewJerseyGames } from "@/states/new_jersey/games";
 import { fetchNewMexicoGames } from "@/states/new_mexico/games";
@@ -38,27 +34,23 @@ import { fetchOhioGames } from "@/states/ohio/games";
 import { fetchOklahomaGames } from "@/states/oklahoma/games";
 import { fetchOregonGames } from "@/states/oregon/games";
 import { fetchPennsylvaniaGames } from "@/states/pennsylvania/games";
+import { fetchPuertoRicoGames } from "@/states/puerto_rico/games";
 import { fetchRhodeIslandGames } from "@/states/rhode_island/games";
 import { fetchSouthCarolinaGames } from "@/states/south_carolina/games";
 import { fetchSouthDakotaGames } from "@/states/south_dakota/games";
 import { fetchTennesseeGames } from "@/states/tennessee/games";
 import { fetchTexasGames } from "@/states/texas/games";
-import { fetchUtahGames } from "@/states/utah/games";
 import { fetchVermontGames } from "@/states/vermont/games";
 import { fetchVirginiaGames } from "@/states/virginia/games";
 import { fetchWashingtonGames } from "@/states/washington/games";
+import { fetchDistrictOfColumbiaGames } from "@/states/district_of_columbia/games";
 import { fetchWestVirginiaGames } from "@/states/west_virginia/games";
 import { fetchWisconsinGames } from "@/states/wisconsin/games";
 import { fetchWyomingGames } from "@/states/wyoming/games";
-import { fetchDistrictOfColumbiaGames } from "@/states/district_of_columbia/games";
 
-// Função principal — troca por estado futuro
+// Função principal: busca os jogos conforme o código do estado
 export async function fetchGamesByState(state: string) {
-  switch (state) {
-    case "AL":
-      return fetchAlabamaGames();
-    case "AK":
-      return fetchAlaskaGames();
+  switch (state.toUpperCase()) {
     case "AZ":
       return fetchArizonaGames();
     case "AR":
@@ -75,8 +67,6 @@ export async function fetchGamesByState(state: string) {
       return fetchFloridaGames();
     case "GA":
       return fetchGeorgiaGames();
-    case "HI":
-      return fetchHawaiiGames();
     case "ID":
       return fetchIdahoGames();
     case "IL":
@@ -109,8 +99,6 @@ export async function fetchGamesByState(state: string) {
       return fetchMontanaGames();
     case "NE":
       return fetchNebraskaGames();
-    case "NV":
-      return fetchNevadaGames();
     case "NH":
       return fetchNewHampshireGames();
     case "NJ":
@@ -131,6 +119,8 @@ export async function fetchGamesByState(state: string) {
       return fetchOregonGames();
     case "PA":
       return fetchPennsylvaniaGames();
+    case "PR":
+      return fetchPuertoRicoGames();
     case "RI":
       return fetchRhodeIslandGames();
     case "SC":
@@ -141,22 +131,20 @@ export async function fetchGamesByState(state: string) {
       return fetchTennesseeGames();
     case "TX":
       return fetchTexasGames();
-    case "UT":
-      return fetchUtahGames();
     case "VT":
       return fetchVermontGames();
     case "VA":
       return fetchVirginiaGames();
     case "WA":
       return fetchWashingtonGames();
+    case "DC":
+      return fetchDistrictOfColumbiaGames();
     case "WV":
       return fetchWestVirginiaGames();
     case "WI":
       return fetchWisconsinGames();
     case "WY":
       return fetchWyomingGames();
-    case "DC":
-      return fetchDistrictOfColumbiaGames();
     default:
       return [];
   }

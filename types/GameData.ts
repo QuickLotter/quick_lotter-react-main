@@ -10,5 +10,5 @@ export type GameData = {
   bonusNumber: string; // se existir
   powerPlay: string; // ex: "2x", "5x", etc
   result: string; // texto com o resultado (ex: "No Jackpot Winners")
-  logo: string | React.ReactNode; // ✅ aceita URL (string) ou SVG (JSX)
+  logo: string | React.ComponentType<any>; // ✅ aceita URL (string) ou SVG (JSX)
 };
