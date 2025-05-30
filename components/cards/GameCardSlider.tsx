@@ -10,7 +10,7 @@ import GameCard from "./GameCard";
 import { useRouter } from "expo-router";
 import { GameData } from "@/types/GameData";
 
-// 🟦 Importando todos os logos
+// Importando todos os logos SVG dos jogos de NY
 import MegaMillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
 import PowerballLogo from "@/assets/images/ny_game_logo/powerball.svg";
 import Cash4LifeLogo from "@/assets/images/ny_game_logo/cash4life.svg";
@@ -23,6 +23,7 @@ import Win4EveningLogo from "@/assets/images/ny_game_logo/win4_evening.svg";
 import NumbersMiddayLogo from "@/assets/images/ny_game_logo/numbers_midday.svg";
 import NumbersEveningLogo from "@/assets/images/ny_game_logo/numbers_evening.svg";
 
+// Mock inicial, pode trocar depois por props/games do contexto
 const mockGames: GameData[] = [
   {
     id: "1",
@@ -199,8 +200,6 @@ const mockGames: GameData[] = [
     bonusNumber: "",
     powerPlay: "",
   },
-
-  // ...demais jogos
 ];
 
 export default function GameCardSlider() {
@@ -209,7 +208,7 @@ export default function GameCardSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const router = useRouter();
 
-  // Responsivo: largura do card entre 320 e 768
+  // Responsivo: largura do card entre 280 e 384
   const maxWidth = 384;
   const minWidth = 280;
   const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
@@ -241,13 +240,8 @@ export default function GameCardSlider() {
         bounces={false}
         scrollEventThrottle={16}
         contentContainerStyle={{
-          // ⬇️ PADDING HORIZONTAL: centraliza o card
-          // Tamanho atual depende do espaço sobrando (ex: (width - cardWidth) / 2)
-          // Pode diminuir esse valor fixando um valor mínimo ou ajustando cardWidth
-          paddingHorizontal: (width - cardWidth) / 0,
-
-          // ⬇️ PADDING VERTICAL: pode adicionar aqui se quiser afastar de topo/fundo
-          // paddingVertical: 20,
+          // Centraliza o card na tela, inclusive o primeiro e último
+          paddingHorizontal: (width - cardWidth) / 2,
         }}
         onScroll={handleScroll}
         renderItem={({ item, index }) => {
@@ -300,8 +294,8 @@ export default function GameCardSlider() {
 
 const styles = StyleSheet.create({
   sliderContainer: {
-    marginTop: -30, // ⬅️ padding top atual: pode mudar para 0 se quiser mais compacto
-    marginBottom: -40, // ⬅️ padding bottom atual: use -50 ou 0 para reduzir
+    marginTop: -30, // pode ajustar conforme seu layout
+    marginBottom: -40,
   },
   dotsContainer: {
     flexDirection: "row",

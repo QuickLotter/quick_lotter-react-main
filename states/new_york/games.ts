@@ -1,7 +1,12 @@
 // Path: states/new_york/games.ts
+
 import { supabase } from "@/services/supabase";
 import { GameData } from "@/types/GameData";
 
+/**
+ * Busca os próximos jogos de Nova York no Supabase.
+ * Retorna um array de GameData padronizado.
+ */
 export async function fetchNewYorkGames(): Promise<GameData[]> {
   const { data, error } = await supabase
     .from("game_next_drawing")
@@ -15,6 +20,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       games (
         id,
         name,
+        slug,
         logo
       )
     `
@@ -26,17 +32,19 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
     return [];
   }
 
-  return data.map((item: any) => ({
-    id: item.id.toString(),
-    name: item.games.name,
+  // Garante compatibilidade com GameCardSlider
+  return (data ?? []).map((item: any) => ({
+    id: String(item.id),
+    name: item.games?.name || "Unknown",
+    slug: item.games?.slug || "megamillions", // Para mapear UI (ex: megamillions, powerball, etc)
     jackpot: item.jackpot,
     cashValue: item.cash_value,
     drawTime: item.date_string,
     drawDate: item.date_next_drawing,
-    numbers: ["01", "02", "03", "04", "05", "09"], // 👈 Fictício por enquanto
-    bonusNumber: "",
-    powerPlay: "5", // 👈 Exemplo
-    result: "1 Match 5 Winner\nNY", // 👈 Exemplo
-    logo: item.games.logo || "https://example.com/default_logo.svg", // 👈 Fallback
+    numbers: ["12", "22", "33", "44", "55", "16"], // MOCK: Troque por dados reais depois
+    bonusNumber: "16", // MOCK
+    powerPlay: "2x", // MOCK
+    result: "No Jackpot Winners | 1 Match 5 Winner | NY", // MOCK
+    logo: item.games?.logo || "https://example.com/default_logo.svg",
   }));
 }

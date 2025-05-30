@@ -16,25 +16,30 @@ import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import GameCardSlider from "@/components/cards/GameCardSlider";
 import MenuDrawer from "./menu-drawer";
 import { GameData } from "@/types/GameData";
-import { fetchNewYorkGames } from "@/states/new_york/games";
+import { useLocation } from "@/app/(main)/context/LocationContext";
+import { fetchGamesByState } from "@/utils/fetchGamesByState"; // NOVO
 
 const DRAWER_WIDTH = 300;
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { state, loading: stateLoading } = useLocation(); // NOVO
   const [games, setGames] = useState<GameData[]>([]);
   const [loading, setLoading] = useState(true);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const slideAnim = useState(new Animated.Value(-DRAWER_WIDTH))[0];
 
+  // Sempre que o estado mudar, atualiza a lista de jogos!
   useEffect(() => {
     async function loadGames() {
-      const data = await fetchNewYorkGames();
+      if (!state || stateLoading) return;
+      setLoading(true);
+      const data = await fetchGamesByState(state);
       setGames(data);
       setLoading(false);
     }
     loadGames();
-  }, []);
+  }, [state, stateLoading]);
 
   const openDrawer = () => {
     setDrawerVisible(true);
@@ -56,7 +61,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <HeaderLogoBack onMenuPress={openDrawer} />
-      {loading ? (
+      {loading || stateLoading ? (
         <ActivityIndicator
           size="large"
           style={{ marginTop: 100 }}
@@ -96,7 +101,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F6F6F8", // iOS cinza claro
+    backgroundColor: "#F6F6F8",
   },
   scrollContainer: {
     paddingTop: 50,
