@@ -41,7 +41,7 @@ function renderLogo(logo: GameData["logo"], width: number, height: number) {
 }
 
 /**
- * Card de jogo de loteria com design responsivo
+ * Card de jogo de loteria com design responsivo e 100% configurável por jogo
  */
 export default function GameCard({ data, onPress }: Props) {
   const { width } = useWindowDimensions();
@@ -50,8 +50,9 @@ export default function GameCard({ data, onPress }: Props) {
   const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
   const scale = cardWidth / 375;
 
-  // Busca a configuração visual específica do jogo
-  const ui = gameSliderUI[data.slug] || gameSliderUI["megamillions"];
+  // Agora lê config_ui individual do jogo (mock/API/Supabase)
+  const ui =
+    data.config_ui || gameSliderUI[data.slug] || gameSliderUI["megamillions"];
 
   return (
     <View
@@ -60,8 +61,10 @@ export default function GameCard({ data, onPress }: Props) {
         {
           width: cardWidth,
           borderColor: ui.borderColor,
-          padding: 28 * scale,
-          borderRadius: 24 * scale,
+          borderWidth: ui.borderWidth ?? 6,
+          borderRadius: ui.borderRadius ?? 24 * scale,
+          backgroundColor: ui.background ?? "#fff",
+          alignSelf: "center",
         },
       ]}
     >
@@ -84,58 +87,127 @@ export default function GameCard({ data, onPress }: Props) {
         }}
       />
 
-      <Text style={[styles.label, { fontSize: 16 * scale }]}>
+      {/* Labels e valores */}
+      <Text
+        style={[
+          styles.label,
+          {
+            fontSize: 16 * scale,
+            color: ui.labelColor ?? "#444",
+            fontFamily: ui.labelFontFamily,
+          },
+        ]}
+      >
         ESTIMATED JACKPOT
       </Text>
       <Text
         style={[
           styles.jackpot,
-          { fontSize: 28 * scale, color: ui.playButtonColor },
+          {
+            fontSize: 28 * scale,
+            color: ui.jackpotColor ?? ui.playButtonColor ?? "#0E4CA1",
+            fontFamily: ui.jackpotFontFamily,
+          },
         ]}
       >
         {data.jackpot}
       </Text>
 
-      <Text style={[styles.muted, { fontSize: 12 * scale }]}>CASH VALUE</Text>
-      <Text style={[styles.cash, { fontSize: 14 * scale }]}>
+      <Text
+        style={[
+          styles.muted,
+          { fontSize: 12 * scale, color: ui.cashLabelColor ?? "#999" },
+        ]}
+      >
+        CASH VALUE
+      </Text>
+      <Text
+        style={[
+          styles.cash,
+          {
+            fontSize: 14 * scale,
+            color: ui.cashValueColor ?? "#222",
+            fontWeight: ui.cashFontWeight ?? "bold",
+          },
+        ]}
+      >
         {data.cashValue}
       </Text>
 
       <Text
-        style={[styles.muted, { fontSize: 12 * scale, marginTop: 6 * scale }]}
+        style={[
+          styles.muted,
+          {
+            fontSize: 12 * scale,
+            marginTop: 6 * scale,
+            color: ui.nextDrawLabelColor ?? "#999",
+            fontFamily: ui.drawLabelFontFamily,
+          },
+        ]}
       >
         NEXT DRAWING
       </Text>
       <Text
         style={[
           styles.drawing,
-          { fontSize: 14 * scale, marginBottom: 12 * scale },
+          {
+            fontSize: 14 * scale,
+            marginBottom: 12 * scale,
+            color: ui.nextDrawColor ?? "#333",
+            fontFamily: ui.drawFontFamily,
+          },
         ]}
       >
         {data.drawTime}
       </Text>
 
-      <Text style={[styles.label, { fontSize: 16 * scale }]}>
+      <Text
+        style={[
+          styles.label,
+          {
+            fontSize: 16 * scale,
+            color: ui.numbersLabelColor ?? "#444",
+            fontFamily: ui.numbersLabelFontFamily,
+          },
+        ]}
+      >
         WINNING NUMBERS
       </Text>
       <Text
         style={[
           styles.drawDate,
-          { fontSize: 14 * scale, marginBottom: 12 * scale },
+          {
+            fontSize: 14 * scale,
+            marginBottom: 12 * scale,
+            color: ui.drawDateColor ?? "#222",
+          },
         ]}
       >
         {data.drawDate}
       </Text>
 
+      {/* Números/Bolas */}
       <View
-        style={[styles.numberRow, { gap: 4 * scale, marginBottom: 16 * scale }]}
+        style={[
+          styles.numberRow,
+          {
+            gap: 4 * scale,
+            marginBottom: 16 * scale,
+            justifyContent: "center",
+          },
+        ]}
       >
         {data.numbers.map((num, index) => {
           const isLast =
-            index === data.numbers.length - 1 && !!ui.lastBallTextColor;
-          const ballColors = isLast ? ui.lastBallGradient : ui.ballGradient;
+            index === data.numbers.length - 1 && !!ui.lastBallGradient;
+          const ballColors = isLast
+            ? ui.lastBallGradient ?? ui.ballGradient
+            : ui.ballGradient;
+          // Permite bola 3D, gradiente, cor diferente por posição/final
           const ballTextColor = isLast
-            ? ui.lastBallTextColor ?? "#000"
+            ? ui.lastBallTextColor ?? "#fff"
+            : Array.isArray(ui.ballTextColor)
+            ? ui.ballTextColor[index % ui.ballTextColor.length]
             : ui.ballTextColor ?? "#101820";
 
           return (
@@ -152,6 +224,10 @@ export default function GameCard({ data, onPress }: Props) {
                 alignItems: "center",
                 borderWidth: 1,
                 borderColor: "#FFFFFF",
+                shadowColor: "#222",
+                shadowOpacity: 0.16,
+                shadowRadius: 5,
+                shadowOffset: { width: 1, height: 4 },
               }}
             >
               <Text
@@ -159,6 +235,7 @@ export default function GameCard({ data, onPress }: Props) {
                   fontSize: 18 * scale,
                   fontWeight: "700",
                   color: ballTextColor,
+                  fontFamily: ui.ballFontFamily,
                 }}
               >
                 {String(num).padStart(2, "0")}
@@ -168,11 +245,17 @@ export default function GameCard({ data, onPress }: Props) {
         })}
       </View>
 
+      {/* PowerPlay, se existir */}
       {!!data.powerPlay?.trim() && (
         <Text
           style={[
             styles.powerLabel,
-            { fontSize: 14 * scale, marginBottom: 10 * scale },
+            {
+              fontSize: 14 * scale,
+              marginBottom: 10 * scale,
+              color: ui.powerLabelColor ?? "#444",
+              fontFamily: ui.powerLabelFontFamily,
+            },
           ]}
         >
           POWER PLAY: {data.powerPlay}
@@ -182,12 +265,17 @@ export default function GameCard({ data, onPress }: Props) {
       <Text
         style={[
           styles.result,
-          { fontSize: 14 * scale, marginBottom: 20 * scale },
+          {
+            fontSize: 14 * scale,
+            marginBottom: 20 * scale,
+            color: ui.resultColor ?? "#222",
+          },
         ]}
       >
         {data.result}
       </Text>
 
+      {/* Botão Play Now */}
       <TouchableOpacity
         style={{
           paddingVertical: 12 * scale,
@@ -205,7 +293,12 @@ export default function GameCard({ data, onPress }: Props) {
         onPress={onPress}
       >
         <Text
-          style={{ color: "#fff", fontWeight: "700", fontSize: 16 * scale }}
+          style={{
+            color: ui.playButtonTextColor ?? "#fff",
+            fontWeight: ui.playButtonFontWeight ?? "700",
+            fontSize: 16 * scale,
+            fontFamily: ui.playButtonFontFamily,
+          }}
         >
           Play Now
         </Text>

@@ -18,6 +18,21 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       numbers: ["01", "22", "33", "44", "55", "16"],
       bonusNumber: "16",
       powerPlay: "2x",
+      result: "No Jackpot Winners | 3 Match 5 Winner | NY",
+    },
+
+    {
+      id: "powerball_ny",
+      name: "powerball",
+      slug: "powerbal",
+      logo: PowerballLogo,
+      jackpot: "$143 Million",
+      cashValue: "$66.8 Million",
+      drawTime: "12h 1m 24s",
+      drawDate: "Wed, May 29, 2025",
+      numbers: ["01", "22", "33", "44", "55", "18"],
+      bonusNumber: "16",
+      powerPlay: "2x",
       result: "No Jackpot Winners | 1 Match 5 Winner | NY",
     },
     // ...
