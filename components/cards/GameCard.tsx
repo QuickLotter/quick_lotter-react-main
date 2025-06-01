@@ -69,7 +69,7 @@ export default function GameCard({ data, onPress }: Props) {
       ]}
     >
       {/* Logo centralizado */}
-      <View style={[styles.logoWrapper, { marginBottom: 8 * scale }]}>
+      <View style={[styles.logoWrapper, { marginBottom: 5 * scale }]}>
         {renderLogo(data.logo, 200 * scale, 60 * scale)}
       </View>
 
@@ -79,10 +79,10 @@ export default function GameCard({ data, onPress }: Props) {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={{
-          height: 10 * scale,
-          width: 245 * scale,
-          marginTop: 12 * scale,
-          marginBottom: 18 * scale,
+          height: 15 * scale,
+          width: 300 * scale,
+          marginTop: 5 * scale,
+          marginBottom: 5 * scale,
           borderRadius: 4 * scale,
         }}
       />
@@ -92,7 +92,7 @@ export default function GameCard({ data, onPress }: Props) {
         style={[
           styles.label,
           {
-            fontSize: 16 * scale,
+            fontSize: 18 * scale,
             color: ui.labelColor ?? "#444",
             fontFamily: ui.labelFontFamily,
           },
@@ -104,7 +104,9 @@ export default function GameCard({ data, onPress }: Props) {
         style={[
           styles.jackpot,
           {
-            fontSize: 28 * scale,
+            fontSize: 30 * scale,
+            marginTop: -2 * scale,
+            marginBottom: -5 * scale,
             color: ui.jackpotColor ?? ui.playButtonColor ?? "#0E4CA1",
             fontFamily: ui.jackpotFontFamily,
           },
@@ -116,7 +118,7 @@ export default function GameCard({ data, onPress }: Props) {
       <Text
         style={[
           styles.muted,
-          { fontSize: 12 * scale, color: ui.cashLabelColor ?? "#999" },
+          { fontSize: 14 * scale, color: ui.cashLabelColor ?? "#999" },
         ]}
       >
         CASH VALUE
@@ -138,7 +140,7 @@ export default function GameCard({ data, onPress }: Props) {
         style={[
           styles.muted,
           {
-            fontSize: 12 * scale,
+            fontSize: 14 * scale,
             marginTop: 6 * scale,
             color: ui.nextDrawLabelColor ?? "#999",
             fontFamily: ui.drawLabelFontFamily,
@@ -165,7 +167,7 @@ export default function GameCard({ data, onPress }: Props) {
         style={[
           styles.label,
           {
-            fontSize: 16 * scale,
+            fontSize: 18 * scale,
             color: ui.numbersLabelColor ?? "#444",
             fontFamily: ui.numbersLabelFontFamily,
           },
@@ -177,7 +179,7 @@ export default function GameCard({ data, onPress }: Props) {
         style={[
           styles.drawDate,
           {
-            fontSize: 14 * scale,
+            fontSize: 16 * scale,
             marginBottom: 12 * scale,
             color: ui.drawDateColor ?? "#222",
           },
@@ -192,7 +194,7 @@ export default function GameCard({ data, onPress }: Props) {
           styles.numberRow,
           {
             gap: 4 * scale,
-            marginBottom: 16 * scale,
+            marginBottom: 5 * scale,
             justifyContent: "center",
           },
         ]}
@@ -217,9 +219,9 @@ export default function GameCard({ data, onPress }: Props) {
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={{
-                width: 40 * scale,
-                height: 40 * scale,
-                borderRadius: 40 * scale,
+                width: 45 * scale,
+                height: 45 * scale,
+                borderRadius: 45 * scale,
                 justifyContent: "center",
                 alignItems: "center",
                 borderWidth: 1,
@@ -232,7 +234,7 @@ export default function GameCard({ data, onPress }: Props) {
             >
               <Text
                 style={{
-                  fontSize: 18 * scale,
+                  fontSize: 20 * scale,
                   fontWeight: "700",
                   color: ballTextColor,
                   fontFamily: ui.ballFontFamily,
@@ -279,7 +281,7 @@ export default function GameCard({ data, onPress }: Props) {
       <TouchableOpacity
         style={{
           paddingVertical: 12 * scale,
-          paddingHorizontal: 40 * scale,
+          paddingHorizontal: 60 * scale,
           borderRadius: 24 * scale,
           borderWidth: 2,
           backgroundColor: ui.playButtonColor,

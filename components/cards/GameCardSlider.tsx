@@ -27,9 +27,9 @@ export default function GameCardSlider({ games }: Props) {
 
   // Responsivo para Card
   const maxWidth = 384;
-  const minWidth = 280;
+  const minWidth = 192;
   const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
-  const cardSpacing = 9;
+  const cardSpacing = 10;
   const fullItemWidth = cardWidth + cardSpacing;
 
   // Verifica se é Desktop (>=1080)
@@ -65,7 +65,7 @@ export default function GameCardSlider({ games }: Props) {
         // DESKTOP: Card central + setas laterais
         <View style={styles.desktopRow}>
           <TouchableOpacity onPress={goPrev} style={styles.arrowBtn}>
-            <Ionicons name="chevron-back-circle" size={48} color="#aab6ff" />
+            <Ionicons name="chevron-back-circle" size={48} color="#bbb" />
           </TouchableOpacity>
 
           <View
@@ -87,7 +87,7 @@ export default function GameCardSlider({ games }: Props) {
           </View>
 
           <TouchableOpacity onPress={goNext} style={styles.arrowBtn}>
-            <Ionicons name="chevron-forward-circle" size={48} color="#aab6ff" />
+            <Ionicons name="chevron-forward-circle" size={48} color="#bbb" />
           </TouchableOpacity>
         </View>
       ) : (

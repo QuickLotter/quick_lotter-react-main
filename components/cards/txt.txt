@@ -1,0 +1,116 @@
+
+const { width } = Dimensions.get("window");
+const ITEM_WIDTH = 384;
+const ITEM_SPACING = 10;
+const FULL_WIDTH = ITEM_WIDTH + ITEM_SPACING;
+
+// Slug só o nome do jogo! NÃO inclui "ny/" nem subpastas.
+// O caminho completo será resolvido pelo router.push!
+const mockGames: GameData[] = [
+
+
+export default function GameCardSlider() {
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
+
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+    {
+      useNativeDriver: true,
+      listener: (event) => {
+        const offsetX = event.nativeEvent.contentOffset.x;
+        const index = Math.round(offsetX / FULL_WIDTH);
+        setCurrentIndex(index);
+      },
+    }
+  );
+
+  return (
+    <View style={styles.sliderContainer}>
+      <Animated.FlatList
+        data={mockGames}
+        keyExtractor={(item) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={FULL_WIDTH}
+        decelerationRate="fast"
+        pagingEnabled
+        bounces={false}
+        scrollEventThrottle={16}
+        contentContainerStyle={{
+          paddingHorizontal: (width - ITEM_WIDTH) / 2,
+        }}
+        onScroll={handleScroll}
+        renderItem={({ item, index }) => {
+          const inputRange = [
+            (index - 1) * FULL_WIDTH,
+            index * FULL_WIDTH,
+            (index + 1) * FULL_WIDTH,
+          ];
+
+          const scale = scrollX.interpolate({
+            inputRange,
+            outputRange: [0.9, 1, 0.9],
+            extrapolate: "clamp",
+          });
+
+          return (
+            <Animated.View
+              style={[styles.cardWrapper, { transform: [{ scale }] }]}
+            >
+              <GameCard
+                data={item}
+                // Mude AQUI! Caminho real para cada jogo:
+                onPress={() =>
+                  router.push(`/generator/states/new_york/${item.slug}`)
+                }
+              />
+            </Animated.View>
+          );
+        }}
+      />
+
+      {/* Dots indicador */}
+      <View style={styles.dotsContainer}>
+        {mockGames.map((_, i) => (
+          <View
+            key={i}
+            style={[
+              styles.dot,
+              currentIndex === i ? styles.dotActive : styles.dotInactive,
+            ]}
+          />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  sliderContainer: {
+    marginTop: -10,
+    marginBottom: -100,
+  },
+  cardWrapper: {
+    width: ITEM_WIDTH,
+    marginHorizontal: ITEM_SPACING / 2,
+  },
+  dotsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 16,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 5,
+  },
+  dotActive: {
+    backgroundColor: "#007EFF",
+  },
+  dotInactive: {
+    backgroundColor: "#C4D9FF",
+  },
+});

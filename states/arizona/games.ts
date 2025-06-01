@@ -6,11 +6,11 @@ import Fantasy5Logo from "@/assets/logos/AZ/fantasy5.svg";
 import ThePickLogo from "@/assets/logos/AZ/thepick.svg";
 import TripleTwistLogo from "@/assets/logos/AZ/tripletwist.svg";
 import Pick3Logo from "@/assets/logos/AZ/pick3.svg";
-import Pick4Logo from "@/assets/logos/AZ/pick4.svg";
-import AllOrNothingLogo from "@/assets/logos/AZ/allornothing.svg";
 
+// MOCK AZ GAMES
 export async function fetchArizonaGames(): Promise<GameData[]> {
   return [
+    // Mega Millions
     {
       id: "megamillions_az",
       name: "Mega Millions",
@@ -25,21 +25,23 @@ export async function fetchArizonaGames(): Promise<GameData[]> {
       powerPlay: "3x",
       result: "No Jackpot Winners | 3 Match 5 Winner | NY",
       config_ui: {
-        borderColor: "#0E4CA1", // cor da borda do card
+        borderColor: "#0E4CA1",
         borderWidth: 4,
         borderRadius: 22,
         background: "#FFF",
-        gradient: ["#FFFFFF", "#0E4CA1", "#FFFFFF"], // gradiente da barra
-        ballGradient: ["#FFFFFF", "#BBBBBB"], //bola gradiente sera a mesma pra todo so jogos
-        ballTextColor: "#101820", //cor dos números das bolas
-        lastBallGradient: ["#FFD700", "#B8860B"], // se tiver bola bônus
-        lastBallTextColor: "#fff", //cor dos números das bolas extra
-        playButtonColor: "#0E4CA1", //cor do fundo botao
-        playButtonBorder: "#EE3E33", //cor da borda do botao
-        playButtonTextColor: "#fff", //cor do text do botao
+        gradient: ["#FFFFFF", "#0E4CA1", "#FFFFFF"],
+        ballGradient: ["#FFFFFF", "#BBBBBB"],
+        ballTextColor: "#101820",
+        lastBallGradient: ["#FFD700", "#B8860B"],
+        lastBallTextColor: "#fff",
+        playButtonColor: "#0E4CA1",
+        playButtonBorder: "#EE3E33",
+        playButtonTextColor: "#fff",
         logoMarginBottom: 10,
       },
     },
+
+    // Powerball
     {
       id: "powerball_az",
       name: "Powerball",
@@ -69,6 +71,8 @@ export async function fetchArizonaGames(): Promise<GameData[]> {
         logoMarginBottom: 10,
       },
     },
+
+    // Fantasy 5
     {
       id: "fantasy5_az",
       name: "Fantasy 5",
@@ -88,16 +92,18 @@ export async function fetchArizonaGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF8F3",
         gradient: ["#FFF8F3", "#E14D2A", "#FFF8F3"],
-        ballGradient: ["#FFF3E0", "#E67C5C"],
-        ballTextColor: "#A8381E",
-        lastBallGradient: ["#E7A77F", "#E14D2A"],
-        lastBallTextColor: "#fff",
+        ballGradient: ["#FFFFFF", "#BBBBBB"],
+        ballTextColor: "#000",
+        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
+        lastBallTextColor: "#000",
         playButtonColor: "#E14D2A",
         playButtonBorder: "#E14D2A",
         playButtonTextColor: "#fff",
         logoMarginBottom: 10,
       },
     },
+
+    // The Pick
     {
       id: "thepick_az",
       name: "The Pick",
@@ -117,16 +123,18 @@ export async function fetchArizonaGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#F5FFF8",
         gradient: ["#D9F5E5", "#0E8157", "#F5FFF8"],
-        ballGradient: ["#ECFFF4", "#63B17B"],
-        ballTextColor: "#134B37",
-        lastBallGradient: ["#B5D9C6", "#0E8157"],
-        lastBallTextColor: "#fff",
+        ballGradient: ["#FFFFFF", "#BBBBBB"],
+        ballTextColor: "#000",
+        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
+        lastBallTextColor: "#000",
         playButtonColor: "#0E8157",
         playButtonBorder: "#0E8157",
         playButtonTextColor: "#fff",
         logoMarginBottom: 10,
       },
     },
+
+    // Triple Twist
     {
       id: "tripletwist_az",
       name: "Triple Twist",
@@ -146,16 +154,18 @@ export async function fetchArizonaGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFFDF3",
         gradient: ["#FFFDF3", "#F5AA3A", "#FFFDF3"],
-        ballGradient: ["#FFEBC0", "#F5AA3A"],
-        ballTextColor: "#A87506",
-        lastBallGradient: ["#F5AA3A", "#FFDFB1"],
-        lastBallTextColor: "#fff",
+        ballGradient: ["#FFFFFF", "#BBBBBB"],
+        ballTextColor: "#000",
+        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
+        lastBallTextColor: "#000",
         playButtonColor: "#F5AA3A",
         playButtonBorder: "#F5AA3A",
         playButtonTextColor: "#fff",
         logoMarginBottom: 10,
       },
     },
+
+    // Pick 3
     {
       id: "pick3_az",
       name: "Pick 3",
@@ -175,41 +185,12 @@ export async function fetchArizonaGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#F7FBFF",
         gradient: ["#F7FBFF", "#4D9DE0", "#F7FBFF"],
-        ballGradient: ["#F0F7FA", "#4D9DE0"],
-        ballTextColor: "#29587A",
-        lastBallGradient: ["#FFA500", "#FFD700"],
-        lastBallTextColor: "#fff",
+        ballGradient: ["#FFFFFF", "#BBBBBB"],
+        ballTextColor: "#000",
+        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
+        lastBallTextColor: "#000",
         playButtonColor: "#4D9DE0",
         playButtonBorder: "#4D9DE0",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
-    {
-      id: "pick4_az",
-      name: "Pick 4",
-      slug: "pick4",
-      logo: Pick4Logo,
-      jackpot: "$5,000",
-      cashValue: "$5,000",
-      drawTime: "Daily 8:00 PM",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["07", "13", "19", "28"],
-      bonusNumber: "",
-      powerPlay: "",
-      result: "",
-      config_ui: {
-        borderColor: "#B892FF",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#F7F2FF",
-        gradient: ["#F7F2FF", "#B892FF", "#F7F2FF"],
-        ballGradient: ["#E3D1FF", "#B892FF"],
-        ballTextColor: "#7E4A9E",
-        lastBallGradient: ["#B892FF", "#E3D1FF"],
-        lastBallTextColor: "#fff",
-        playButtonColor: "#B892FF",
-        playButtonBorder: "#B892FF",
         playButtonTextColor: "#fff",
         logoMarginBottom: 10,
       },
