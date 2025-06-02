@@ -10,6 +10,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { GameData } from "@/types/GameData";
 import { gameSliderUI } from "@/constants/gamesliderui";
+import SimpleTimer from "@/components/SimpleTimer"; // ajuste o caminho conforme seu projeto
 
 type Props = {
   data: GameData;
@@ -34,7 +35,6 @@ function renderLogo(logo: GameData["logo"], width: number, height: number) {
   }
 }
 
-// --- ATENÇÃO: Defina quantas bolas por linha ---
 const MAX_BALLS_PER_ROW = 8;
 
 export default function GameCard({ data, onPress }: Props) {
@@ -44,7 +44,7 @@ export default function GameCard({ data, onPress }: Props) {
   const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
   const scale = cardWidth / 375;
 
-  // Ajuste de tamanho das bolas para caber várias linhas responsivamente
+  // Tamanho das bolas
   const ballSize = Math.max(
     32 * scale,
     Math.min(
@@ -55,6 +55,17 @@ export default function GameCard({ data, onPress }: Props) {
 
   const ui =
     data.config_ui || gameSliderUI[data.slug] || gameSliderUI["megamillions"];
+
+  // ----------- TIMER -----------
+  // Suporte: data.nextDrawDate (Date ISO string), data.nextDrawInSeconds, etc.
+  // Adapte conforme seu objeto data!
+  let seconds = 0;
+  if (data.nextDrawInSeconds !== undefined) {
+    seconds = data.nextDrawInSeconds;
+  } else if (data.nextDrawDate) {
+    const target = new Date(data.nextDrawDate);
+    seconds = Math.max(0, Math.floor((target.getTime() - Date.now()) / 1000));
+  }
 
   return (
     <View
@@ -88,7 +99,6 @@ export default function GameCard({ data, onPress }: Props) {
         }}
       />
 
-      {/* Labels e valores... (igual ao seu código) */}
       <Text
         style={[
           styles.label,
@@ -150,19 +160,14 @@ export default function GameCard({ data, onPress }: Props) {
       >
         NEXT DRAWING
       </Text>
-      <Text
-        style={[
-          styles.drawing,
-          {
-            fontSize: 22 * scale,
-            marginBottom: 12 * scale,
-            color: ui.nextDrawColor ?? "#333",
-            fontFamily: ui.drawFontFamily,
-          },
-        ]}
-      >
-        {data.drawTime}
-      </Text>
+
+      {/* TIMER */}
+      <SimpleTimer
+        seconds={seconds}
+        labelColor="#888"
+        digitColor={ui.borderColor || "#007EFF"}
+        fontSize={18 * scale}
+      />
 
       <Text
         style={[
@@ -171,6 +176,7 @@ export default function GameCard({ data, onPress }: Props) {
             fontSize: 18 * scale,
             color: ui.numbersLabelColor ?? "#444",
             fontFamily: ui.numbersLabelFontFamily,
+            marginTop: 8 * scale,
           },
         ]}
       >
@@ -189,7 +195,7 @@ export default function GameCard({ data, onPress }: Props) {
         {data.drawDate}
       </Text>
 
-      {/* BOLAS EM VÁRIAS LINHAS */}
+      {/* BOLAS */}
       <View
         style={[
           styles.numberRow,
@@ -216,7 +222,6 @@ export default function GameCard({ data, onPress }: Props) {
             ? ui.ballTextColor[index % ui.ballTextColor.length]
             : ui.ballTextColor ?? "#101820";
 
-          // Pula linha a cada MAX_BALLS_PER_ROW bolas (fake grid gap)
           const marginRight =
             (index + 1) % MAX_BALLS_PER_ROW === 0 ? 0 : 1 * scale;
           const marginBottom =
@@ -359,7 +364,7 @@ const styles = StyleSheet.create({
   },
   numberRow: {
     flexDirection: "row",
-    flexWrap: "wrap", // ESSENCIAL: QUEBRA LINHA AUTOMÁTICO!
+    flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
     gap: 4,

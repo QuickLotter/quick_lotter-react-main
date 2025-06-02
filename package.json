@@ -30,6 +30,7 @@
     "react-native": "0.73.7",
     "react-native-credit-card-input": "^1.0.0",
     "react-native-dropdown-picker": "^5.4.6",
+    "react-native-flip-timer": "^0.0.5",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-modal": "^14.0.0-rc.1",
     "react-native-reanimated": "~3.16.1",

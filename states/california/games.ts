@@ -94,7 +94,7 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
         borderRadius: 22,
-        background: "#F4F9FF",
+        background: "#fff",
         gradient: ["#F4F9FF", "#01BBF1", "#F4F9FF"],
         ballGradient: ["#FFFFFF", "#BBBBBB"],
         ballTextColor: "#000",
@@ -125,7 +125,7 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
         borderRadius: 22,
-        background: "#F4F9FF",
+        background: "#fff",
         gradient: ["#F4F9FF", "#01BBF1", "#F4F9FF"],
         ballGradient: ["#FFFFFF", "#BBBBBB"],
         ballTextColor: "#000",
@@ -156,7 +156,7 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
         borderRadius: 22,
-        background: "#F4F9FF",
+        background: "#fff",
         gradient: ["#F4F9FF", "#01BBF1", "#F4F9FF"],
         ballGradient: ["#FFFFFF", "#BBBBBB"],
         ballTextColor: "#000",
@@ -187,7 +187,7 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
         borderRadius: 22,
-        background: "#F4F9FF",
+        background: "#fff",
         gradient: ["#F4F9FF", "#01BBF1", "#F4F9FF"],
         ballGradient: ["#FFFFFF", "#BBBBBB"],
         ballTextColor: "#000",
@@ -218,7 +218,7 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
         borderRadius: 22,
-        background: "#F4F9FF",
+        background: "#fff",
         gradient: ["#F4F9FF", "#01BBF1", "#F4F9FF"],
         ballGradient: ["#FFFFFF", "#BBBBBB"],
         ballTextColor: "#000",
@@ -249,7 +249,7 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
         borderRadius: 22,
-        background: "#F4F9FF",
+        background: "#fff",
         gradient: ["#F4F9FF", "#01BBF1", "#F4F9FF"],
         ballGradient: ["#FFFFFF", "#BBBBBB"],
         ballTextColor: "#000",
