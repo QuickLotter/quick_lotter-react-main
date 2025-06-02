@@ -1,38 +1,33 @@
-// /constants/ny_draw_times.ts
 export const NY_DRAW_TIMES = {
   powerball: {
-    // Domingo, Quarta, Sábado, 22:59 (Eastern)
-    days: [0, 3, 6], // 0=Dom, 1=Seg...
+    days: [1, 3, 6], // 1=Segunda, 3=Quarta, 6=Sábado
     hour: 22,
     minute: 59,
     timezone: "America/New_York",
   },
   megamillions: {
-    // Terça, Sexta, 23:00 (Eastern)
-    days: [2, 5],
-    hour: 23,
+    days: [2, 5], // 2=Terça, 5=Sexta
+    hour: 23, // 23h = 11pm
     minute: 0,
     timezone: "America/New_York",
   },
   cash4life: {
-    // Todos os dias, 21:00 (Eastern)
-    days: [0, 1, 2, 3, 4, 5, 6],
-    hour: 21,
+    days: [0, 1, 2, 3, 4, 5, 6], // Todos os dias (domingo a sábado)
+    hour: 21, // 21h = 9pm
     minute: 0,
     timezone: "America/New_York",
   },
   nylotto: {
-    // Quarta, Sábado, 20:15 (Eastern)
-    days: [3, 6],
-    hour: 20,
-    minute: 15,
+    days: [3, 6], // 3=Quarta, 6=Sábado
+    hour: 20, // 20h = 8pm
+    minute: 15, // 8:15 PM
     timezone: "America/New_York",
   },
   win4_midday: {
     // Todos os dias, 14:30 (Eastern)
-    days: [0, 1, 2, 3, 4, 5, 6],
-    hour: 14,
-    minute: 30,
+    days: [0, 1, 2, 3, 4, 5, 6], // Todos os dias da semana
+    hour: 14, // 14h = 2pm
+    minute: 30, // 2:30 PM
     timezone: "America/New_York",
   },
   win4_evening: {
@@ -73,7 +68,7 @@ export const NY_DRAW_TIMES = {
   pick10: {
     // Todos os dias, 12:30 (Eastern)
     days: [0, 1, 2, 3, 4, 5, 6],
-    hour: 12,
+    hour: 20,
     minute: 30,
     timezone: "America/New_York",
   },

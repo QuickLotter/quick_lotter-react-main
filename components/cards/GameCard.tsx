@@ -11,7 +11,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { GameData } from "@/types/GameData";
 import { gameSliderUI } from "@/constants/gamesliderui";
 import SimpleTimer from "@/components/SimpleTimer";
-import { getNextDrawDate } from "@/utils/getNextDrawDate"; // <<<<<< UTILIZE ESSA FUNÇÃO
+import { getNextDrawDate } from "@/utils/getNextDrawDate";
+import { getGameStateFromId } from "@/utils/getGameStateFromId"; // NOVO!
 
 type Props = {
   data: GameData;
@@ -45,28 +46,18 @@ export default function GameCard({ data, onPress }: Props) {
   const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
   const scale = cardWidth / 375;
 
-  // Tamanho das bolas
-  const ballSize = Math.max(
-    32 * scale,
-    Math.min(
-      48 * scale,
-      (cardWidth - 12 - (MAX_BALLS_PER_ROW - 1) * 4) / MAX_BALLS_PER_ROW
-    )
-  );
+  // Extrai o estado do id do jogo (ex: powerball_ny -> NY)
+  const gameState = getGameStateFromId(data.id);
 
-  const ui =
-    data.config_ui || gameSliderUI[data.slug] || gameSliderUI["megamillions"];
-
-  // ----------- TIMER -----------
-  // Calcula seconds baseado na data do próximo sorteio (ISO ou via utilitário)
+  // Timer logic
   let seconds = 0;
   if (data.nextDrawInSeconds !== undefined) {
     seconds = data.nextDrawInSeconds;
   } else if (data.nextDrawDate) {
     const target = new Date(data.nextDrawDate);
     seconds = Math.max(0, Math.floor((target.getTime() - Date.now()) / 1000));
-  } else if (data.slug) {
-    const nextDraw = getNextDrawDate(data.slug);
+  } else if (gameState && data.slug) {
+    const nextDraw = getNextDrawDate(gameState, data.slug);
     if (nextDraw) {
       seconds = Math.max(
         0,
@@ -74,6 +65,18 @@ export default function GameCard({ data, onPress }: Props) {
       );
     }
   }
+
+  const ui =
+    data.config_ui || gameSliderUI[data.slug] || gameSliderUI["megamillions"];
+
+  // Ball size logic (mantido)
+  const ballSize = Math.max(
+    32 * scale,
+    Math.min(
+      48 * scale,
+      (cardWidth - 12 - (MAX_BALLS_PER_ROW - 1) * 4) / MAX_BALLS_PER_ROW
+    )
+  );
 
   return (
     <View
@@ -378,7 +381,6 @@ const styles = StyleSheet.create({
     gap: 4,
     marginBottom: 16,
     width: "100%",
-
     minHeight: 44,
   },
   powerLabel: {
