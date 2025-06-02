@@ -88,12 +88,12 @@ function TimerPart({
 }) {
   return (
     <View style={{ alignItems: "center" }}>
-      <View style={[timerStyles.timerBox, { minWidth: fontSize * 1.2 }]}>
+      <View style={[timerStyles.timerBox, { minWidth: fontSize * 2 }]}>
         <Text style={{ color, fontWeight: "bold", fontSize }}>
           {String(value).padStart(2, "0")}
         </Text>
       </View>
-      <Text style={{ color: labelColor, fontSize: fontSize * 0.7 }}>
+      <Text style={{ color: labelColor, fontSize: fontSize * 0.75 }}>
         {label}
       </Text>
     </View>

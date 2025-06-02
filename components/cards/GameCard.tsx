@@ -10,7 +10,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { GameData } from "@/types/GameData";
 import { gameSliderUI } from "@/constants/gamesliderui";
-import SimpleTimer from "@/components/SimpleTimer"; // ajuste o caminho conforme seu projeto
+import SimpleTimer from "@/components/SimpleTimer";
+import { getNextDrawDate } from "@/utils/getNextDrawDate"; // <<<<<< UTILIZE ESSA FUNÇÃO
 
 type Props = {
   data: GameData;
@@ -57,14 +58,21 @@ export default function GameCard({ data, onPress }: Props) {
     data.config_ui || gameSliderUI[data.slug] || gameSliderUI["megamillions"];
 
   // ----------- TIMER -----------
-  // Suporte: data.nextDrawDate (Date ISO string), data.nextDrawInSeconds, etc.
-  // Adapte conforme seu objeto data!
+  // Calcula seconds baseado na data do próximo sorteio (ISO ou via utilitário)
   let seconds = 0;
   if (data.nextDrawInSeconds !== undefined) {
     seconds = data.nextDrawInSeconds;
   } else if (data.nextDrawDate) {
     const target = new Date(data.nextDrawDate);
     seconds = Math.max(0, Math.floor((target.getTime() - Date.now()) / 1000));
+  } else if (data.slug) {
+    const nextDraw = getNextDrawDate(data.slug);
+    if (nextDraw) {
+      seconds = Math.max(
+        0,
+        Math.floor((nextDraw.getTime() - Date.now()) / 1000)
+      );
+    }
   }
 
   return (
@@ -370,6 +378,7 @@ const styles = StyleSheet.create({
     gap: 4,
     marginBottom: 16,
     width: "100%",
+
     minHeight: 44,
   },
   powerLabel: {
