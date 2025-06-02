@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -11,43 +11,48 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/AZ/megamillions.svg";
 import AnalysisTabs from "@/components/analysistabs";
 
-const HEADER_HEIGHT = 375;
+const HEADER_HEIGHT = 370;
 const FOOTER_HEIGHT = 70;
 
-// Labels e cores das colunas de blocos (padrão visual)
-const VALUE_BOXES = [
-  { label: "2", bgColor: "#FFFB3B", textColor: "#000" },
-  { label: "3", bgColor: "#EC407A", textColor: "#FFF" },
-  { label: "4", bgColor: "#000", textColor: "#FFF" },
-  { label: "5", bgColor: "#fff", textColor: "#000" },
+// Ranges fixos de SUM para exemplo visual (cores/intervalos)
+const SUM_RANGES = [
+  { top: "15", bottom: "129", color: "#FFEB3B" },
+  { top: "130", bottom: "175", color: "#00B0FF" },
+  { top: "176", bottom: "220", color: "#388E3C" },
+  { top: "221", bottom: "335", color: "#F44336" },
 ];
 
-// MOCK: Linhas da tabela (substituir pelo fetch da API/Supabase)
-const MOCK_ROWS = Array.from({ length: 30 }, (_, i) => ({
+// MOCK DATA (remova depois e troque pelo resultado do fetch do Supabase)
+const MOCK_ROWS = Array.from({ length: 32 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  lines: 2 + (i % 4), // 2, 3, 4, 5
-  values: Array(4)
-    .fill(0)
-    .map(() => 2 + Math.floor(Math.random() * 4)),
+  sum: 129 + ((i * 7) % 210),
+  values: [
+    Math.round(Math.random()), // 0/1 para box1
+    Math.round(Math.random()), // 0/1 para box2
+    Math.round(Math.random()), // 0/1 para box3
+    Math.round(Math.random()), // 0/1 para box4
+  ],
 }));
-// MOCK: Frequências (substituir pelo dado da API)
-const MOCK_FREQ = [95, 50, 49, 29];
+const MOCK_FREQ = [12, 22, 15, 9]; // Frequências por faixa de sum
 
-export default function AnalysisLines() {
-  // Date picker states
+export default function AnalysisSum() {
+  // Datas do filtro
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
-  const [toDate, setToDate] = useState(new Date(2025, 4, 30));
+  const [toDate, setToDate] = useState(new Date(2025, 4, 20));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
 
-  // Dados do mock (troque depois pelo useState/fetch da API)
-  const rows = MOCK_ROWS;
-  const freq = MOCK_FREQ;
-  const loading = false;
+  // SCROLL SYNC refs (para quando tiver rolagem horizontal, se quiser)
+  const headerScrollRef = useRef(null);
 
-  // Helpers para datas (formato MM/DD/YY)
+  // *** QUANDO CONECTAR NO SUPABASE:
+  // const [rows, setRows] = useState([]);
+  // const [freq, setFreq] = useState([0,0,0,0]);
+  // const [loading, setLoading] = useState(false);
+
+  // Função para formatar datas no padrão MM/DD/YY
   const formatDate = (date: Date) => {
     if (!date) return "";
     const mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -55,6 +60,19 @@ export default function AnalysisLines() {
     const yy = String(date.getFullYear()).slice(-2);
     return `${mm}/${dd}/${yy}`;
   };
+
+  // *** DESCOMENTAR E USAR DEPOIS ***
+  // useEffect(() => {
+  //   setLoading(true);
+  //   // Exemplo: fetch do Supabase conforme datas selecionadas
+  //   fetchSumAnalysis(fromDate, toDate).then(({ rows, freq }) => {
+  //     setRows(rows);
+  //     setFreq(freq);
+  //     setLoading(false);
+  //   });
+  // }, [fromDate, toDate]);
+
+  // Date Picker
   const showPicker = (mode: "from" | "to") => setPickerMode(mode);
   const onDateChange = (event, selectedDate) => {
     setPickerMode(null);
@@ -69,34 +87,29 @@ export default function AnalysisLines() {
     }
   };
 
-  // Onde integrar Supabase/API futuramente:
-  // useEffect(() => {
-  //   setLoading(true);
-  //   fetchLinesAnalysis(fromDate, toDate).then(({ rows, freq }) => {
-  //     setRows(rows);
-  //     setFreq(freq);
-  //     setLoading(false);
-  //   });
-  // }, [fromDate, toDate]);
+  // MOCK enquanto não tem API
+  const rows = MOCK_ROWS;
+  const freq = MOCK_FREQ;
+  const loading = false; // troque para "loading" da API quando plugar
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      {/* HEADER FIXO */}
+      {/* HEADER */}
       <View style={styles.fixedHeader}>
         <GameHeader
           logo={<MegamillionsLogo width={100} height={40} />}
           title="Analysis"
-          subtitle="New York Mega Millions"
+          subtitle="Arizona Mega Millions"
           headerColor="#0E4CA1"
-          backTo="/analysis/NY/analysis"
+          backTo="/analysis/AZ/analysis"
         />
 
         {/* TABS DE FILTRO */}
         <AnalysisTabs />
 
-        {/* CAMPOS DE DATA + DRAW COUNT */}
+        {/* FILTRO DE DATA + DRAW COUNT */}
         <View style={styles.datesPad}>
-          <View style={styles.filtersInner}>
+          <View style={styles.innerWrapper}>
             <View style={styles.datesRow}>
               <Text style={styles.dateLabel}>From:</Text>
               <TouchableOpacity
@@ -126,6 +139,7 @@ export default function AnalysisLines() {
           </View>
         </View>
 
+        {/* DateTimePicker */}
         {(pickerMode === "from" || pickerMode === "to") && (
           <DateTimePicker
             value={pickerMode === "from" ? fromDate : toDate}
@@ -137,48 +151,45 @@ export default function AnalysisLines() {
           />
         )}
 
-        {/* CABEÇALHO DA TABELA */}
-        <View style={styles.tableContent}>
-          <View style={styles.tableRow}>
+        {/* CABEÇALHO DA GRADE */}
+        <View style={styles.innerWrapper}>
+          <View style={styles.gridHeader}>
             <View style={styles.dateBox}>
               <Text style={styles.headerText}>DATE</Text>
             </View>
-            <View style={styles.linesBoxGreen}>
-              <Text style={styles.linesBoxGreenText}>LIN</Text>
+            <View style={styles.sumBox}>
+              <Text style={styles.headerText}>SUM</Text>
             </View>
-            {VALUE_BOXES.map((box, i) => (
+            {SUM_RANGES.map((item, i) => (
               <View
                 key={i}
                 style={[
                   styles.greenBox,
-                  {
-                    backgroundColor: box.bgColor,
-                    borderColor: "#000",
-                  },
+                  { backgroundColor: item.color, borderColor: "#000" },
                 ]}
               >
-                <Text style={[styles.rangeText, { color: box.textColor }]}>
-                  {box.label}
-                </Text>
+                <Text style={styles.rangeText}>{item.top}</Text>
+                <View style={styles.separator} />
+                <Text style={styles.rangeText}>{item.bottom}</Text>
               </View>
             ))}
           </View>
         </View>
       </View>
 
-      {/* DADOS PRINCIPAIS */}
+      {/* GRADE DE DADOS */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.tableContent}>
+        <View style={styles.innerWrapper}>
           {loading ? (
             <ActivityIndicator color="#0E4CA1" style={{ marginTop: 40 }} />
           ) : (
             rows.map((row, i) => (
-              <View key={i} style={styles.tableRow}>
+              <View key={i} style={styles.row}>
                 <View style={styles.dateBox}>
                   <Text style={styles.dateText}>{row.date}</Text>
                 </View>
-                <View style={styles.linesBoxGreen}>
-                  <Text style={styles.linesBoxGreenText}>{row.lines}</Text>
+                <View style={styles.sumBox}>
+                  <Text style={styles.sumText}>{row.sum}</Text>
                 </View>
                 {row.values.map((val, j) => (
                   <View key={j} style={styles.greenBox}>
@@ -191,41 +202,41 @@ export default function AnalysisLines() {
         </View>
       </ScrollView>
 
-      {/* RODAPÉ - FREQUENCY */}
+      {/* RODAPÉ FREQUENCIES */}
       <View style={styles.footer}>
-        <View style={styles.tableRow}>
-          <View style={styles.freqLabel}>
-            <Text style={styles.freqLabelText}>FREQUENCY</Text>
-          </View>
-          {freq.map((val, i) => (
-            <View
-              key={i}
-              style={[
-                styles.freqBox,
-                {
-                  backgroundColor: VALUE_BOXES[i]?.bgColor ?? "#CCC",
-                },
-              ]}
-            >
-              <Text
+        <View style={styles.innerWrapper}>
+          <View style={styles.row}>
+            <View style={styles.freqLabel}>
+              <Text style={styles.freqLabelText}>FREQUENCY</Text>
+            </View>
+            {freq.map((val, i) => (
+              <View
+                key={i}
                 style={[
-                  styles.freqText,
-                  { color: VALUE_BOXES[i]?.textColor ?? "#000" },
+                  styles.freqBox,
+                  {
+                    backgroundColor: [
+                      "#43A047",
+                      "#388E3C",
+                      "#FFEB3B",
+                      "#FB8C00",
+                    ][i],
+                  },
                 ]}
               >
-                {val}
-              </Text>
-            </View>
-          ))}
+                <Text style={styles.freqText}>{val}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       </View>
     </SafeAreaView>
   );
 }
 
+// ==== Styles
 const styles = StyleSheet.create({
   wrapper: { flex: 1, backgroundColor: "#ECF1FF" },
-
   fixedHeader: {
     position: "absolute",
     top: 0,
@@ -233,46 +244,34 @@ const styles = StyleSheet.create({
     zIndex: 10,
     backgroundColor: "#ECF1FF",
   },
-
-  filtersPad: {
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 6,
-    borderBottomColor: "#DDD",
-    borderBottomWidth: 1,
-  },
-
-  filtersInner: {
-    width: "100%",
-    maxWidth: 768,
-    alignSelf: "center",
-  },
-
   datesPad: {
     backgroundColor: "#FFFFFF",
     borderBottomColor: "#DDD",
     borderBottomWidth: 1,
     paddingVertical: 6,
   },
-
+  innerWrapper: {
+    width: "100%",
+    maxWidth: 768,
+    alignSelf: "center",
+    paddingHorizontal: 16,
+  },
   datesRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
-    paddingHorizontal: 20,
+    gap: 8,
   },
-
   dateLabel: {
-    fontSize: 14,
     fontWeight: "bold",
+    fontSize: 14,
     color: "#333",
   },
-
   input: {
-    height: 32,
+    height: 30,
     width: 75,
     backgroundColor: "#FFF",
-    borderRadius: 3,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: "#CCC",
     paddingHorizontal: 6,
@@ -287,124 +286,113 @@ const styles = StyleSheet.create({
     color: "#222",
     textAlign: "center",
   },
-
+  gridHeader: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 10,
+    gap: 5,
+  },
   scrollContent: {
-    paddingTop: HEADER_HEIGHT - 110,
+    paddingTop: HEADER_HEIGHT - 80,
     paddingBottom: FOOTER_HEIGHT + 10,
     alignItems: "center",
   },
-
-  tableContent: {
-    width: "100%",
-    maxWidth: 768,
-    alignSelf: "center",
-    paddingHorizontal: 16,
-  },
-
-  tableRow: {
+  row: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 3,
+    gap: 5,
     justifyContent: "center",
-    gap: 4,
-    marginBottom: 4,
   },
-
   dateBox: {
     width: 80,
-    height: 30,
     backgroundColor: "#FFF",
-    borderRadius: 3,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: "#EEE",
     justifyContent: "center",
     alignItems: "center",
   },
-
-  dateText: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-
-  linesBoxGreen: {
-    width: 38,
-    height: 30,
-    backgroundColor: "#005BAA",
-    borderRadius: 3,
-    borderWidth: 1,
-    borderColor: "#000",
+  dateText: { fontSize: 13 },
+  sumBox: {
+    width: 50,
+    height: 45,
+    backgroundColor: "#D9D9D9",
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 5,
+    borderColor: "#000",
+    borderWidth: 1,
   },
-
-  linesBoxGreenText: {
-    fontSize: 14,
+  sumText: {
     fontWeight: "bold",
-    color: "#FFF",
-  },
-
-  headerText: {
-    fontSize: 14,
-    fontWeight: "600",
     color: "#000",
+    fontSize: 15,
   },
-
+  headerText: {
+    fontWeight: "bold",
+    color: "#000",
+    fontSize: 13,
+  },
   greenBox: {
-    width: 30,
-    height: 30,
-    borderRadius: 3,
+    width: 45,
+    height: 45,
+    borderRadius: 4,
     borderWidth: 1,
-    borderColor: "#000",
-    backgroundColor: "#D9EAD3",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#D9EAD3",
   },
-
   greenText: {
+    fontWeight: "bold",
     fontSize: 14,
-    fontWeight: "400",
-    color: "#000",
   },
-
   rangeText: {
-    fontSize: 14,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "bold",
+    lineHeight: 14,
   },
-
+  separator: {
+    width: "70%",
+    height: 2,
+    backgroundColor: "#000",
+    marginVertical: 2,
+  },
   footer: {
     position: "absolute",
     bottom: 0,
     width: "100%",
     backgroundColor: "#ECF1FF",
-    paddingHorizontal: 16,
-    height: FOOTER_HEIGHT,
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    height: FOOTER_HEIGHT,
   },
-
   freqLabel: {
     backgroundColor: "#F5F5F5",
-    borderRadius: 3,
-    paddingHorizontal: 20,
-    paddingVertical: 6,
+    borderRadius: 6,
+    paddingHorizontal: 28,
+    paddingVertical: 10,
     borderWidth: 1,
     borderColor: "#AAA",
   },
-
   freqLabelText: {
     fontWeight: "bold",
     fontSize: 14,
   },
-
   freqBox: {
-    width: 30,
-    height: 30,
-    borderRadius: 3,
+    width: 45,
+    height: 40,
+    borderRadius: 6,
     justifyContent: "center",
     alignItems: "center",
   },
-
   freqText: {
     fontWeight: "bold",
-    fontSize: 14,
+    fontSize: 16,
+    color: "#000",
   },
 });

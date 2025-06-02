@@ -80,7 +80,7 @@ export default function AnalysisDigits() {
           title="Analysis"
           subtitle="New York Mega Millions"
           headerColor="#0E4CA1"
-          backTo="/analysis/new_york/analysis"
+          backTo="/analysis/NY/analysis"
         />
 
         <AnalysisTabs />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -11,43 +11,43 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/AZ/megamillions.svg";
 import AnalysisTabs from "@/components/analysistabs";
 
 const HEADER_HEIGHT = 375;
 const FOOTER_HEIGHT = 70;
 
-// Labels e cores das colunas de blocos (padrão visual)
-const VALUE_BOXES = [
+const ODD_RANGES = [
+  { label: "0", bgColor: "#ff0000", textColor: "#FFF" },
+  { label: "1", bgColor: "#03b9F4", textColor: "#000" },
   { label: "2", bgColor: "#FFFB3B", textColor: "#000" },
   { label: "3", bgColor: "#EC407A", textColor: "#FFF" },
   { label: "4", bgColor: "#000", textColor: "#FFF" },
   { label: "5", bgColor: "#fff", textColor: "#000" },
 ];
 
-// MOCK: Linhas da tabela (substituir pelo fetch da API/Supabase)
+// MOCK DATA – troque depois pelo fetch da API/Supabase!
 const MOCK_ROWS = Array.from({ length: 30 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  lines: 2 + (i % 4), // 2, 3, 4, 5
-  values: Array(4)
+  odd: i % 6, // só para simular
+  values: Array(6)
     .fill(0)
-    .map(() => 2 + Math.floor(Math.random() * 4)),
+    .map(() => Math.round(Math.random())),
 }));
-// MOCK: Frequências (substituir pelo dado da API)
-const MOCK_FREQ = [95, 50, 49, 29];
+const MOCK_FREQ = [95, 78, 50, 49, 30, 29];
 
-export default function AnalysisLines() {
-  // Date picker states
+export default function AnalysisOdd() {
+  // Data range
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
   const [toDate, setToDate] = useState(new Date(2025, 4, 30));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
 
-  // Dados do mock (troque depois pelo useState/fetch da API)
+  // MOCK – substitua pelo estado dos dados da API
   const rows = MOCK_ROWS;
   const freq = MOCK_FREQ;
   const loading = false;
 
-  // Helpers para datas (formato MM/DD/YY)
+  // Date picker helpers
   const formatDate = (date: Date) => {
     if (!date) return "";
     const mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -69,10 +69,10 @@ export default function AnalysisLines() {
     }
   };
 
-  // Onde integrar Supabase/API futuramente:
+  // Ponto para plug da API:
   // useEffect(() => {
   //   setLoading(true);
-  //   fetchLinesAnalysis(fromDate, toDate).then(({ rows, freq }) => {
+  //   fetchOddAnalysis(fromDate, toDate).then(({ rows, freq }) => {
   //     setRows(rows);
   //     setFreq(freq);
   //     setLoading(false);
@@ -86,9 +86,9 @@ export default function AnalysisLines() {
         <GameHeader
           logo={<MegamillionsLogo width={100} height={40} />}
           title="Analysis"
-          subtitle="New York Mega Millions"
+          subtitle="Arizona Mega Millions"
           headerColor="#0E4CA1"
-          backTo="/analysis/NY/analysis"
+          backTo="/analysis/AZ/analysis"
         />
 
         {/* TABS DE FILTRO */}
@@ -143,10 +143,10 @@ export default function AnalysisLines() {
             <View style={styles.dateBox}>
               <Text style={styles.headerText}>DATE</Text>
             </View>
-            <View style={styles.linesBoxGreen}>
-              <Text style={styles.linesBoxGreenText}>LIN</Text>
+            <View style={styles.oddBoxGreen}>
+              <Text style={styles.headerText}>ODD</Text>
             </View>
-            {VALUE_BOXES.map((box, i) => (
+            {ODD_RANGES.map((box, i) => (
               <View
                 key={i}
                 style={[
@@ -177,8 +177,8 @@ export default function AnalysisLines() {
                 <View style={styles.dateBox}>
                   <Text style={styles.dateText}>{row.date}</Text>
                 </View>
-                <View style={styles.linesBoxGreen}>
-                  <Text style={styles.linesBoxGreenText}>{row.lines}</Text>
+                <View style={styles.oddBoxGreen}>
+                  <Text style={styles.oddBoxGreenText}>{row.odd}</Text>
                 </View>
                 {row.values.map((val, j) => (
                   <View key={j} style={styles.greenBox}>
@@ -203,18 +203,18 @@ export default function AnalysisLines() {
               style={[
                 styles.freqBox,
                 {
-                  backgroundColor: VALUE_BOXES[i]?.bgColor ?? "#CCC",
+                  backgroundColor: [
+                    "#43A047",
+                    "#388E3C",
+                    "#FFEB3B",
+                    "#FB8C00",
+                    "#FFEB3B",
+                    "#F44336",
+                  ][i],
                 },
               ]}
             >
-              <Text
-                style={[
-                  styles.freqText,
-                  { color: VALUE_BOXES[i]?.textColor ?? "#000" },
-                ]}
-              >
-                {val}
-              </Text>
+              <Text style={styles.freqText}>{val}</Text>
             </View>
           ))}
         </View>
@@ -245,6 +245,25 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 768,
     alignSelf: "center",
+  },
+
+  sliderRow: {
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 10,
+  },
+
+  filterButton: {
+    width: 124,
+    height: 38,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  filterButtonText: {
+    fontSize: 14,
+    fontWeight: "bold",
   },
 
   datesPad: {
@@ -305,8 +324,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
-    marginBottom: 4,
+    gap: 4, //espaço lateral das caixas
+    marginBottom: 4, //espaço embaixo das caixas
   },
 
   dateBox: {
@@ -325,10 +344,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  linesBoxGreen: {
+  oddBoxGreen: {
     width: 38,
     height: 30,
-    backgroundColor: "#005BAA",
+    backgroundColor: "#4CAF50",
     borderRadius: 3,
     borderWidth: 1,
     borderColor: "#000",
@@ -336,10 +355,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  linesBoxGreenText: {
+  oddBoxGreenText: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#FFF",
+    color: "#000",
   },
 
   headerText: {
@@ -406,5 +425,6 @@ const styles = StyleSheet.create({
   freqText: {
     fontWeight: "bold",
     fontSize: 14,
+    color: "#000",
   },
 });

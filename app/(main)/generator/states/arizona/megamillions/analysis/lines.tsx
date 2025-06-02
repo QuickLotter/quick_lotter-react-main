@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/AZ/megamillions.svg";
 import AnalysisTabs from "@/components/analysistabs";
 
 const HEADER_HEIGHT = 375;
@@ -86,9 +86,9 @@ export default function AnalysisLines() {
         <GameHeader
           logo={<MegamillionsLogo width={100} height={40} />}
           title="Analysis"
-          subtitle="New York Mega Millions"
+          subtitle="Arizona Mega Millions"
           headerColor="#0E4CA1"
-          backTo="/analysis/NY/analysis"
+          backTo="/analysis/AZ/analysis"
         />
 
         {/* TABS DE FILTRO */}

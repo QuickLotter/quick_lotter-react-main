@@ -88,7 +88,7 @@ export default function AnalysisColumns() {
           title="Analysis"
           subtitle="New York Mega Millions"
           headerColor="#0E4CA1"
-          backTo="/analysis/new_york/analysis"
+          backTo="/analysis/NY/analysis"
         />
 
         {/* TABS DE FILTRO */}

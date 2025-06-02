@@ -1,3 +1,5 @@
+// app/(main)/analysis/NY/AnalysisSelector.tsx
+
 import React from "react";
 import {
   View,
@@ -13,7 +15,7 @@ import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import BottomNav from "@/components/generator/layout/BottomNav";
 import { MaterialIcons } from "@expo/vector-icons";
 
-// Logos
+// Logos de NY - ajuste os paths conforme sua estrutura!
 import Powerball from "@/assets/images/ny_game_logo/powerball.svg";
 import MegaMillions from "@/assets/images/ny_game_logo/megamillions.svg";
 import Cash4Life from "@/assets/images/ny_game_logo/cash4life.svg";
@@ -47,7 +49,7 @@ export default function AnalysisSelector() {
 
   return (
     <View style={styles.container}>
-      <HeaderLogoBack title="" />
+      <HeaderLogoBack title="New York" />
       <Text style={styles.pageTitle}>Select Game to Analyze</Text>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {GAMES.map(({ route, Logo, color }) => (
@@ -83,12 +85,10 @@ export default function AnalysisSelector() {
               onPress={() => {
                 if (route === "megamillions") {
                   router.push(
-                    "/generator/states/new_york/megamillions/analysis/sum"
+                    "/generator/states/arizona/megamillions/analysis/sum"
                   );
                 } else {
-                  router.push(
-                    `/generator/states/new_york/${route}/analysis/index`
-                  );
+                  router.push(`/analysis`);
                 }
               }}
             >
@@ -103,10 +103,7 @@ export default function AnalysisSelector() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F6F6F8",
-  },
+  container: { flex: 1, backgroundColor: "#F6F6F8" },
   pageTitle: {
     textAlign: "center",
     fontSize: 20,

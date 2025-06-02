@@ -1,4 +1,3 @@
-// components/analysistabs.tsx
 import React, { useRef, useEffect } from "react";
 import {
   ScrollView,
@@ -7,95 +6,37 @@ import {
   StyleSheet,
   View,
   Animated,
-  Platform,
   LayoutAnimation,
+  Platform,
 } from "react-native";
 import { useRouter, usePathname } from "expo-router";
-
-// Tabs de filtros da Analysis Mega Millions
-const TABS = [
-  // ...mesmo array de tabs como antes...
-  {
-    label: "SUM",
-    color: "#E0E0E0",
-    path: "/generator/states/new_york/megamillions/analysis/sum",
-  },
-  {
-    label: "ODD",
-    color: "#4CAF50",
-    path: "/generator/states/new_york/megamillions/analysis/odd",
-  },
-  {
-    label: "LOW",
-    color: "#9575CD",
-    path: "/generator/states/new_york/megamillions/analysis/low",
-  },
-  {
-    label: "PRIME",
-    color: "#009BDE",
-    path: "/generator/states/new_york/megamillions/analysis/prime",
-  },
-  {
-    label: "FIBONACCI",
-    color: "#E1058C",
-    path: "/generator/states/new_york/megamillions/analysis/fibonacci",
-  },
-  {
-    label: "MULT. OF 3",
-    color: "#4DD0E1",
-    path: "/generator/states/new_york/megamillions/analysis/multipleof3",
-  },
-  {
-    label: "VERTICAL",
-    color: "#B71C1C",
-    path: "/generator/states/new_york/megamillions/analysis/vertical",
-  },
-  {
-    label: "ADJACENT",
-    color: "#8BC34A",
-    path: "/generator/states/new_york/megamillions/analysis/adjacent",
-  },
-  {
-    label: "SEQUENCE",
-    color: "#000000",
-    path: "/generator/states/new_york/megamillions/analysis/sequence",
-  },
-  {
-    label: "REPEATED",
-    color: "#FF9800",
-    path: "/generator/states/new_york/megamillions/analysis/repeated",
-  },
-  {
-    label: "DIGITS",
-    color: "#CDDC39",
-    path: "/generator/states/new_york/megamillions/analysis/digits",
-  },
-  {
-    label: "LINES",
-    color: "#005BAA",
-    path: "/generator/states/new_york/megamillions/analysis/lines",
-  },
-  {
-    label: "COLUMNS",
-    color: "#F8C1D9",
-    path: "/generator/states/new_york/megamillions/analysis/columns",
-  },
-];
+import { ANALYSIS_TABS } from "@/constants/analysisTabsConfig";
 
 export default function AnalysisTabs() {
   const router = useRouter();
   const pathname = usePathname();
   const scrollRef = useRef<ScrollView>(null);
 
-  // Encontra o tab ativo baseado em path exato!
-  const activeIndex = TABS.findIndex(
-    (tab) => tab.path.toLowerCase() === pathname?.toLowerCase()
+  // Extrai o estado e o jogo da rota: /generator/states/XX/JOGO/analysis/ROTA
+  const match = pathname?.match(
+    /\/generator\/states\/([^/]+)\/([^/]+)\/analysis\/([^/]+)/i
   );
+  const state = match?.[1] || "ny";
+  const game = match?.[2] || "megamillions";
+  const route = match?.[3] || "sum";
 
-  // Faz scroll automático pro botão ativo (efeito carrossel)
+  // Tabs específicas do jogo atual
+  const TABS = ANALYSIS_TABS[game] || [];
+
+  // Caminho base do jogo para montar o push de navegação
+  const basePath = `/generator/states/${state}/${game}/analysis`;
+
+  // Descobre o tab ativo pelo route (ex: "sum", "odd"...)
+  const activeIndex = TABS.findIndex((tab) => tab.route === route);
+
+  // Scroll para o tab ativo
   useEffect(() => {
     if (scrollRef.current && activeIndex > -1) {
-      // 132 = largura do botão + marginRight. Ajuste se trocar largura no style!
       scrollRef.current.scrollTo({ x: activeIndex * 132 - 16, animated: true });
     }
   }, [activeIndex]);
@@ -116,7 +57,7 @@ export default function AnalysisTabs() {
               <TouchableOpacity
                 key={btn.label}
                 onPress={() => {
-                  if (!isActive) router.push(btn.path);
+                  if (!isActive) router.push(`${basePath}/${btn.route}`);
                   LayoutAnimation.configureNext(
                     LayoutAnimation.Presets.easeInEaseOut
                   );

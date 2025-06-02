@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/AZ/megamillions.svg";
 import AnalysisTabs from "@/components/analysistabs";
 
 const HEADER_HEIGHT = 375;
@@ -28,7 +28,7 @@ const VALUE_BOXES = [
 // MOCK: Linhas da tabela (substituir pelo fetch da API/Supabase)
 const MOCK_ROWS = Array.from({ length: 30 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  lines: 2 + (i % 4), // 2, 3, 4, 5
+  columns: 2 + (i % 4), // 2, 3, 4, 5
   values: Array(4)
     .fill(0)
     .map(() => 2 + Math.floor(Math.random() * 4)),
@@ -36,7 +36,7 @@ const MOCK_ROWS = Array.from({ length: 30 }, (_, i) => ({
 // MOCK: Frequências (substituir pelo dado da API)
 const MOCK_FREQ = [95, 50, 49, 29];
 
-export default function AnalysisLines() {
+export default function AnalysisColumns() {
   // Date picker states
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
   const [toDate, setToDate] = useState(new Date(2025, 4, 30));
@@ -72,7 +72,7 @@ export default function AnalysisLines() {
   // Onde integrar Supabase/API futuramente:
   // useEffect(() => {
   //   setLoading(true);
-  //   fetchLinesAnalysis(fromDate, toDate).then(({ rows, freq }) => {
+  //   fetchColumnsAnalysis(fromDate, toDate).then(({ rows, freq }) => {
   //     setRows(rows);
   //     setFreq(freq);
   //     setLoading(false);
@@ -86,9 +86,9 @@ export default function AnalysisLines() {
         <GameHeader
           logo={<MegamillionsLogo width={100} height={40} />}
           title="Analysis"
-          subtitle="New York Mega Millions"
+          subtitle="Arizona Mega Millions"
           headerColor="#0E4CA1"
-          backTo="/analysis/NY/analysis"
+          backTo="/analysis/AZ/analysis"
         />
 
         {/* TABS DE FILTRO */}
@@ -143,8 +143,8 @@ export default function AnalysisLines() {
             <View style={styles.dateBox}>
               <Text style={styles.headerText}>DATE</Text>
             </View>
-            <View style={styles.linesBoxGreen}>
-              <Text style={styles.linesBoxGreenText}>LIN</Text>
+            <View style={styles.columnsBoxGreen}>
+              <Text style={styles.columnsBoxGreenText}>COL</Text>
             </View>
             {VALUE_BOXES.map((box, i) => (
               <View
@@ -177,8 +177,8 @@ export default function AnalysisLines() {
                 <View style={styles.dateBox}>
                   <Text style={styles.dateText}>{row.date}</Text>
                 </View>
-                <View style={styles.linesBoxGreen}>
-                  <Text style={styles.linesBoxGreenText}>{row.lines}</Text>
+                <View style={styles.columnsBoxGreen}>
+                  <Text style={styles.columnsBoxGreenText}>{row.columns}</Text>
                 </View>
                 {row.values.map((val, j) => (
                   <View key={j} style={styles.greenBox}>
@@ -325,10 +325,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  linesBoxGreen: {
+  columnsBoxGreen: {
     width: 38,
     height: 30,
-    backgroundColor: "#005BAA",
+    backgroundColor: "#ff0004",
     borderRadius: 3,
     borderWidth: 1,
     borderColor: "#000",
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  linesBoxGreenText: {
+  columnsBoxGreenText: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#FFF",

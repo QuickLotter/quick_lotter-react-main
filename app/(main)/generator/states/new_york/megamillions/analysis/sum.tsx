@@ -97,13 +97,11 @@ export default function AnalysisSum() {
       {/* HEADER */}
       <View style={styles.fixedHeader}>
         <GameHeader
-  logo={<MegamillionsLogo width={100} height={40} />}
-  title="Analysis"
-  subtitle="New York Mega Millions"
-  headerColor="#0E4CA1"
-  backTo="/analysis/new_york/analysis"
-/>
-
+          logo={<MegamillionsLogo width={100} height={40} />}
+          title="Analysis"
+          subtitle="New York Mega Millions"
+          headerColor="#0E4CA1"
+          backTo="/analysis/NY/analysis"
         />
 
         {/* TABS DE FILTRO */}

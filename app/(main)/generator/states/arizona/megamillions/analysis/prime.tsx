@@ -7,47 +7,44 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Platform,
-  ActivityIndicator,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/AZ/megamillions.svg";
 import AnalysisTabs from "@/components/analysistabs";
 
 const HEADER_HEIGHT = 375;
 const FOOTER_HEIGHT = 70;
 
-// Labels e cores das colunas de blocos (padrão visual)
-const VALUE_BOXES = [
+const PRIME_RANGES = [
+  { label: "0", bgColor: "#ff0000", textColor: "#FFF" },
+  { label: "1", bgColor: "#03b9F4", textColor: "#000" },
   { label: "2", bgColor: "#FFFB3B", textColor: "#000" },
   { label: "3", bgColor: "#EC407A", textColor: "#FFF" },
   { label: "4", bgColor: "#000", textColor: "#FFF" },
-  { label: "5", bgColor: "#fff", textColor: "#000" },
 ];
 
-// MOCK: Linhas da tabela (substituir pelo fetch da API/Supabase)
+// MOCK DATA – troque pelo fetch da API/Supabase depois
 const MOCK_ROWS = Array.from({ length: 30 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  lines: 2 + (i % 4), // 2, 3, 4, 5
-  values: Array(4)
+  prime: i % 5,
+  values: Array(5)
     .fill(0)
-    .map(() => 2 + Math.floor(Math.random() * 4)),
+    .map(() => Math.round(Math.random())),
 }));
-// MOCK: Frequências (substituir pelo dado da API)
-const MOCK_FREQ = [95, 50, 49, 29];
+const MOCK_FREQ = [95, 78, 50, 49, 29];
 
-export default function AnalysisLines() {
-  // Date picker states
+export default function AnalysisPrime() {
+  // Data range
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
   const [toDate, setToDate] = useState(new Date(2025, 4, 30));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
 
-  // Dados do mock (troque depois pelo useState/fetch da API)
+  // MOCK – depois troque pelo estado da API
   const rows = MOCK_ROWS;
   const freq = MOCK_FREQ;
-  const loading = false;
 
-  // Helpers para datas (formato MM/DD/YY)
+  // Date picker helpers
   const formatDate = (date: Date) => {
     if (!date) return "";
     const mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -69,29 +66,25 @@ export default function AnalysisLines() {
     }
   };
 
-  // Onde integrar Supabase/API futuramente:
+  // Ponto para plugar a API:
   // useEffect(() => {
-  //   setLoading(true);
-  //   fetchLinesAnalysis(fromDate, toDate).then(({ rows, freq }) => {
+  //   fetchPrimeAnalysis(fromDate, toDate).then(({ rows, freq }) => {
   //     setRows(rows);
   //     setFreq(freq);
-  //     setLoading(false);
   //   });
   // }, [fromDate, toDate]);
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      {/* HEADER FIXO */}
       <View style={styles.fixedHeader}>
         <GameHeader
           logo={<MegamillionsLogo width={100} height={40} />}
           title="Analysis"
-          subtitle="New York Mega Millions"
+          subtitle="Arizona Mega Millions"
           headerColor="#0E4CA1"
-          backTo="/analysis/NY/analysis"
+          backTo="/analysis/AZ/analysis"
         />
 
-        {/* TABS DE FILTRO */}
         <AnalysisTabs />
 
         {/* CAMPOS DE DATA + DRAW COUNT */}
@@ -137,16 +130,15 @@ export default function AnalysisLines() {
           />
         )}
 
-        {/* CABEÇALHO DA TABELA */}
         <View style={styles.tableContent}>
           <View style={styles.tableRow}>
             <View style={styles.dateBox}>
               <Text style={styles.headerText}>DATE</Text>
             </View>
-            <View style={styles.linesBoxGreen}>
-              <Text style={styles.linesBoxGreenText}>LIN</Text>
+            <View style={styles.primeBoxGreen}>
+              <Text style={styles.primeBoxGreenText}>PRI</Text>
             </View>
-            {VALUE_BOXES.map((box, i) => (
+            {PRIME_RANGES.map((box, i) => (
               <View
                 key={i}
                 style={[
@@ -166,32 +158,26 @@ export default function AnalysisLines() {
         </View>
       </View>
 
-      {/* DADOS PRINCIPAIS */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.tableContent}>
-          {loading ? (
-            <ActivityIndicator color="#0E4CA1" style={{ marginTop: 40 }} />
-          ) : (
-            rows.map((row, i) => (
-              <View key={i} style={styles.tableRow}>
-                <View style={styles.dateBox}>
-                  <Text style={styles.dateText}>{row.date}</Text>
-                </View>
-                <View style={styles.linesBoxGreen}>
-                  <Text style={styles.linesBoxGreenText}>{row.lines}</Text>
-                </View>
-                {row.values.map((val, j) => (
-                  <View key={j} style={styles.greenBox}>
-                    <Text style={styles.greenText}>{val}</Text>
-                  </View>
-                ))}
+          {rows.map((row, i) => (
+            <View key={i} style={styles.tableRow}>
+              <View style={styles.dateBox}>
+                <Text style={styles.dateText}>{row.date}</Text>
               </View>
-            ))
-          )}
+              <View style={styles.primeBoxGreen}>
+                <Text style={styles.primeBoxGreenText}>{row.prime}</Text>
+              </View>
+              {row.values.map((val, j) => (
+                <View key={j} style={styles.greenBox}>
+                  <Text style={styles.greenText}>{val}</Text>
+                </View>
+              ))}
+            </View>
+          ))}
         </View>
       </ScrollView>
 
-      {/* RODAPÉ - FREQUENCY */}
       <View style={styles.footer}>
         <View style={styles.tableRow}>
           <View style={styles.freqLabel}>
@@ -202,15 +188,13 @@ export default function AnalysisLines() {
               key={i}
               style={[
                 styles.freqBox,
-                {
-                  backgroundColor: VALUE_BOXES[i]?.bgColor ?? "#CCC",
-                },
+                { backgroundColor: PRIME_RANGES[i]?.bgColor ?? "#CCC" },
               ]}
             >
               <Text
                 style={[
                   styles.freqText,
-                  { color: VALUE_BOXES[i]?.textColor ?? "#000" },
+                  { color: PRIME_RANGES[i]?.textColor ?? "#000" },
                 ]}
               >
                 {val}
@@ -225,7 +209,6 @@ export default function AnalysisLines() {
 
 const styles = StyleSheet.create({
   wrapper: { flex: 1, backgroundColor: "#ECF1FF" },
-
   fixedHeader: {
     position: "absolute",
     top: 0,
@@ -233,27 +216,39 @@ const styles = StyleSheet.create({
     zIndex: 10,
     backgroundColor: "#ECF1FF",
   },
-
   filtersPad: {
     backgroundColor: "#FFFFFF",
     paddingVertical: 6,
     borderBottomColor: "#DDD",
     borderBottomWidth: 1,
   },
-
   filtersInner: {
     width: "100%",
     maxWidth: 768,
     alignSelf: "center",
   },
-
+  sliderRow: {
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 10,
+  },
+  filterButton: {
+    width: 124,
+    height: 38,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  filterButtonText: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
   datesPad: {
     backgroundColor: "#FFFFFF",
     borderBottomColor: "#DDD",
     borderBottomWidth: 1,
     paddingVertical: 6,
   },
-
   datesRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -261,13 +256,11 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 20,
   },
-
   dateLabel: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#333",
   },
-
   input: {
     height: 32,
     width: 75,
@@ -287,20 +280,17 @@ const styles = StyleSheet.create({
     color: "#222",
     textAlign: "center",
   },
-
   scrollContent: {
     paddingTop: HEADER_HEIGHT - 110,
     paddingBottom: FOOTER_HEIGHT + 10,
     alignItems: "center",
   },
-
   tableContent: {
     width: "100%",
     maxWidth: 768,
     alignSelf: "center",
     paddingHorizontal: 16,
   },
-
   tableRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -308,7 +298,6 @@ const styles = StyleSheet.create({
     gap: 4,
     marginBottom: 4,
   },
-
   dateBox: {
     width: 80,
     height: 30,
@@ -319,35 +308,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   dateText: {
     fontSize: 14,
     fontWeight: "600",
   },
-
-  linesBoxGreen: {
+  primeBoxGreen: {
     width: 38,
     height: 30,
-    backgroundColor: "#005BAA",
+    backgroundColor: "#009BDE",
     borderRadius: 3,
     borderWidth: 1,
     borderColor: "#000",
     justifyContent: "center",
     alignItems: "center",
   },
-
-  linesBoxGreenText: {
+  primeBoxGreenText: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#FFF",
+    color: "#000",
   },
-
   headerText: {
     fontSize: 14,
     fontWeight: "600",
     color: "#000",
   },
-
   greenBox: {
     width: 30,
     height: 30,
@@ -358,18 +342,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   greenText: {
     fontSize: 14,
     fontWeight: "400",
     color: "#000",
   },
-
   rangeText: {
     fontSize: 14,
     fontWeight: "600",
   },
-
   footer: {
     position: "absolute",
     bottom: 0,
@@ -380,7 +361,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   freqLabel: {
     backgroundColor: "#F5F5F5",
     borderRadius: 3,
@@ -389,12 +369,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#AAA",
   },
-
   freqLabelText: {
     fontWeight: "bold",
     fontSize: 14,
   },
-
   freqBox: {
     width: 30,
     height: 30,
@@ -402,7 +380,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   freqText: {
     fontWeight: "bold",
     fontSize: 14,
