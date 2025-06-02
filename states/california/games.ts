@@ -26,7 +26,8 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
       numbers: ["05", "09", "22", "34", "51", "10"],
       bonusNumber: "10",
       powerPlay: "2x",
-      result: "No Jackpot Winner | 1 Match 5 Winner | CA",
+      result:
+        "No Jackpot Winners                                                                                             3 Match 5 Winner                                                          CA",
       config_ui: {
         borderColor: "#C7102E",
         borderWidth: 4,
@@ -56,7 +57,8 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
       numbers: ["01", "22", "33", "44", "55", "16"],
       bonusNumber: "16",
       powerPlay: "3x",
-      result: "No Jackpot Winners | 3 Match 5 Winner | CA",
+      result:
+        "No Jackpot Winners                                                                                             3 Match 5 Winner                                                          CA",
       config_ui: {
         borderColor: "#0E4CA1",
         borderWidth: 4,
@@ -65,7 +67,7 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
         gradient: ["#FFFFFF", "#0E4CA1", "#FFFFFF"],
         ballGradient: ["#FFFFFF", "#BBBBBB"],
         ballTextColor: "#101820",
-        lastBallGradient: ["#FFD700", "#B8860B"],
+        lastBallGradient: ["#FFD700", "#DCAD09"],
         lastBallTextColor: "#fff",
         playButtonColor: "#0E4CA1",
         playButtonBorder: "#EE3E33",
@@ -86,7 +88,8 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
       numbers: ["11", "19", "22", "31", "44", "13"],
       bonusNumber: "13",
       powerPlay: "",
-      result: "",
+      result:
+        "No Jackpot Winners                                                                                             3 Match 5 Winner                                                          CA",
       config_ui: {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
@@ -95,8 +98,8 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
         gradient: ["#F4F9FF", "#01BBF1", "#F4F9FF"],
         ballGradient: ["#FFFFFF", "#BBBBBB"],
         ballTextColor: "#000",
-        lastBallGradient: ["#DCAD09", "#AB8B00"],
-        lastBallTextColor: "#000",
+        lastBallGradient: ["#FFD700", "#DCAD09"],
+        lastBallTextColor: "#FFF",
         playButtonColor: "#01BBF1",
         playButtonBorder: "#01BBF1",
         playButtonTextColor: "#fff",
@@ -116,7 +119,8 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
       numbers: ["03", "09", "14", "23", "35"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "No Jackpot Winners                                                                                             3 Match 5 Winner                                                          CA",
       config_ui: {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
@@ -146,7 +150,8 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
       numbers: ["04", "07", "09"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "MIDDAY                                                                                             3 Match 5 Winner                                                          CA",
       config_ui: {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
@@ -176,7 +181,8 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
       numbers: ["01", "08", "09"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "EVENING                                                                                             3 Match 5 Winner                                                          CA",
       config_ui: {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
@@ -206,7 +212,8 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
       numbers: ["01", "05", "09", "11"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "MIDDAY                                                                                              3 Match 5 Winner                                                          CA",
       config_ui: {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,
@@ -236,7 +243,8 @@ export async function fetchCaliforniaGames(): Promise<GameData[]> {
       numbers: ["07", "03", "12"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "EVENING                                                                                             3 Match 5 Winner                                                          CA",
       config_ui: {
         borderColor: "#01BBF1", // Azul claro do logo
         borderWidth: 4,

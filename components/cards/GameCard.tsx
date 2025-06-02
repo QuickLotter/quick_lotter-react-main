@@ -16,14 +16,9 @@ type Props = {
   onPress?: () => void;
 };
 
-/**
- * Renderiza o logo corretamente, seja SVG (React.ComponentType) ou string (URL)
- */
 function renderLogo(logo: GameData["logo"], width: number, height: number) {
   if (!logo) return null;
-
   if (typeof logo === "string") {
-    // URL ou local file string
     return (
       <Image
         source={{ uri: logo }}
@@ -35,22 +30,29 @@ function renderLogo(logo: GameData["logo"], width: number, height: number) {
       />
     );
   } else {
-    // SVG importado como React.ComponentType
     return React.createElement(logo, { width, height });
   }
 }
 
-/**
- * Card de jogo de loteria com design responsivo e 100% configurável por jogo
- */
+// --- ATENÇÃO: Defina quantas bolas por linha ---
+const MAX_BALLS_PER_ROW = 8;
+
 export default function GameCard({ data, onPress }: Props) {
   const { width } = useWindowDimensions();
-  const maxWidth = 384;
+  const maxWidth = 375;
   const minWidth = 192;
   const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
   const scale = cardWidth / 375;
 
-  // Agora lê config_ui individual do jogo (mock/API/Supabase)
+  // Ajuste de tamanho das bolas para caber várias linhas responsivamente
+  const ballSize = Math.max(
+    32 * scale,
+    Math.min(
+      48 * scale,
+      (cardWidth - 12 - (MAX_BALLS_PER_ROW - 1) * 4) / MAX_BALLS_PER_ROW
+    )
+  );
+
   const ui =
     data.config_ui || gameSliderUI[data.slug] || gameSliderUI["megamillions"];
 
@@ -69,11 +71,10 @@ export default function GameCard({ data, onPress }: Props) {
       ]}
     >
       {/* Logo centralizado */}
-      <View style={[styles.logoWrapper, { marginBottom: 5 * scale }]}>
+      <View style={[styles.logoWrapper, { marginBottom: 8 * scale }]}>
         {renderLogo(data.logo, 200 * scale, 60 * scale)}
       </View>
 
-      {/* Barra gradiente */}
       <LinearGradient
         colors={ui.gradient}
         start={{ x: 0, y: 0 }}
@@ -87,7 +88,7 @@ export default function GameCard({ data, onPress }: Props) {
         }}
       />
 
-      {/* Labels e valores */}
+      {/* Labels e valores... (igual ao seu código) */}
       <Text
         style={[
           styles.label,
@@ -104,7 +105,7 @@ export default function GameCard({ data, onPress }: Props) {
         style={[
           styles.jackpot,
           {
-            fontSize: 30 * scale,
+            fontSize: 28 * scale,
             marginTop: -2 * scale,
             marginBottom: -5 * scale,
             color: ui.jackpotColor ?? ui.playButtonColor ?? "#0E4CA1",
@@ -127,7 +128,7 @@ export default function GameCard({ data, onPress }: Props) {
         style={[
           styles.cash,
           {
-            fontSize: 14 * scale,
+            fontSize: 18 * scale,
             color: ui.cashValueColor ?? "#222",
             fontWeight: ui.cashFontWeight ?? "bold",
           },
@@ -153,7 +154,7 @@ export default function GameCard({ data, onPress }: Props) {
         style={[
           styles.drawing,
           {
-            fontSize: 14 * scale,
+            fontSize: 22 * scale,
             marginBottom: 12 * scale,
             color: ui.nextDrawColor ?? "#333",
             fontFamily: ui.drawFontFamily,
@@ -181,21 +182,25 @@ export default function GameCard({ data, onPress }: Props) {
           {
             fontSize: 16 * scale,
             marginBottom: 12 * scale,
-            color: ui.drawDateColor ?? "#222",
+            color: ui.drawDateColor ?? "#000",
           },
         ]}
       >
         {data.drawDate}
       </Text>
 
-      {/* Números/Bolas */}
+      {/* BOLAS EM VÁRIAS LINHAS */}
       <View
         style={[
           styles.numberRow,
           {
             gap: 4 * scale,
-            marginBottom: 5 * scale,
+            marginBottom: 2 * scale,
             justifyContent: "center",
+            flexWrap: "wrap",
+            alignItems: "center",
+            width: "100%",
+            minHeight: ballSize * 1.1,
           },
         ]}
       >
@@ -205,12 +210,17 @@ export default function GameCard({ data, onPress }: Props) {
           const ballColors = isLast
             ? ui.lastBallGradient ?? ui.ballGradient
             : ui.ballGradient;
-          // Permite bola 3D, gradiente, cor diferente por posição/final
           const ballTextColor = isLast
             ? ui.lastBallTextColor ?? "#fff"
             : Array.isArray(ui.ballTextColor)
             ? ui.ballTextColor[index % ui.ballTextColor.length]
             : ui.ballTextColor ?? "#101820";
+
+          // Pula linha a cada MAX_BALLS_PER_ROW bolas (fake grid gap)
+          const marginRight =
+            (index + 1) % MAX_BALLS_PER_ROW === 0 ? 0 : 1 * scale;
+          const marginBottom =
+            index < data.numbers.length - MAX_BALLS_PER_ROW ? 7 * scale : 0;
 
           return (
             <LinearGradient
@@ -219,22 +229,20 @@ export default function GameCard({ data, onPress }: Props) {
               start={{ x: 0.5, y: 0 }}
               end={{ x: 0.5, y: 1 }}
               style={{
-                width: 45 * scale,
-                height: 45 * scale,
-                borderRadius: 45 * scale,
+                width: ballSize,
+                height: ballSize,
+                borderRadius: ballSize / 2,
                 justifyContent: "center",
                 alignItems: "center",
                 borderWidth: 1,
                 borderColor: "#FFFFFF",
-                shadowColor: "#222",
-                shadowOpacity: 0.16,
-                shadowRadius: 5,
-                shadowOffset: { width: 1, height: 4 },
+                marginRight,
+                marginBottom,
               }}
             >
               <Text
                 style={{
-                  fontSize: 20 * scale,
+                  fontSize: ballSize * 0.53,
                   fontWeight: "700",
                   color: ballTextColor,
                   fontFamily: ui.ballFontFamily,
@@ -247,7 +255,6 @@ export default function GameCard({ data, onPress }: Props) {
         })}
       </View>
 
-      {/* PowerPlay, se existir */}
       {!!data.powerPlay?.trim() && (
         <Text
           style={[
@@ -277,7 +284,6 @@ export default function GameCard({ data, onPress }: Props) {
         {data.result}
       </Text>
 
-      {/* Botão Play Now */}
       <TouchableOpacity
         style={{
           paddingVertical: 12 * scale,
@@ -311,7 +317,7 @@ export default function GameCard({ data, onPress }: Props) {
 
 const styles = StyleSheet.create({
   cardWrapper: {
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
     borderRadius: 24,
     borderWidth: 6,
     padding: 32,
@@ -353,21 +359,14 @@ const styles = StyleSheet.create({
   },
   numberRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 4,
-    marginBottom: 16,
-  },
-  numberBall: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
+    flexWrap: "wrap", // ESSENCIAL: QUEBRA LINHA AUTOMÁTICO!
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#FFFFFF",
+    gap: 4,
+    marginBottom: 16,
+    width: "100%",
+    minHeight: 44,
   },
-  numberText: { fontWeight: "700", fontSize: 14 },
   powerLabel: {
     fontSize: 14,
     fontWeight: "700",

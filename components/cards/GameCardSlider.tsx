@@ -27,9 +27,9 @@ export default function GameCardSlider({ games }: Props) {
 
   // Responsivo para Card
   const maxWidth = 384;
-  const minWidth = 192;
+  const minWidth = 280;
   const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
-  const cardSpacing = 10;
+  const cardSpacing = 9;
   const fullItemWidth = cardWidth + cardSpacing;
 
   // Verifica se é Desktop (>=1080)
@@ -161,8 +161,8 @@ export default function GameCardSlider({ games }: Props) {
 
 const styles = StyleSheet.create({
   sliderContainer: {
-    marginTop: -30,
-    marginBottom: -40,
+    marginTop: 0,
+    marginBottom: "center",
     alignSelf: "center",
     width: "100%",
     maxWidth: 1080,

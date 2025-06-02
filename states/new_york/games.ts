@@ -21,12 +21,13 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: PowerballLogo,
       jackpot: "$95 Million",
       cashValue: "$45.7 Million",
-      drawTime: "Mon, Wed, Sat 10:59 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
       numbers: ["05", "09", "22", "34", "51", "10"],
       bonusNumber: "10",
       powerPlay: "2x",
-      result: "No Jackpot Winner | 1 Match 5 Winner | NY",
+      result:
+        "No Jackpot Winners                                                                                             3 Match 5 Winner                                                          NY",
       config_ui: {
         borderColor: "#C7102E",
         gradient: ["#FFFFFF", "#C7102E", "#FFFFFF"],
@@ -40,7 +41,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -50,17 +51,18 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: MegaMillionsLogo,
       jackpot: "$143 Million",
       cashValue: "$66.8 Million",
-      drawTime: "Tue & Fri 11:00 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
       numbers: ["01", "22", "33", "44", "55", "16"],
-      bonusNumber: "16",
+      bonusNumber: "",
       powerPlay: "3x",
-      result: "No Jackpot Winners | 3 Match 5 Winner | NY",
+      result:
+        "No Jackpot Winners                                                                                             3 Match 5 Winner                                                          NY",
       config_ui: {
         borderColor: "#05549E",
         gradient: ["#FFFFFF", "#0E4CA1", "#FFFFFF"],
         ballGradient: ["#FFFFFF", "#BBBBBB"],
-        lastBallGradient: ["#FFDE1B", "#B77302"],
+        lastBallGradient: ["#FFDE1B", "#DCAD09"],
         playButtonColor: "#0E4CA1",
         playButtonBorder: "#EE3E33",
         ballTextColor: "#101820",
@@ -69,7 +71,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -79,12 +81,13 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: Cash4LifeLogo,
       jackpot: "$7,000/Week for Life",
       cashValue: "$3,800,000",
-      drawTime: "Daily 9:00 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
       numbers: ["02", "13", "24", "31", "52", "04"],
-      bonusNumber: "04",
+      bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "No Jackpot Winners                                                                                             3 Match 5 Winner                                                          NY",
       config_ui: {
         borderColor: "#2D7F67",
         gradient: ["#FFFFFF", "#2D7F67", "#FFFFFF"],
@@ -98,7 +101,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -108,12 +111,13 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: NYLottoLogo,
       jackpot: "$12.3 Million",
       cashValue: "$7.5 Million",
-      drawTime: "Wed & Sat 8:15 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
-      numbers: ["11", "19", "24", "38", "43", "48"],
-      bonusNumber: "",
+      numbers: ["11", "19", "24", "38", "43", "48", "57"],
+      bonusNumber: "03",
       powerPlay: "",
-      result: "",
+      result:
+        "No Jackpot Winners                                                                                             3 Match 5 Winner                                                          NY",
       config_ui: {
         borderColor: "#D31245",
         gradient: ["#FFFFFF", "#D31245", "#FFFFFF"],
@@ -127,7 +131,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -137,12 +141,14 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: Win4MiddayLogo,
       jackpot: "$5,000",
       cashValue: "$5,000",
-      drawTime: "Daily 2:30 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
-      numbers: ["02", "07", "08", "10"],
+      numbers: ["0", "7", "8", "0"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "MIDDAY                                                                                             5 Match Straight                                                        NY",
+
       config_ui: {
         borderColor: "#7E0C6E",
         gradient: ["#FFFFFF", "#7E0C6E", "#FFFFFF"],
@@ -156,7 +162,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -166,12 +172,14 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: Win4EveningLogo,
       jackpot: "$5,000",
       cashValue: "$5,000",
-      drawTime: "Daily 7:30 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
       numbers: ["04", "07", "12", "15"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "EVENING                                                                                             5 Match Straight                                                        NY",
+
       config_ui: {
         borderColor: "#7E0C6E",
         gradient: ["#FFFFFF", "#7E0C6E", "#FFFFFF"],
@@ -185,7 +193,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -195,12 +203,14 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: NumbersMiddayLogo,
       jackpot: "$500",
       cashValue: "$500",
-      drawTime: "Daily 2:30 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
       numbers: ["01", "05", "09"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "MIDDAY                                                                                             5 Match Straight                                                        NY",
+
       config_ui: {
         borderColor: "#2E73B5",
         gradient: ["#FFFFFF", "#2E73B5", "#FFFFFF"],
@@ -214,7 +224,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -224,12 +234,14 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: NumbersEveningLogo,
       jackpot: "$500",
       cashValue: "$500",
-      drawTime: "Daily 7:30 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
       numbers: ["01", "07", "09"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "EVENING                                                                                             5 Match Straight                                                        NY",
+
       config_ui: {
         borderColor: "#2E73B5",
         gradient: ["#FFFFFF", "#2E73B5", "#FFFFFF"],
@@ -243,7 +255,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -253,12 +265,14 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: Take5MiddayLogo,
       jackpot: "$20,000",
       cashValue: "$20,000",
-      drawTime: "Daily 2:30 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
       numbers: ["02", "08", "13", "19", "24"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "MIDDAY                                                                                              5 Match Straight                                                        NY",
+
       config_ui: {
         borderColor: "#CA3092",
         gradient: ["#FFFFFF", "#CA3092", "#FFFFFF"],
@@ -272,7 +286,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -282,12 +296,14 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: Take5EveningLogo,
       jackpot: "$20,000",
       cashValue: "$20,000",
-      drawTime: "Daily 7:30 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
       numbers: ["06", "15", "23", "25", "29"],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result:
+        "EVENING                                                                                             5 Match Straight                                                        NY",
+
       config_ui: {
         borderColor: "#CA3092",
         gradient: ["#FFFFFF", "#CA3092", "#FFFFFF"],
@@ -301,7 +317,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
     {
@@ -311,7 +327,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       logo: Pick10Logo,
       jackpot: "$500,000",
       cashValue: "$500,000",
-      drawTime: "Daily 12:30 PM",
+      drawTime: "00:00:00",
       drawDate: "Wed, May 29, 2025",
       numbers: [
         "02",
@@ -337,7 +353,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
       ],
       bonusNumber: "",
       powerPlay: "",
-      result: "",
+      result: "5 Jackpot Winners - NY",
       config_ui: {
         borderColor: "#ECC200",
         gradient: ["#FFFFFF", "#ECC200", "#FFFFFF"],
@@ -351,7 +367,7 @@ export async function fetchNewYorkGames(): Promise<GameData[]> {
         borderRadius: 22,
         background: "#FFF",
         playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
+        logoMNYginBottom: 10,
       },
     },
   ];
