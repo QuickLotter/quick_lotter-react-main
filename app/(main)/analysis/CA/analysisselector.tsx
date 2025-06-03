@@ -1,4 +1,4 @@
-// app/(main)/analysis/NY/AnalysisSelector.tsx
+// app/(main)/analysis/CA/AnalysisSelector.tsx
 
 import React from "react";
 import {
@@ -15,31 +15,25 @@ import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import BottomNav from "@/components/generator/layout/BottomNav";
 import { MaterialIcons } from "@expo/vector-icons";
 
-// Logos de NY - ajuste os paths conforme sua estrutura!
-import NumbersMidday from "@/assets/logos/NY/numbersmidday.svg";
-import NumbersEvening from "@/assets/logos/NY/numbersevening.svg";
-import Win4Midday from "@/assets/logos/NY/win4midday.svg";
-import Win4Evening from "@/assets/logos/NY/win4evening.svg";
-import Take5Midday from "@/assets/logos/NY/take5midday.svg";
-import Take5Evening from "@/assets/logos/NY/take5evening.svg";
-import Pick10 from "@/assets/logos/NY/pick10.svg";
-import NYLotto from "@/assets/logos/NY/nylotto.svg";
-import Cash4Life from "@/assets/logos/NY/cash4life.svg";
-import MegaMillions from "@/assets/logos/NY/megamillions.svg";
-import Powerball from "@/assets/logos/NY/powerball.svg";
+// Logos de CA - ajuste os paths conforme sua estrutura!
+import Daily3Midday from "@/assets/logos/CA/daily3midday.svg";
+import Daily3Evening from "@/assets/logos/CA/daily3evening.svg";
+import Daily4 from "@/assets/logos/CA/daily4.svg";
+import Fantasy5 from "@/assets/logos/CA/fantasy5.svg";
+import DailyDerby from "@/assets/logos/CA/dailyderby.svg";
+import SuperLotto from "@/assets/logos/CA/superlotto.svg";
+import MegaMillions from "@/assets/logos/CA/megamillions.svg";
+import Powerball from "@/assets/logos/CA/powerball.svg";
 
 const GAMES = [
-  { route: "powerball", Logo: Powerball, color: "#C7102E" },
   { route: "megamillions", Logo: MegaMillions, color: "#0E4CA1" },
-  { route: "cash4life", Logo: Cash4Life, color: "#2D7F67" },
-  { route: "nylotto", Logo: NYLotto, color: "#D31245" },
-  { route: "pick10", Logo: Pick10, color: "#E7CE5C" },
-  { route: "take5midday", Logo: Take5Midday, color: "#CA3092" },
-  { route: "take5evening", Logo: Take5Evening, color: "#CA3092" },
-  { route: "win4midday", Logo: Win4Midday, color: "#7E0C6E" },
-  { route: "win4evening", Logo: Win4Evening, color: "#7E0C6E" },
-  { route: "numbersmidday", Logo: NumbersMidday, color: "#2E73B5" },
-  { route: "numbersevening", Logo: NumbersEvening, color: "#2E73B5" },
+  { route: "powerball", Logo: Powerball, color: "#D0021B" },
+  { route: "superlotto", Logo: SuperLotto, color: "#01BCF1" },
+  { route: "fantasy5", Logo: Fantasy5, color: "#01BCF1" },
+  { route: "daily4", Logo: Daily4, color: "#01BCF1" },
+  { route: "daily3midday", Logo: Daily3Midday, color: "#01BCF1" },
+  { route: "daily3evening", Logo: Daily3Evening, color: "#01BCF1" },
+  { route: "dailyderby", Logo: DailyDerby, color: "#01BCF1" },
 ];
 
 export default function AnalysisSelector() {
@@ -85,7 +79,7 @@ export default function AnalysisSelector() {
               onPress={() => {
                 if (route === "megamillions") {
                   router.push(
-                    "/generator/states/new_york/megamillions/analysis/sum"
+                    "/generator/states/california/megamillions/analysis/sum"
                   );
                 } else {
                   router.push(`/analysis`);

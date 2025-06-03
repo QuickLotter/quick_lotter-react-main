@@ -85,7 +85,7 @@ export default function AnalysisSelector() {
               onPress={() => {
                 if (route === "megamillions") {
                   router.push(
-                    "/generator/states/new_york/megamillions/analysis/sum"
+                    "/generator/states/colorado/megamillions/analysis/sum"
                   );
                 } else {
                   router.push(`/analysis`);

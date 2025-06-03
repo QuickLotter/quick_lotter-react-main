@@ -1,4 +1,4 @@
-// app/(main)/analysis/NY/AnalysisSelector.tsx
+// app/(main)/analysis/AR/AnalysisSelector.tsx
 
 import React from "react";
 import {
@@ -15,31 +15,28 @@ import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import BottomNav from "@/components/generator/layout/BottomNav";
 import { MaterialIcons } from "@expo/vector-icons";
 
-// Logos de NY - ajuste os paths conforme sua estrutura!
-import NumbersMidday from "@/assets/logos/NY/numbersmidday.svg";
-import NumbersEvening from "@/assets/logos/NY/numbersevening.svg";
-import Win4Midday from "@/assets/logos/NY/win4midday.svg";
-import Win4Evening from "@/assets/logos/NY/win4evening.svg";
-import Take5Midday from "@/assets/logos/NY/take5midday.svg";
-import Take5Evening from "@/assets/logos/NY/take5evening.svg";
-import Pick10 from "@/assets/logos/NY/pick10.svg";
-import NYLotto from "@/assets/logos/NY/nylotto.svg";
-import Cash4Life from "@/assets/logos/NY/cash4life.svg";
-import MegaMillions from "@/assets/logos/NY/megamillions.svg";
-import Powerball from "@/assets/logos/NY/powerball.svg";
+// Logos de AZ - ajuste os paths conforme sua estrutura!
+import Powerball from "@/assets/logos/AR/powerball.svg";
+import MegaMillions from "@/assets/logos/AR/megamillions.svg";
+import Lotto from "@/assets/logos/AR/lotto.svg";
+import NaturalStateJackpot from "@/assets/logos/AR/naturalstatejackpot.svg";
+import LuckyforLife from "@/assets/logos/AR/luckyforlife.svg";
+import Cash4Midday from "@/assets/logos/AR/cash4midday.svg";
+import Cash4Evening from "@/assets/logos/AR/cash4evening.svg";
+import Cash3Midday from "@/assets/logos/AR/cash3midday.svg";
+import Cash3Evening from "@/assets/logos/AR/cash3evening.svg";
 
+// Cada card = 1 jogo. Ajuste os caminhos conforme sua estrutura!
 const GAMES = [
   { route: "powerball", Logo: Powerball, color: "#C7102E" },
-  { route: "megamillions", Logo: MegaMillions, color: "#0E4CA1" },
-  { route: "cash4life", Logo: Cash4Life, color: "#2D7F67" },
-  { route: "nylotto", Logo: NYLotto, color: "#D31245" },
-  { route: "pick10", Logo: Pick10, color: "#E7CE5C" },
-  { route: "take5midday", Logo: Take5Midday, color: "#CA3092" },
-  { route: "take5evening", Logo: Take5Evening, color: "#CA3092" },
-  { route: "win4midday", Logo: Win4Midday, color: "#7E0C6E" },
-  { route: "win4evening", Logo: Win4Evening, color: "#7E0C6E" },
-  { route: "numbersmidday", Logo: NumbersMidday, color: "#2E73B5" },
-  { route: "numbersevening", Logo: NumbersEvening, color: "#2E73B5" },
+  { route: "megamillions", Logo: MegaMillions, color: "#C7102E" },
+  { route: "lotto", Logo: Lotto, color: "#C7102E" },
+  { route: "naturalstatejackpot", Logo: NaturalStateJackpot, color: "#C7102E" },
+  { route: "luckyforlife", Logo: LuckyforLife, color: "#C7102E" },
+  { route: "cash4midday", Logo: Cash4Midday, color: "#C7102E" },
+  { route: "cash4evening", Logo: Cash4Evening, color: "#C7102E" },
+  { route: "cash3midday", Logo: Cash3Midday, color: "#C7102E" },
+  { route: "cash3evening", Logo: Cash3Evening, color: "#C7102E" },
 ];
 
 export default function AnalysisSelector() {
@@ -64,15 +61,15 @@ export default function AnalysisSelector() {
               },
             ]}
           >
-            {/* Logo à esquerda */}
+            {/* Logo do jogo à esquerda */}
             <Logo width={56} height={28} />
 
-            {/* Ícone analytics central */}
+            {/* Ícone central */}
             <View style={styles.centerIcon}>
               <MaterialIcons name="analytics" size={26} color={color} />
             </View>
 
-            {/* Botão iOS-like */}
+            {/* Botão de análise */}
             <TouchableOpacity
               style={[
                 styles.button,
@@ -83,9 +80,10 @@ export default function AnalysisSelector() {
               ]}
               activeOpacity={0.82}
               onPress={() => {
+                // Ajuste os caminhos conforme sua estrutura real!
                 if (route === "megamillions") {
                   router.push(
-                    "/generator/states/new_york/megamillions/analysis/sum"
+                    "/generator/states/arkansas/megamillions/analysis/sum"
                   );
                 } else {
                   router.push(`/analysis`);

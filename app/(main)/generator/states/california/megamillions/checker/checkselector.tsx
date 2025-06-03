@@ -1,5 +1,3 @@
-// app/(main)/analysis/NY/AnalysisSelector.tsx
-
 import React from "react";
 import {
   View,
@@ -13,20 +11,20 @@ import {
 import { useRouter } from "expo-router";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import BottomNav from "@/components/generator/layout/BottomNav";
-import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-// Logos de NY - ajuste os paths conforme sua estrutura!
-import NumbersMidday from "@/assets/logos/NY/numbersmidday.svg";
-import NumbersEvening from "@/assets/logos/NY/numbersevening.svg";
-import Win4Midday from "@/assets/logos/NY/win4midday.svg";
-import Win4Evening from "@/assets/logos/NY/win4evening.svg";
-import Take5Midday from "@/assets/logos/NY/take5midday.svg";
-import Take5Evening from "@/assets/logos/NY/take5evening.svg";
-import Pick10 from "@/assets/logos/NY/pick10.svg";
-import NYLotto from "@/assets/logos/NY/nylotto.svg";
-import Cash4Life from "@/assets/logos/NY/cash4life.svg";
-import MegaMillions from "@/assets/logos/NY/megamillions.svg";
-import Powerball from "@/assets/logos/NY/powerball.svg";
+// Logos
+import Powerball from "@/assets/images/ny_game_logo/powerball.svg";
+import MegaMillions from "@/assets/images/ny_game_logo/megamillions.svg";
+import Cash4Life from "@/assets/images/ny_game_logo/cash4life.svg";
+import NYLotto from "@/assets/images/ny_game_logo/nylotto.svg";
+import Pick10 from "@/assets/images/ny_game_logo/pick10.svg";
+import Take5Midday from "@/assets/images/ny_game_logo/take5_midday.svg";
+import Take5Evening from "@/assets/images/ny_game_logo/take5_evening.svg";
+import Win4Midday from "@/assets/images/ny_game_logo/win4_midday.svg";
+import Win4Evening from "@/assets/images/ny_game_logo/win4_evening.svg";
+import NumbersMidday from "@/assets/images/ny_game_logo/numbers_midday.svg";
+import NumbersEvening from "@/assets/images/ny_game_logo/numbers_evening.svg";
 
 const GAMES = [
   { route: "powerball", Logo: Powerball, color: "#C7102E" },
@@ -34,15 +32,15 @@ const GAMES = [
   { route: "cash4life", Logo: Cash4Life, color: "#2D7F67" },
   { route: "nylotto", Logo: NYLotto, color: "#D31245" },
   { route: "pick10", Logo: Pick10, color: "#E7CE5C" },
-  { route: "take5midday", Logo: Take5Midday, color: "#CA3092" },
-  { route: "take5evening", Logo: Take5Evening, color: "#CA3092" },
-  { route: "win4midday", Logo: Win4Midday, color: "#7E0C6E" },
-  { route: "win4evening", Logo: Win4Evening, color: "#7E0C6E" },
-  { route: "numbersmidday", Logo: NumbersMidday, color: "#2E73B5" },
-  { route: "numbersevening", Logo: NumbersEvening, color: "#2E73B5" },
+  { route: "take5_midday", Logo: Take5Midday, color: "#CA3092" },
+  { route: "take5_evening", Logo: Take5Evening, color: "#CA3092" },
+  { route: "win4_midday", Logo: Win4Midday, color: "#7E0C6E" },
+  { route: "win4_evening", Logo: Win4Evening, color: "#7E0C6E" },
+  { route: "numbers_midday", Logo: NumbersMidday, color: "#2E73B5" },
+  { route: "numbers_evening", Logo: NumbersEvening, color: "#2E73B5" },
 ];
 
-export default function AnalysisSelector() {
+export default function CheckerSelector() {
   const router = useRouter();
   const { width } = useWindowDimensions();
   const maxWidth = Math.min(width - 32, 480);
@@ -50,7 +48,7 @@ export default function AnalysisSelector() {
   return (
     <View style={styles.container}>
       <HeaderLogoBack title="" />
-      <Text style={styles.pageTitle}>Select Game to Analyze</Text>
+      <Text style={styles.pageTitle}>Select Game to Check Tickets</Text>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {GAMES.map(({ route, Logo, color }) => (
           <View
@@ -67,32 +65,23 @@ export default function AnalysisSelector() {
             {/* Logo à esquerda */}
             <Logo width={56} height={28} />
 
-            {/* Ícone analytics central */}
+            {/* Ícone check central */}
             <View style={styles.centerIcon}>
-              <MaterialIcons name="analytics" size={26} color={color} />
+              <FontAwesome5 name="check" size={24} color={color} />
             </View>
 
-            {/* Botão iOS-like */}
+            {/* Botão iOS */}
             <TouchableOpacity
               style={[
                 styles.button,
-                {
-                  backgroundColor: color,
-                  shadowColor: color + "33",
-                },
+                { backgroundColor: color, shadowColor: color + "33" },
               ]}
               activeOpacity={0.82}
-              onPress={() => {
-                if (route === "megamillions") {
-                  router.push(
-                    "/generator/states/new_york/megamillions/analysis/sum"
-                  );
-                } else {
-                  router.push(`/analysis`);
-                }
-              }}
+              onPress={() =>
+                router.push(`/generator/states/new_york/${route}/checker/index`)
+              }
             >
-              <Text style={styles.buttonText}>Start Analysis</Text>
+              <Text style={styles.buttonText}>Check Numbers</Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -103,13 +92,16 @@ export default function AnalysisSelector() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F6F6F8" },
+  container: {
+    flex: 1,
+    backgroundColor: "#F6F6F8",
+  },
   pageTitle: {
     textAlign: "center",
     fontSize: 20,
     fontWeight: "800",
     color: "#0E4CA1",
-    marginTop: 14,
+    marginTop: 16,
     marginBottom: 12,
     letterSpacing: 0.2,
     fontFamily: Platform.OS === "ios" ? "System" : undefined,
@@ -122,7 +114,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     borderWidth: 2,
-    borderRadius: 17,
+    borderRadius: 18,
     paddingHorizontal: 14,
     paddingVertical: 15,
     flexDirection: "row",
@@ -143,7 +135,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: 22,
     borderWidth: 0,
-    shadowOpacity: 0.07,
+    shadowOpacity: 0.08,
     shadowRadius: 2,
     shadowOffset: { width: 0, height: 2 },
   },
