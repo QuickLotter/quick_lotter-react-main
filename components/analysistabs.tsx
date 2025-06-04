@@ -17,24 +17,23 @@ export default function AnalysisTabs() {
   const pathname = usePathname();
   const scrollRef = useRef<ScrollView>(null);
 
-  // Extrai o estado e o jogo da rota: /generator/states/XX/JOGO/analysis/ROTA
-  const match = pathname?.match(
-    /\/generator\/states\/([^/]+)\/([^/]+)\/analysis\/([^/]+)/i
-  );
+  // Permite análise tanto em generator/states quanto analysis/XX/analysis
+  const match =
+    pathname?.match(
+      /\/generator\/states\/([^/]+)\/([^/]+)\/analysis\/([^/]+)/i
+    ) || pathname?.match(/\/analysis\/([^/]+)\/analysis\/([^/]+)\/([^/]+)/i);
+
   const state = match?.[1] || "ny";
   const game = match?.[2] || "megamillions";
   const route = match?.[3] || "sum";
 
-  // Tabs específicas do jogo atual
   const TABS = ANALYSIS_TABS[game] || [];
+  const basePath = pathname.includes("/generator/states/")
+    ? `/generator/states/${state}/${game}/analysis`
+    : `/analysis/${state}/analysis/${game}`;
 
-  // Caminho base do jogo para montar o push de navegação
-  const basePath = `/generator/states/${state}/${game}/analysis`;
-
-  // Descobre o tab ativo pelo route (ex: "sum", "odd"...)
   const activeIndex = TABS.findIndex((tab) => tab.route === route);
 
-  // Scroll para o tab ativo
   useEffect(() => {
     if (scrollRef.current && activeIndex > -1) {
       scrollRef.current.scrollTo({ x: activeIndex * 132 - 16, animated: true });

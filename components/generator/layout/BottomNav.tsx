@@ -74,8 +74,8 @@ export default function BottomNav() {
     home: "/home",
     analysis: `/analysis/${userState}/analysis`,
     overview: `/overview/${userState}/overview`,
-    checker: `/checker/${userState}`,
-    results: `/results/${userState}`,
+    checker: `/checker/${userState}/checker`,
+    results: `/results/${userState}/results`, // <-- Corrigido aqui!
   };
 
   return (

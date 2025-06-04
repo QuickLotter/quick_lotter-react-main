@@ -59,6 +59,57 @@ export default function GameCardSlider({ games }: Props) {
 
   if (!games?.length) return null;
 
+  // --- Função para montar a rota do generator (NY, CA, etc)
+  function getGeneratorRoute(game: GameData) {
+    // NY Mega Millions, Powerball, etc.
+    if (game.id === "megamillions_ny") {
+      return "/generator/NY/megamillions";
+    }
+    if (game.id === "powerball_ny") {
+      return "/generator/NY/powerball";
+    }
+    if (game.id === "cash4life_ny") {
+      return "/generator/NY/cash4life";
+    }
+    if (game.id === "nylotto_ny") {
+      return "/generator/NY/nylotto";
+    }
+    if (game.id === "pick10_ny") {
+      return "/generator/NY/pick10";
+    }
+    if (game.id === "take5_midday_ny") {
+      return "/generator/NY/take5_midday";
+    }
+    if (game.id === "take5_evening_ny") {
+      return "/generator/NY/take5_evening";
+    }
+    if (game.id === "win4_midday_ny") {
+      return "/generator/NY/win4_midday";
+    }
+    if (game.id === "win4_evening_ny") {
+      return "/generator/NY/win4_evening";
+    }
+    if (game.id === "numbers_midday_ny") {
+      return "/generator/NY/nylotto";
+    }
+    if (game.id === "numbers_evening_ny") {
+      return "/generator/NY/numbers_evening";
+    }
+    if (game.id === "megamillions_az") {
+      return "/generator/AZ/megamillions";
+    }
+    if (game.id === "powerball_az") {
+      return "/generator/AZ/powerball";
+    }
+
+    // ...adicione outros casos conforme sua estrutura!
+    // Para fallback dinâmico (exemplo para outros estados):
+    if (game.state && game.slug) {
+      return `/generator/states/${game.state}/${game.slug}`;
+    }
+    return "#";
+  }
+
   return (
     <View style={styles.sliderContainer}>
       {isDesktop ? (
@@ -76,13 +127,10 @@ export default function GameCardSlider({ games }: Props) {
           >
             <GameCard
               data={games[desktopIndex]}
-              onPress={() =>
-                router.push(
-                  `/generator/states/${games[desktopIndex].state || "ny"}/${
-                    games[desktopIndex].slug
-                  }`
-                )
-              }
+              onPress={() => {
+                const route = getGeneratorRoute(games[desktopIndex]);
+                if (route && route !== "#") router.push(route);
+              }}
             />
           </View>
 
@@ -130,11 +178,10 @@ export default function GameCardSlider({ games }: Props) {
                 >
                   <GameCard
                     data={item}
-                    onPress={() =>
-                      router.push(
-                        `/generator/states/${item.state || "ny"}/${item.slug}`
-                      )
-                    }
+                    onPress={() => {
+                      const route = getGeneratorRoute(item);
+                      if (route && route !== "#") router.push(route);
+                    }}
                   />
                 </Animated.View>
               );

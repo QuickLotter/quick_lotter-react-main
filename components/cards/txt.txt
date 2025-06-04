@@ -63,7 +63,7 @@ export default function GameCardSlider() {
                 data={item}
                 // Mude AQUI! Caminho real para cada jogo:
                 onPress={() =>
-                  router.push(`/generator/states/new_york/${item.slug}`)
+                  router.push(`/generator/NY/${item.slug}`)
                 }
               />
             </Animated.View>

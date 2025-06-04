@@ -34,12 +34,12 @@ const GAMES = [
   { route: "cash4life", Logo: Cash4Life, color: "#2D7F67" },
   { route: "nylotto", Logo: NYLotto, color: "#D31245" },
   { route: "pick10", Logo: Pick10, color: "#E7CE5C" },
-  { route: "take5midday", Logo: Take5Midday, color: "#CA3092" },
-  { route: "take5evening", Logo: Take5Evening, color: "#CA3092" },
-  { route: "win4midday", Logo: Win4Midday, color: "#7E0C6E" },
-  { route: "win4evening", Logo: Win4Evening, color: "#7E0C6E" },
-  { route: "numbersmidday", Logo: NumbersMidday, color: "#2E73B5" },
-  { route: "numbersevening", Logo: NumbersEvening, color: "#2E73B5" },
+  { route: "take5_midday", Logo: Take5Midday, color: "#CA3092" },
+  { route: "take5_evening", Logo: Take5Evening, color: "#CA3092" },
+  { route: "win4_midday", Logo: Win4Midday, color: "#7E0C6E" },
+  { route: "win4_evening", Logo: Win4Evening, color: "#7E0C6E" },
+  { route: "numbers_midday", Logo: NumbersMidday, color: "#2E73B5" },
+  { route: "numbers_evening", Logo: NumbersEvening, color: "#2E73B5" },
 ];
 
 export default function AnalysisSelector() {
@@ -72,7 +72,7 @@ export default function AnalysisSelector() {
               <MaterialIcons name="analytics" size={26} color={color} />
             </View>
 
-            {/* Botão iOS-like */}
+            {/* Botão dinâmico */}
             <TouchableOpacity
               style={[
                 styles.button,
@@ -83,13 +83,7 @@ export default function AnalysisSelector() {
               ]}
               activeOpacity={0.82}
               onPress={() => {
-                if (route === "megamillions") {
-                  router.push(
-                    "/generator/states/new_york/megamillions/analysis/sum"
-                  );
-                } else {
-                  router.push(`/analysis`);
-                }
+                router.push(`/analysis/NY/analysis/${route}/sum`);
               }}
             >
               <Text style={styles.buttonText}>Start Analysis</Text>
