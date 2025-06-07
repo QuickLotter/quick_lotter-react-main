@@ -14,17 +14,17 @@ import BottomNav from "@/components/generator/layout/BottomNav";
 import { MaterialIcons } from "@expo/vector-icons";
 
 // Ajuste os imports para o estado desejado!
-import Powerball from "@/assets/logos/NY/powerball.svg";
-import MegaMillions from "@/assets/logos/NY/megamillions.svg";
-import NYLotto from "@/assets/logos/NY/nylotto.svg";
-import Cash4Life from "@/assets/logos/NY/cash4life.svg";
-import Pick10 from "@/assets/logos/NY/pick10.svg";
-import Take5Midday from "@/assets/logos/NY/take5midday.svg";
-import Take5Evening from "@/assets/logos/NY/take5evening.svg";
-import Win4Midday from "@/assets/logos/NY/win4midday.svg";
-import Win4Evening from "@/assets/logos/NY/win4evening.svg";
-import NumbersMidday from "@/assets/logos/NY/numbersmidday.svg";
-import NumbersEvening from "@/assets/logos/NY/numbersevening.svg";
+import Powerball from "@/assets/logos/ny/powerball.svg";
+import MegaMillions from "@/assets/logos/ny/megamillions.svg";
+import NYLotto from "@/assets/logos/ny/nylotto.svg";
+import Cash4Life from "@/assets/logos/ny/cash4life.svg";
+import Pick10 from "@/assets/logos/ny/pick10.svg";
+import Take5Midday from "@/assets/logos/ny/take5midday.svg";
+import Take5Evening from "@/assets/logos/ny/take5evening.svg";
+import Win4Midday from "@/assets/logos/ny/win4midday.svg";
+import Win4Evening from "@/assets/logos/ny/win4evening.svg";
+import NumbersMidday from "@/assets/logos/ny/numbersmidday.svg";
+import NumbersEvening from "@/assets/logos/ny/numbersevening.svg";
 
 // Lista de jogos do estado (NY neste exemplo)
 const GAMES = [
@@ -83,7 +83,7 @@ export default function ResultsSelector() {
               activeOpacity={0.82}
               onPress={() => {
                 // Ajuste o caminho conforme sua estrutura real!
-                router.push(`/results/NY/results/${route}`);
+                router.push(`/results/ny/results/${route}`);
               }}
             >
               <Text style={styles.buttonText}>View Results</Text>

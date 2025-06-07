@@ -1,8 +1,8 @@
-import { NY_DRAW_TIMES } from "@/constants/countdowns/NY/draw_times";
-import { AZ_DRAW_TIMES } from "@/constants/countdowns/AZ/draw_times";
-import { AR_DRAW_TIMES } from "@/constants/countdowns/AR/draw_times";
-import { CA_DRAW_TIMES } from "@/constants/countdowns/CA/draw_times";
-import { CO_DRAW_TIMES } from "@/constants/countdowns/CO/draw_times";
+import { NY_DRAW_TIMES } from "@/constants/countdowns/ny/draw_times";
+import { AZ_DRAW_TIMES } from "@/constants/countdowns/az/draw_times";
+import { AR_DRAW_TIMES } from "@/constants/countdowns/ar/draw_times";
+import { CA_DRAW_TIMES } from "@/constants/countdowns/ca/draw_times";
+import { CO_DRAW_TIMES } from "@/constants/countdowns/co/draw_times";
 // ...import outros estados conforme precisar
 
 const DRAW_TIME_MAP = {

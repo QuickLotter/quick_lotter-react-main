@@ -1,3 +1,5 @@
+// components/layout/BottomNav.tsx
+
 import React from "react";
 import {
   View,
@@ -15,7 +17,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, usePathname } from "expo-router";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
-// Importa o contexto de localização:
 import { useLocation } from "@/app/(main)/context/LocationContext";
 
 const ACTIVE_COLOR = "#007EFF";
@@ -29,7 +30,7 @@ const NAV_ITEMS = [
     key: "home",
     label: "Home",
     icon: (color: string) => <Ionicons name="home" size={24} color={color} />,
-    // route será dinâmico abaixo!
+    // route será dinâmico!
   },
   {
     key: "analysis",
@@ -65,17 +66,17 @@ export default function BottomNav() {
   const insets = useSafeAreaInsets();
   const { state } = useLocation();
 
-  // Garante sempre um estado (exemplo: NY)
+  // Garante sempre um estado válido, default para "ny" se não houver:
   const userState = state || "NY";
   const stateSlug = userState.toLowerCase();
 
-  // Define as rotas dinâmicas por estado selecionado:
+  // Rotas dinâmicas usando stateSlug (sempre minúsculo)
   const routes = {
     home: "/home",
-    analysis: `/analysis/${userState}/analysis`,
-    overview: `/overview/${userState}/overview`,
-    checker: `/checker/${userState}/checker`,
-    results: `/results/${userState}/results`, // <-- Corrigido aqui!
+    analysis: `/analysis/${stateSlug}/analysis`,
+    overview: `/overview/${stateSlug}/overview`,
+    checker: `/checker/${stateSlug}/checker`,
+    results: `/results/${stateSlug}/results`,
   };
 
   return (
@@ -90,8 +91,8 @@ export default function BottomNav() {
     >
       <ResponsiveContainer style={styles.navInner}>
         {NAV_ITEMS.map(({ key, label, icon }) => {
-          // Checa se a rota está ativa
           const route = routes[key as keyof typeof routes];
+          // Mantém ativa se o pathname começa com a rota base:
           const isActive = pathname?.startsWith(route);
           return (
             <TouchableOpacity

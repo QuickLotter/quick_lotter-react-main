@@ -13,7 +13,7 @@ export default function PostLoginGate() {
   useEffect(() => {
     if (state) {
       // Se já definiu o estado, navega para a Home
-      router.replace("/home");
+      //router.replace("/home");
     }
   }, [state]);
 

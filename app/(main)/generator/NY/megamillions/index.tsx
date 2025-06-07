@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 
 // Logos e temas
-import { default as MegamillionsLogo } from "@/assets/logos/NY/megamillions.svg";
+import { default as MegamillionsLogo } from "@/assets/logos/ny/megamillions.svg";
 import { getThemeFromUI } from "@/utils/getThemeFromUI";
 
 // Componentes visuais
@@ -18,7 +18,7 @@ import ButtonNav from "@/components/generator/layout/buttonnav"; // 🔵 corrigi
 
 // Modais
 import SmartFilterPromptModal from "@/components/generator/modals/smartfilterpromptmodal"; // 🔵 corrigido
-import FiltersFormModal from "@/components/generator/modals/filters-form-modal"; // 🔵 corrigido
+import FiltersFormModal from "@/components/generator/modals/filtersformmodal"; // 🔵 corrigido
 
 // API
 import { generateWithFilters } from "@/services/generatorApi";

@@ -85,37 +85,37 @@ export default function OverviewSelector() {
   const handleNavigate = (route: string) => {
     switch (route) {
       case "megamillions":
-        router.push("/overview/NY/megamillions/drawingsince");
+        router.push("/overview/ny/megamillions/drawingsince");
         break;
       case "powerball":
-        router.push("/overview/NY/powerball/drawingsince");
+        router.push("/overview/ny/powerball/drawingsince");
         break;
       case "cash4life":
-        router.push("/overview/NY/cash4life/drawingsince");
+        router.push("/overview/ny/cash4life/drawingsince");
         break;
       case "nylotto":
-        router.push("/overview/NY/nylotto/drawingsince");
+        router.push("/overview/ny/nylotto/drawingsince");
         break;
       case "pick10":
-        router.push("/overview/NY/pick10/drawingsince");
+        router.push("/overview/ny/pick10/drawingsince");
         break;
       case "take5midday":
-        router.push("/overview/NY/take5midday/drawingsince");
+        router.push("/overview/ny/take5midday/drawingsince");
         break;
       case "take5evening":
-        router.push("/overview/NY/take5evening/drawingsince");
+        router.push("/overview/ny/take5evening/drawingsince");
         break;
       case "win4midday":
-        router.push("/overview/NY/win4midday/drawingsince");
+        router.push("/overview/ny/win4midday/drawingsince");
         break;
       case "win4evening":
-        router.push("/overview/NY/win4evening/drawingsince");
+        router.push("/overview/ny/win4evening/drawingsince");
         break;
       case "numbersmidday":
-        router.push("/overview/NY/numbersmidday/drawingsince");
+        router.push("/overview/ny/numbersmidday/drawingsince");
         break;
       case "numbersevening":
-        router.push("/overview/NY/numbersevening/drawingsince");
+        router.push("/overview/ny/numbersevening/drawingsince");
         break;
       default:
         // Se não encontrar, vai para overview geral (pode customizar!)

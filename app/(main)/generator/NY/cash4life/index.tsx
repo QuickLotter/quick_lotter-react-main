@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 // ✅ Logo do Cash 4 Life
-import { default as Cash4LifeLogo } from "@/assets/logos/NY/cash4life.svg";
+import { default as Cash4LifeLogo } from "@/assets/logos/ny/cash4life.svg";
 
 // ✅ Componentes reutilizáveis
 import GameHeader from "@/components/generator/header/gameheader";

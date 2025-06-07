@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
-import Take5EveningLogo from "@/assets/logos/NY/take5evening.svg";
+import Take5EveningLogo from "@/assets/logos/ny/take5evening.svg";
 
 // MOCK: muitos sorteios para testar o "Load More"
 const allResults = Array.from({ length: 42 }).map((_, idx) => ({

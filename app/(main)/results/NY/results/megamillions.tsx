@@ -39,7 +39,7 @@ export default function ResultsPage() {
         subtitle="New York Mega Millions"
         logo={<MegamillionsLogo width={120} height={48} />}
         headerColor="#0E4CA1"
-        backTo="/results/NY/results"
+        backTo="/results/ny/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>

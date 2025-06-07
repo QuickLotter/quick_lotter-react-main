@@ -1,4 +1,4 @@
-import OverviewSelector from "@/app/(main)/overview/NY/overviewselector";
+import OverviewSelector from "@/app/(main)/overview/ny/overviewselector";
 
 export default function OverviewPage() {
   return <OverviewSelector />;

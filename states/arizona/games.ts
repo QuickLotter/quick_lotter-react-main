@@ -1,11 +1,11 @@
-// states/AZ/games.ts
+// states/az/games.ts
 import { GameData } from "@/types/GameData";
-import MegaMillionsLogo from "@/assets/logos/AZ/megamillions.svg";
-import PowerballLogo from "@/assets/logos/AZ/powerball.svg";
-import Fantasy5Logo from "@/assets/logos/AZ/fantasy5.svg";
-import ThePickLogo from "@/assets/logos/AZ/thepick.svg";
-import TripleTwistLogo from "@/assets/logos/AZ/tripletwist.svg";
-import Pick3Logo from "@/assets/logos/AZ/pick3.svg";
+import MegaMillionsLogo from "@/assets/logos/az/megamillions.svg";
+import PowerballLogo from "@/assets/logos/az/powerball.svg";
+import Fantasy5Logo from "@/assets/logos/az/fantasy5.svg";
+import ThePickLogo from "@/assets/logos/az/thepick.svg";
+import TripleTwistLogo from "@/assets/logos/az/tripletwist.svg";
+import Pick3Logo from "@/assets/logos/az/pick3.svg";
 
 // MOCK AZ GAMES
 export async function fetchArizonaGames(): Promise<GameData[]> {

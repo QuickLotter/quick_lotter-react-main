@@ -12,23 +12,23 @@ import { useRouter, usePathname } from "expo-router";
 const TABS = [
   {
     label: "Selecionar Números",
-    route: "/generator/NY/megamillions",
+    route: "/generator/ny/megamillions",
   }, // index.tsx
   {
     label: "Números Gerados",
-    route: "/generator/NY/megamillions/numbersgenerated",
+    route: "/generator/ny/megamillions/numbersgenerated",
   },
   {
     label: "Edit Filters",
-    route: "/generator/NY/megamillions/edit_filters",
+    route: "/generator/ny/megamillions/edit_filters",
   },
   {
     label: "Configurações",
-    route: "/generator/NY/megamillions/generatorsetting",
+    route: "/generator/ny/megamillions/generatorsetting",
   },
   {
     label: "Checker",
-    route: "/generator/NY/megamillions/checker",
+    route: "/generator/ny/megamillions/checker",
   },
   // Adicione mais abas se tiver outras páginas!
 ];
@@ -49,9 +49,9 @@ export default function MegamillionsGeneratorPage() {
           {TABS.map((tab) => {
             // Checa se é a aba ativa
             const isActive =
-              tab.route === "/generator/NY/megamillions"
+              tab.route === "/generator/ny/megamillions"
                 ? pathname === tab.route ||
-                  pathname === "/generator/NY/megamillions/index"
+                  pathname === "/generator/ny/megamillions/index"
                 : pathname === tab.route;
             return (
               <TouchableOpacity

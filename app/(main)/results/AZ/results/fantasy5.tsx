@@ -10,7 +10,7 @@ import {
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 // Troque pelo logo evening se quiser (numbers_evening.svg)
-import Fantasy5Logo from "@/assets/logos/AZ/fantasy5.svg";
+import Fantasy5Logo from "@/assets/logos/az/fantasy5.svg";
 
 // MOCK: muitos sorteios para testar o "Load More"
 const allResults = Array.from({ length: 37 }).map((_, idx) => ({
@@ -40,7 +40,7 @@ export default function ResultsPage() {
         subtitle="Arizona Fantasy 5"
         logo={<Fantasy5Logo width={120} height={48} />}
         headerColor="#4358A6"
-        backTo="/results/AZ/results"
+        backTo="/results/az/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>

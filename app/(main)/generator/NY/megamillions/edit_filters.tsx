@@ -1,3 +1,5 @@
+//filtros dos jogos depois que ja foram gerados
+
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -10,7 +12,7 @@ import { useLocalSearchParams } from "expo-router";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import EditFilterModal from "@/components/generator/modals/editFilterModal";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/ny/megamillions.svg";
 
 const FILTERS = [
   { key: "SUM", color: "#B9B9B9" },

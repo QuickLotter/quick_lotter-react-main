@@ -10,7 +10,7 @@ import {
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 // Troque pelo logo evening se quiser (numbers_evening.svg)
-import NumbersEveningLogo from "@/assets/images/ny_game_logo/numbers_evening.svg";
+import NumbersMiddayLogo from "@/assets/images/ny_game_logo/numbers_midday.svg";
 
 // MOCK: muitos sorteios para testar o "Load More"
 const allResults = Array.from({ length: 37 }).map((_, idx) => ({
@@ -37,10 +37,10 @@ export default function ResultsPage() {
     <View style={styles.wrapper}>
       <GameHeader
         title="Results"
-        subtitle="New York Numbers Evevning"
-        logo={<NumbersEveningLogo width={120} height={48} />}
+        subtitle="New York Numbers Midday"
+        logo={<NumbersMiddayLogo width={120} height={48} />}
         headerColor="#2766A8"
-        backTo="/results/NY/results"
+        backTo="/results/ny/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>

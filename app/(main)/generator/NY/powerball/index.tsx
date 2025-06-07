@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 // ✅ Logo do Powerball
-import { default as PowerballLogo } from "@/assets/logos/NY/powerball.svg";
+import { default as PowerballLogo } from "@/assets/logos/ny/powerball.svg";
 
 // ✅ Componentes reutilizáveis
 import GameHeader from "@/components/generator/header/gameheader";

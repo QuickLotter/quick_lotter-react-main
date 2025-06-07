@@ -1,4 +1,4 @@
-// app/(main)/analysis/NY/AnalysisSelector.tsx
+// app/(main)/analysis/ny/AnalysisSelector.tsx
 
 import React from "react";
 import {
@@ -16,17 +16,17 @@ import BottomNav from "@/components/generator/layout/BottomNav";
 import { MaterialIcons } from "@expo/vector-icons";
 
 // Logos de NY - ajuste os paths conforme sua estrutura!
-import NumbersMidday from "@/assets/logos/NY/numbersmidday.svg";
-import NumbersEvening from "@/assets/logos/NY/numbersevening.svg";
-import Win4Midday from "@/assets/logos/NY/win4midday.svg";
-import Win4Evening from "@/assets/logos/NY/win4evening.svg";
-import Take5Midday from "@/assets/logos/NY/take5midday.svg";
-import Take5Evening from "@/assets/logos/NY/take5evening.svg";
-import Pick10 from "@/assets/logos/NY/pick10.svg";
-import NYLotto from "@/assets/logos/NY/nylotto.svg";
-import Cash4Life from "@/assets/logos/NY/cash4life.svg";
-import MegaMillions from "@/assets/logos/NY/megamillions.svg";
-import Powerball from "@/assets/logos/NY/powerball.svg";
+import NumbersMidday from "@/assets/logos/ny/numbersmidday.svg";
+import NumbersEvening from "@/assets/logos/ny/numbersevening.svg";
+import Win4Midday from "@/assets/logos/ny/win4midday.svg";
+import Win4Evening from "@/assets/logos/ny/win4evening.svg";
+import Take5Midday from "@/assets/logos/ny/take5midday.svg";
+import Take5Evening from "@/assets/logos/ny/take5evening.svg";
+import Pick10 from "@/assets/logos/ny/pick10.svg";
+import NYLotto from "@/assets/logos/ny/nylotto.svg";
+import Cash4Life from "@/assets/logos/ny/cash4life.svg";
+import MegaMillions from "@/assets/logos/ny/megamillions.svg";
+import Powerball from "@/assets/logos/ny/powerball.svg";
 
 const GAMES = [
   { route: "powerball", Logo: Powerball, color: "#C7102E" },
@@ -83,7 +83,7 @@ export default function AnalysisSelector() {
               ]}
               activeOpacity={0.82}
               onPress={() => {
-                router.push(`/analysis/NY/analysis/${route}/sum`);
+                router.push(`/analysis/ny/analysis/${route}/sum`);
               }}
             >
               <Text style={styles.buttonText}>Start Analysis</Text>

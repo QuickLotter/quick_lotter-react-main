@@ -1,3 +1,6 @@
+//menssagem onde ao clicar no botao generate essa menssagem ira popup perguntando,  Would you like to apply filters to increase your chances and reduce
+//the number of games?
+
 import React from "react";
 import { Modal, View, Text, Pressable, StyleSheet } from "react-native";
 

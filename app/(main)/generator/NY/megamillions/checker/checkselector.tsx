@@ -14,17 +14,17 @@ import BottomNav from "@/components/generator/layout/BottomNav";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 // Logos
-import Powerball from "@/assets/images/ny_game_logo/powerball.svg";
-import MegaMillions from "@/assets/images/ny_game_logo/megamillions.svg";
-import Cash4Life from "@/assets/images/ny_game_logo/cash4life.svg";
-import NYLotto from "@/assets/images/ny_game_logo/nylotto.svg";
-import Pick10 from "@/assets/images/ny_game_logo/pick10.svg";
-import Take5Midday from "@/assets/images/ny_game_logo/take5_midday.svg";
-import Take5Evening from "@/assets/images/ny_game_logo/take5_evening.svg";
-import Win4Midday from "@/assets/images/ny_game_logo/win4_midday.svg";
-import Win4Evening from "@/assets/images/ny_game_logo/win4_evening.svg";
-import NumbersMidday from "@/assets/images/ny_game_logo/numbers_midday.svg";
-import NumbersEvening from "@/assets/images/ny_game_logo/numbers_evening.svg";
+import Powerball from "@/assets/logos/ny/powerball.svg";
+import MegaMillions from "@/assets/logos/ny/megamillions.svg";
+import Cash4Life from "@/assets/logos/ny/cash4life.svg";
+import NYLotto from "@/assets/logos/ny/nylotto.svg";
+import Pick10 from "@/assets/logos/ny/pick10.svg";
+import Take5Midday from "@/assets/logos/ny/take5midday.svg";
+import Take5Evening from "@/assets/logos/ny/take5evening.svg";
+import Win4Midday from "@/assets/logos/ny/win4midday.svg";
+import Win4Evening from "@/assets/logos/ny/win4evening.svg";
+import NumbersMidday from "@/assets/logos/ny/numbersmidday.svg";
+import NumbersEvening from "@/assets/logos/ny/numbersevening.svg";
 
 const GAMES = [
   { route: "powerball", Logo: Powerball, color: "#C7102E" },
@@ -78,7 +78,7 @@ export default function CheckerSelector() {
               ]}
               activeOpacity={0.82}
               onPress={() =>
-                router.push(`/generator/NY/${route}/checker/index`)
+                router.push(`/generator/ny/${route}/checker/index`)
               }
             >
               <Text style={styles.buttonText}>Check Numbers</Text>

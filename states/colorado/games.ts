@@ -1,15 +1,15 @@
-// states/CO/games.ts
+// states/co/games.ts
 import { GameData } from "@/types/GameData";
 
 // LOGOS
-import MegaMillionsLogo from "@/assets/logos/CO/megamillions.svg";
-import PowerballLogo from "@/assets/logos/CO/powerball.svg";
-import LuckyForLifeLogo from "@/assets/logos/CO/luckyforlife.svg";
-import Cash5Logo from "@/assets/logos/CO/cash5.svg";
-import LottoPlusLogo from "@/assets/logos/CO/lottoplus.svg";
-import Cash3MiddayLogo from "@/assets/logos/CO/cash3midday.svg";
-import Cash3EveningLogo from "@/assets/logos/CO/cash3evening.svg";
-import PowerballDoublePlayLogo from "@/assets/logos/CO/powerballdouplepay.svg";
+import MegaMillionsLogo from "@/assets/logos/co/megamillions.svg";
+import PowerballLogo from "@/assets/logos/co/powerball.svg";
+import LuckyForLifeLogo from "@/assets/logos/co/luckyforlife.svg";
+import Cash5Logo from "@/assets/logos/co/cash5.svg";
+import LottoPlusLogo from "@/assets/logos/co/lottoplus.svg";
+import Cash3MiddayLogo from "@/assets/logos/co/cash3midday.svg";
+import Cash3EveningLogo from "@/assets/logos/co/cash3evening.svg";
+import PowerballDoublePlayLogo from "@/assets/logos/co/powerballdouplepay.svg";
 
 export async function fetchColoradoGames(): Promise<GameData[]> {
   return [

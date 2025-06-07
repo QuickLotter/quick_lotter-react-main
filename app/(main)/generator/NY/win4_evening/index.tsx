@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 // ✅ Logo SVG do Win 4 Evening
-import { default as Pick4Logo } from "@/assets/images/ny_game_logo/win4_evening.svg";
+import { default as Pick4Logo } from "@/assets/logos/ny/win4evening.svg";
 
 // ✅ Componentes reutilizáveis
 import GameHeader from "@/components/generator/header/gameheader";

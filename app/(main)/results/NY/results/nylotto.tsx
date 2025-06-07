@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
-import NYLottoLogo from "@/assets/logos/NY/nylotto.svg";
+import NYLottoLogo from "@/assets/logos/ny/nylotto.svg";
 
 // MOCK: muitos sorteios para testar o "Load More"
 const allResults = Array.from({ length: 42 }).map((_, idx) => ({
@@ -40,7 +40,7 @@ export default function ResultsPage() {
         subtitle="New York NY Lotto"
         logo={<NYLottoLogo width={120} height={48} />}
         headerColor="#D40F41"
-        backTo="/results/NY/results"
+        backTo="/results/ny/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>

@@ -1,14 +1,14 @@
-// states/AR/games.ts
+// states/ar/games.ts
 import { GameData } from "@/types/GameData";
-import PowerballLogo from "@/assets/logos/AR/powerball.svg";
-import MegaMillionsLogo from "@/assets/logos/AR/megamillions.svg";
-import Cash3MiddayLogo from "@/assets/logos/AR/cash3midday.svg";
-import Cash3EveningLogo from "@/assets/logos/AR/cash3evening.svg";
-import Cash4MiddayLogo from "@/assets/logos/AR/cash4midday.svg";
-import Cash4EveningLogo from "@/assets/logos/AR/cash4evening.svg";
-import LottoLogo from "@/assets/logos/AR/lotto.svg";
-import LuckyForLifeLogo from "@/assets/logos/AR/luckyforlife.svg";
-import NaturalStateJackpotLogo from "@/assets/logos/AR/naturalstatejackpot.svg";
+import PowerballLogo from "@/assets/logos/ar/powerball.svg";
+import MegaMillionsLogo from "@/assets/logos/ar/megamillions.svg";
+import Cash3MiddayLogo from "@/assets/logos/ar/cash3midday.svg";
+import Cash3EveningLogo from "@/assets/logos/ar/cash3evening.svg";
+import Cash4MiddayLogo from "@/assets/logos/ar/cash4midday.svg";
+import Cash4EveningLogo from "@/assets/logos/ar/cash4evening.svg";
+import LottoLogo from "@/assets/logos/ar/lotto.svg";
+import LuckyForLifeLogo from "@/assets/logos/ar/luckyforlife.svg";
+import NaturalStateJackpotLogo from "@/assets/logos/ar/naturalstatejackpot.svg";
 
 // Todas as bolas seguem o padrão nacional, NÃO modifique as bolas!
 // As cores dos cards (bordas, fundo, botões) refletem as cores principais do logo de cada jogo.

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegamillionsLogo from "@/assets/logos/NY/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/ny/megamillions.svg";
 import AnalysisTabs from "@/components/analysistabs";
 
 // Mock data (trocar por fetch da API/Supabase depois)
@@ -80,7 +80,7 @@ export default function AnalysisDigits() {
           title="Analysis"
           subtitle="New York Mega Millions"
           headerColor="#0E4CA1"
-          backTo="/analysis/NY/analysis"
+          backTo="/analysis/ny/analysis"
         />
 
         <AnalysisTabs />

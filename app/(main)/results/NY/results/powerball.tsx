@@ -40,7 +40,7 @@ export default function ResultsPage() {
         subtitle="New York Powerball"
         logo={<PowerballLogo width={120} height={48} />}
         headerColor="#C7102E"
-        backTo="/results/NY/results"
+        backTo="/results/ny/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>

@@ -12,7 +12,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter, usePathname } from "expo-router";
 import GameHeader from "@/components/generator/header/gameheader";
-import PowerballLogo from "@/assets/logos/NY/powerball.svg";
+import PowerballLogo from "@/assets/logos/ny/powerball.svg";
 
 // ====== HEADER PARA POSITION 01 ======
 const POSITION_HEADERS = {
@@ -141,7 +141,7 @@ export default function Position1() {
         title="Overview"
         subtitle="New York Powerball"
         headerColor="#D0021B"
-        backTo="/overview/NY/overview"
+        backTo="/overview/ny/overview"
       />
 
       {/* --- TABS INLINE --- */}
@@ -160,7 +160,7 @@ export default function Position1() {
                 key={tab.route}
                 ref={(ref) => (tabRefs.current[idx] = ref)}
                 onPress={() => {
-                  router.replace(`/overview/NY/powerball/${tab.route}`);
+                  router.replace(`/overview/ny/powerball/${tab.route}`);
                   setTimeout(() => scrollToTab(idx), 100);
                 }}
                 style={[

@@ -12,7 +12,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter, usePathname } from "expo-router";
 import GameHeader from "@/components/generator/header/gameheader";
-import NumbersMiddayLogo from "@/assets/logos/NY/numbersmidday.svg";
+import NumbersMiddayLogo from "@/assets/logos/ny/numbersmidday.svg";
 
 // ==== TABS PARA WIN 4 MIDDAY ====
 const TABS = [
@@ -132,7 +132,7 @@ export default function Position1NumbersMidday() {
         title="Overview"
         subtitle="New York Numbers Midday"
         headerColor="#2E73B5"
-        backTo="/overview/NY/overview"
+        backTo="/overview/ny/overview"
       />
 
       {/* --- TABS INLINE --- */}
@@ -150,7 +150,7 @@ export default function Position1NumbersMidday() {
                 key={tab.route}
                 ref={(ref) => (tabRefs.current[idx] = ref)}
                 onPress={() => {
-                  router.replace(`/overview/NY/numbersmidday/${tab.route}`);
+                  router.replace(`/overview/ny/numbersmidday/${tab.route}`);
                   setTimeout(() => scrollToTab(idx), 100);
                 }}
                 style={[

@@ -40,7 +40,7 @@ export default function ResultsPage() {
         subtitle="New York Win 4 Midday"
         logo={<Win4MiddayLogo width={120} height={48} />}
         headerColor="#7E0C6E" // Escolha uma cor do Win 4
-        backTo="/results/NY/results"
+        backTo="/results/ny/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>

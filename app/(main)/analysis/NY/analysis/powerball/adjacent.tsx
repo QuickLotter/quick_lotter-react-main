@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
-import PowerballLogo from "@/assets/logos/NY/powerball.svg";
+import PowerballLogo from "@/assets/logos/ny/powerball.svg";
 import AnalysisTabs from "@/components/analysistabs";
 
 const HEADER_HEIGHT = 350;
@@ -81,7 +81,7 @@ export default function AnalysisAdjacent() {
           title="Analysis"
           subtitle="New York Powerball"
           headerColor="#D0021B"
-          backTo="/analysis/NY/analysis"
+          backTo="/analysis/ny/analysis"
         />
 
         <AnalysisTabs />

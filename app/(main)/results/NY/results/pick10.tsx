@@ -54,7 +54,7 @@ export default function ResultsPage() {
         subtitle="New York Pick 10"
         logo={<Pick10Logo width={120} height={48} />}
         headerColor="#FFE363"
-        backTo="/results/NY/results"
+        backTo="/results/ny/results"
         titleColor="#111"
         subtitleColor="#111"
         backIconColor="#111"

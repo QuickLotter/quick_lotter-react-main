@@ -15,12 +15,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 // Ajuste os imports para o estado desejado!
 // Logos de AZ - ajuste os paths conforme sua estrutura!
-import Powerball from "@/assets/logos/AZ/powerball.svg";
-import MegaMillions from "@/assets/logos/AZ/megamillions.svg";
-import Fantasy5 from "@/assets/logos/AZ/fantasy5.svg";
-import ThePick from "@/assets/logos/AZ/thepick.svg";
-import TripleTwist from "@/assets/logos/AZ/tripletwist.svg";
-import Pick3 from "@/assets/logos/AZ/pick3.svg";
+import Powerball from "@/assets/logos/az/powerball.svg";
+import MegaMillions from "@/assets/logos/az/megamillions.svg";
+import Fantasy5 from "@/assets/logos/az/fantasy5.svg";
+import ThePick from "@/assets/logos/az/thepick.svg";
+import TripleTwist from "@/assets/logos/az/tripletwist.svg";
+import Pick3 from "@/assets/logos/az/pick3.svg";
 
 // Cada card = 1 jogo. Ajuste os caminhos conforme sua estrutura!
 const GAMES = [
@@ -74,7 +74,7 @@ export default function ResultsSelector() {
               activeOpacity={0.82}
               onPress={() => {
                 // Ajuste o caminho conforme sua estrutura real!
-                router.push(`/results/AZ/results/${route}`);
+                router.push(`/results/az/results/${route}`);
               }}
             >
               <Text style={styles.buttonText}>View Results</Text>

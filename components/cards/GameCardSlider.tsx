@@ -29,7 +29,7 @@ export default function GameCardSlider({ games }: Props) {
   const maxWidth = 384;
   const minWidth = 280;
   const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
-  const cardSpacing = 9;
+  const cardSpacing = 5;
   const fullItemWidth = cardWidth + cardSpacing;
 
   // Verifica se é Desktop (>=1080)
@@ -59,51 +59,17 @@ export default function GameCardSlider({ games }: Props) {
 
   if (!games?.length) return null;
 
-  // --- Função para montar a rota do generator (NY, CA, etc)
   function getGeneratorRoute(game: GameData) {
-    // NY Mega Millions, Powerball, etc.
-    if (game.id === "megamillions_ny") {
-      return "/generator/NY/megamillions";
+    // Para NY
+    if (game.id.endsWith("_ny")) {
+      // Exemplo: take5_midday_ny -> /generator/ny/generator?game=take5_midday_ny
+      return `/generator/ny/generator?game=${game.id}`;
     }
-    if (game.id === "powerball_ny") {
-      return "/generator/NY/powerball";
+    // Para AZ
+    if (game.id.endsWith("_az")) {
+      return `/generator/az/generator?game=${game.id}`;
     }
-    if (game.id === "cash4life_ny") {
-      return "/generator/NY/cash4life";
-    }
-    if (game.id === "nylotto_ny") {
-      return "/generator/NY/nylotto";
-    }
-    if (game.id === "pick10_ny") {
-      return "/generator/NY/pick10";
-    }
-    if (game.id === "take5_midday_ny") {
-      return "/generator/NY/take5_midday";
-    }
-    if (game.id === "take5_evening_ny") {
-      return "/generator/NY/take5_evening";
-    }
-    if (game.id === "win4_midday_ny") {
-      return "/generator/NY/win4_midday";
-    }
-    if (game.id === "win4_evening_ny") {
-      return "/generator/NY/win4_evening";
-    }
-    if (game.id === "numbers_midday_ny") {
-      return "/generator/NY/nylotto";
-    }
-    if (game.id === "numbers_evening_ny") {
-      return "/generator/NY/numbers_evening";
-    }
-    if (game.id === "megamillions_az") {
-      return "/generator/AZ/megamillions";
-    }
-    if (game.id === "powerball_az") {
-      return "/generator/AZ/powerball";
-    }
-
-    // ...adicione outros casos conforme sua estrutura!
-    // Para fallback dinâmico (exemplo para outros estados):
+    // Fallback para outros estados ou estrutura futura
     if (game.state && game.slug) {
       return `/generator/states/${game.state}/${game.slug}`;
     }

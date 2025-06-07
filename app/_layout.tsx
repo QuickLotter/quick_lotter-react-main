@@ -15,7 +15,7 @@ function StateRedirector() {
   useEffect(() => {
     if (lastState.current !== state) {
       // Se mudou o estado, força redirect para a Home (não importa de onde veio)
-      router.replace("/home");
+      //router.replace("/home");
       lastState.current = state;
     }
   }, [state]);

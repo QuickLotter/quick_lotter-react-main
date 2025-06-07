@@ -28,57 +28,57 @@ const DEFAULT_BUTTONS = [
   {
     id: "powerball",
     Component: Powerball,
-    route: "/(main)/generator/states/new_york/powerball",
+    route: "/(main)/generator/NY/powerball",
   },
   {
     id: "megamillions",
     Component: Megamillions,
-    route: "/(main)/generator/states/new_york/megamillions",
+    route: "/(main)/generator/NY/megamillions",
   },
   {
     id: "cash4life",
     Component: Cash4life,
-    route: "/(main)/generator/states/new_york/cash4life",
+    route: "/(main)/generator/NY/cash4life",
   },
   {
     id: "nylotto",
     Component: NyLotto,
-    route: "/(main)/generator/states/new_york/nylotto",
+    route: "/(main)/generator/NY/nylotto",
   },
   {
     id: "pick10",
     Component: Pick10,
-    route: "/(main)/generator/states/new_york/pick10",
+    route: "/(main)/generator/NY/pick10",
   },
   {
     id: "take5_midday",
     Component: Take5Midday,
-    route: "/(main)/generator/states/new_york/take5_midday",
+    route: "/(main)/generator/NY/take5_midday",
   },
   {
     id: "take5_evening",
     Component: Take5Evening,
-    route: "/(main)/generator/states/new_york/take5_evening",
+    route: "/(main)/generator/NY/take5_evening",
   },
   {
     id: "win4_midday",
     Component: Win4Midday,
-    route: "/(main)/generator/states/new_york/win4_midday",
+    route: "/(main)/generator/NY/win4_midday",
   },
   {
     id: "win4_evening",
     Component: Win4Evening,
-    route: "/(main)/generator/states/new_york/win4_evening",
+    route: "/(main)/generator/NY/win4_evening",
   },
   {
     id: "numbers_midday",
     Component: NumbersMidday,
-    route: "/(main)/generator/states/new_york/numbers_midday",
+    route: "/(main)/generator/NY/numbers_midday",
   },
   {
     id: "numbers_evening",
     Component: NumbersEvening,
-    route: "/(main)/generator/states/new_york/numbers_evening",
+    route: "/(main)/generator/NY/numbers_evening",
   },
 ];
 

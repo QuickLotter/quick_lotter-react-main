@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/ny/megamillions.svg";
 
 const winningNumbers = [14, 37, 40, 41, 68];
 const megaBall = 2;

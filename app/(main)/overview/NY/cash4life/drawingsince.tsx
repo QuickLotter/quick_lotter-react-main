@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useRouter, usePathname } from "expo-router";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import MegamillionsLogo from "@/assets/logos/NY/cash4life.svg";
+import MegamillionsLogo from "@/assets/logos/ny/cash4life.svg";
 import GameHeader from "@/components/generator/header/gameheader";
 
 // Cabeçalho de 1 a 60
@@ -134,7 +134,7 @@ export default function DrawingSince() {
         title="Overview"
         subtitle="New York Cash 4 Life"
         headerColor="#2D7F67"
-        backTo="/overview/NY/overview"
+        backTo="/overview/ny/overview"
       />
 
       {/* TABS - Inline */}
@@ -153,7 +153,7 @@ export default function DrawingSince() {
                 key={tab.route}
                 ref={(ref) => (tabRefs.current[idx] = ref)}
                 onPress={() => {
-                  router.replace(`/overview/NY/cash4life/${tab.route}`);
+                  router.replace(`/overview/ny/cash4life/${tab.route}`);
                   setTimeout(() => scrollToTab(idx), 100);
                 }}
                 style={[

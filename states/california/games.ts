@@ -1,14 +1,14 @@
 import { GameData } from "@/types/GameData";
 
 // IMPORTS DOS LOGOS (ajuste os caminhos conforme a pasta do seu projeto!)
-import PowerballLogo from "@/assets/logos/CA/powerball.svg";
-import MegaMillionsLogo from "@/assets/logos/CA/megamillions.svg";
-import SuperLottoLogo from "@/assets/logos/CA/superlotto.svg";
-import Fantasy5Logo from "@/assets/logos/CA/fantasy5.svg";
-import Daily3MiddayLogo from "@/assets/logos/CA/daily3midday.svg";
-import Daily3EveningLogo from "@/assets/logos/CA/daily3evening.svg";
-import Daily4Logo from "@/assets/logos/CA/daily4.svg";
-import DailyDerbyLogo from "@/assets/logos/CA/dailyderby.svg";
+import PowerballLogo from "@/assets/logos/ca/powerball.svg";
+import MegaMillionsLogo from "@/assets/logos/ca/megamillions.svg";
+import SuperLottoLogo from "@/assets/logos/ca/superlotto.svg";
+import Fantasy5Logo from "@/assets/logos/ca/fantasy5.svg";
+import Daily3MiddayLogo from "@/assets/logos/ca/daily3midday.svg";
+import Daily3EveningLogo from "@/assets/logos/ca/daily3evening.svg";
+import Daily4Logo from "@/assets/logos/ca/daily4.svg";
+import DailyDerbyLogo from "@/assets/logos/ca/dailyderby.svg";
 
 // Exporte a função com o nome correto!
 export async function fetchCaliforniaGames(): Promise<GameData[]> {

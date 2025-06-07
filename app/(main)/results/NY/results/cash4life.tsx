@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
-import Cash4LifeLogo from "@/assets/images/ny_game_logo/cash4life.svg";
+import Cash4LifeLogo from "@/assets/logos/ny/cash4life.svg";
 
 // MOCK: muitos sorteios para testar o "Load More"
 const allResults = Array.from({ length: 44 }).map((_, idx) => ({
@@ -50,7 +50,7 @@ export default function ResultsPage() {
         subtitle="New York Cash 4 Life"
         logo={<Cash4LifeLogo width={120} height={48} />}
         headerColor="#2D7F67"
-        backTo="/results/NY/results"
+        backTo="/results/ny/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>

@@ -39,7 +39,7 @@ export default function ResultsPage() {
         subtitle="New York NY Take 5 Midday"
         logo={<Take5MiddayLogo width={120} height={48} />}
         headerColor="#00928F"
-        backTo="/results/NY/results"
+        backTo="/results/ny/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>

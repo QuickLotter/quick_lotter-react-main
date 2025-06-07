@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderRadius: 24,
     borderWidth: 6,
-    padding: 32,
+    padding: 16,
     alignItems: "center",
     shadowColor: "#000",
     shadowOpacity: 0.25,

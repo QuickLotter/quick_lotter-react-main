@@ -1,4 +1,4 @@
-// ✅ Path: app/(main)/generator/NY/megamillions/numbersgenerated.tsx
+// ✅ Path: app/(main)/generator/ny/megamillions/numbersgenerated.tsx
 
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
@@ -12,7 +12,7 @@ import GeneratedBottomNav from "@/components/generator/layout/generatedbottomnav
 import GameRow from "@/components/generator/smart_filter/gamerow";
 
 // Assets
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/ny/megamillions.svg";
 
 export default function NumbersGeneratedPage() {
   const { data } = useLocalSearchParams();

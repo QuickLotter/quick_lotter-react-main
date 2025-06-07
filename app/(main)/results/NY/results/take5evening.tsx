@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
-import Take5EveningLogo from "@/assets/logos/NY/take5evening.svg";
+import Take5EveningLogo from "@/assets/logos/ny/take5evening.svg";
 
 // MOCK: muitos sorteios para testar o "Load More"
 const allResults = Array.from({ length: 42 }).map((_, idx) => ({
@@ -39,7 +39,7 @@ export default function ResultsPage() {
         subtitle="New York NY Take 5 Evening"
         logo={<Take5EveningLogo width={120} height={48} />}
         headerColor="#00928F"
-        backTo="/results/NY/results"
+        backTo="/results/ny/results"
       />
 
       <ScrollView contentContainerStyle={styles.contentWrapper}>

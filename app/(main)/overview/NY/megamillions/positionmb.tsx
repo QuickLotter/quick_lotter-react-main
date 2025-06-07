@@ -12,7 +12,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter, usePathname } from "expo-router";
 import GameHeader from "@/components/generator/header/gameheader";
-import MegaMillionsLogo from "@/assets/logos/NY/megamillions.svg";
+import MegaMillionsLogo from "@/assets/logos/ny/megamillions.svg";
 
 // ====== HEADER PARA POSITION 01 ======
 const POSITION_HEADERS = {
@@ -140,7 +140,7 @@ export default function Position1() {
         title="Overview"
         subtitle="New York Mega Millions"
         headerColor="#0E4CA1"
-        backTo="/overview/NY/overview"
+        backTo="/overview/ny/overview"
       />
 
       {/* --- TABS INLINE --- */}
@@ -159,7 +159,7 @@ export default function Position1() {
                 key={tab.route}
                 ref={(ref) => (tabRefs.current[idx] = ref)}
                 onPress={() => {
-                  router.replace(`/overview/NY/megamillions/${tab.route}`);
+                  router.replace(`/overview/ny/megamillions/${tab.route}`);
                   setTimeout(() => scrollToTab(idx), 100);
                 }}
                 style={[

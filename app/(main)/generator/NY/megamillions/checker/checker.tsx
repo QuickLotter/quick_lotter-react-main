@@ -10,7 +10,7 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
-import MegamillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import MegamillionsLogo from "@/assets/logos/ny/megamillions.svg";
 
 const winningNumbers = [4, 15, 33, 45, 61];
 const winningMegaBall = 8;

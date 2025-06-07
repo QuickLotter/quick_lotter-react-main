@@ -3,17 +3,17 @@ import {
   View,
   Text,
   StyleSheet,
-  Platform,
   ScrollView,
-  Pressable,
   TouchableOpacity,
   TextInput,
+  Platform,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import GameHeader from "@/components/generator/header/gameheader";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import GensettingButton from "@/components/generator/layout/gensettingbutton";
-import MegaMillionsLogo from "@/assets/images/ny_game_logo/megamillions.svg";
+import { Ionicons } from "@expo/vector-icons";
+import MegaMillionsLogo from "@/assets/logos/ny/megamillions.svg";
 
 export default function GeneratorSetting() {
   const { gameSlug, total_numbers, extra_balls, per_ticket } =
@@ -33,32 +33,44 @@ export default function GeneratorSetting() {
   const [fixedNumbers, setFixedNumbers] = useState(0);
   const [lines, setLines] = useState(0);
 
+  // Limitar valores aos máximos permitidos
   useEffect(() => {
-    if (matchCondition > numbersPerTicket) {
-      setMatchCondition(numbersPerTicket);
-    }
-    if (guarantee > numbersPerTicket) {
-      setGuarantee(numbersPerTicket);
-    }
+    if (matchCondition > numbersPerTicket) setMatchCondition(numbersPerTicket);
+    if (guarantee > numbersPerTicket) setGuarantee(numbersPerTicket);
   }, [numbersPerTicket]);
 
-  const renderInput = (
+  // Linha de input: label à esquerda, input à direita
+  const renderInputRow = (
     label: string,
     value: number,
-    onChange: ((v: number) => void) | undefined,
+    onChange?: (v: number) => void,
     editable: boolean = true
   ) => (
     <View style={styles.inputRow}>
       <Text style={styles.inputLabel}>{label}</Text>
-      <View style={styles.inputWrapper}>
+      <View style={styles.inputControl}>
+        {editable && (
+          <TouchableOpacity
+            style={styles.arrowBtn}
+            onPress={() => onChange && onChange(Math.max(0, value - 1))}
+            disabled={value <= 0}
+          >
+            <Ionicons
+              name="remove"
+              size={20}
+              color={value <= 0 ? "#CCC" : "#007EFF"}
+            />
+          </TouchableOpacity>
+        )}
         <TextInput
-          style={styles.inputBox}
+          style={[styles.inputBox, !editable && styles.inputBoxReadonly]}
           value={value.toString()}
           onChangeText={(val) => {
             const num = parseInt(val || "0");
             if (onChange) {
               if (
-                (label.includes("Guarantee") || label.includes("Match")) &&
+                (label.toLowerCase().includes("guarantee") ||
+                  label.toLowerCase().includes("match")) &&
                 num > numbersPerTicket
               ) {
                 onChange(numbersPerTicket);
@@ -69,7 +81,16 @@ export default function GeneratorSetting() {
           }}
           editable={editable}
           keyboardType="number-pad"
+          textAlign="center"
         />
+        {editable && (
+          <TouchableOpacity
+            style={styles.arrowBtn}
+            onPress={() => onChange && onChange(value + 1)}
+          >
+            <Ionicons name="add" size={20} color="#007EFF" />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -83,32 +104,40 @@ export default function GeneratorSetting() {
         headerColor="#0E4CA1"
       />
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
         <ResponsiveContainer style={styles.card}>
-          {renderInput(
+          {renderInputRow(
             "Total numbers to cover",
             totalNumbers,
             undefined,
             false
           )}
-          {renderInput("Total extra balls", totalExtras, undefined, false)}
-          {renderInput(
+          <View style={styles.divider} />
+          {renderInputRow("Total extra balls", totalExtras, undefined, false)}
+          <View style={styles.divider} />
+          {renderInputRow(
             "Numbers per ticket",
             numbersPerTicket,
             undefined,
             false
           )}
-          {renderInput("Guarantee desired >=", guarantee, setGuarantee)}
-          {renderInput("Match condition", matchCondition, setMatchCondition)}
-          {renderInput("Fixed numbers", fixedNumbers, setFixedNumbers)}
-          {renderInput("Number of lines", lines, setLines)}
+          <View style={styles.divider} />
+          {renderInputRow("Guarantee desired >=", guarantee, setGuarantee)}
+          <View style={styles.divider} />
+          {renderInputRow("Match condition", matchCondition, setMatchCondition)}
+          <View style={styles.divider} />
+          {renderInputRow("Fixed numbers", fixedNumbers, setFixedNumbers)}
+          <View style={styles.divider} />
+          {renderInputRow("Number of lines", lines, setLines)}
 
-          <TouchableOpacity style={styles.filterButton}>
-            <Text style={styles.filterButtonText}>Add Filters</Text>
+          <TouchableOpacity style={styles.filterButton} activeOpacity={0.85}>
+            <Text style={styles.filterButtonText}>+ Add Filters</Text>
           </TouchableOpacity>
         </ResponsiveContainer>
       </ScrollView>
-
       <GensettingButton />
     </View>
   );
@@ -117,58 +146,105 @@ export default function GeneratorSetting() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: "#F2F4FF",
+    backgroundColor: "#ECF1FF",
   },
   scrollContent: {
-    paddingVertical: 20,
-    paddingBottom: 100,
+    paddingVertical: 22,
+    paddingBottom: 120,
     alignItems: "center",
   },
   card: {
     width: "100%",
+    maxWidth: 400,
     backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 10,
+    borderRadius: 22,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 20,
+    elevation: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 0,
+    marginBottom: 20,
   },
   inputRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    justifyContent: "space-between",
+    minHeight: 60,
+    paddingHorizontal: 18,
+    backgroundColor: "transparent",
   },
   inputLabel: {
-    fontSize: 16,
+    fontSize: 16.5,
     fontWeight: "600",
-    color: "#333",
-    width: "60%",
+    color: "#232B44",
+    flex: 1.4,
+    letterSpacing: 0.03,
   },
-  inputWrapper: {
+  inputControl: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
+    justifyContent: "flex-end",
+    gap: 5,
   },
-  inputBox: {
-    width: 120,
-    height: 52,
-    backgroundColor: "#F5F5F5",
-    borderRadius: 8,
-    textAlign: "center",
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000",
-    borderWidth: 1,
-    borderColor: "#CCC",
-  },
-  filterButton: {
-    backgroundColor: "#1877F2",
-    height: 48,
-    borderRadius: 24,
+  arrowBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#F1F6FF",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#E4ECFA",
+    marginHorizontal: 2,
+  },
+  inputBox: {
+    width: 64,
+    height: 38,
+    fontSize: 18,
+    fontWeight: "bold",
+    backgroundColor: "#F7F8FA",
+    color: "#232B44",
+    borderRadius: 10,
+    borderWidth: 1.1,
+    borderColor: "#D6DBF4",
+    paddingHorizontal: 6,
+    marginHorizontal: 1,
+    textAlign: "center",
+  },
+  inputBoxReadonly: {
+    backgroundColor: "#F1F3F9",
+    color: "#A6AAC3",
+    borderColor: "#E4E6F5",
+  },
+  divider: {
+    height: 1.1,
+    backgroundColor: "#F3F5F8",
+    width: "90%",
+    alignSelf: "center",
+    marginVertical: 0,
+  },
+  filterButton: {
+    backgroundColor: "#007EFF",
+    height: 50,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    marginBottom: 6,
+    width: "92%",
+    alignSelf: "center",
+    shadowColor: "#007EFF",
+    shadowOpacity: 0.09,
+    shadowRadius: 5,
+    elevation: 2,
   },
   filterButtonText: {
-    color: "#FFF",
-    fontWeight: "600",
-    fontSize: 16,
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 17,
+    letterSpacing: 0.15,
   },
 });

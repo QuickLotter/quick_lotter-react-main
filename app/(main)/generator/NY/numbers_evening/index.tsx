@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 // ✅ Logo do Numbers Evening
-import { default as NumbersLogo } from "@/assets/images/ny_game_logo/numbers_evening.svg";
+import { default as NumbersLogo } from "@/assets/logos/ny/numbersevening.svg";
 
 // ✅ Componentes reutilizáveis
 import GameHeader from "@/components/generator/header/gameheader";

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 // ✅ Importa o logo Numbers Midday
-import { default as NumbersLogo } from "@/assets/images/ny_game_logo/numbers_midday.svg";
+import { default as NumbersLogo } from "@/assets/logos/ny/numbersmidday.svg";
 
 // ✅ Componentes reutilizáveis
 import GameHeader from "@/components/generator/header/gameheader";

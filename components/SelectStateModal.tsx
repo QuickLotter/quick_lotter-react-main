@@ -1,4 +1,4 @@
-// /components/SelectStateModal.tsx
+// /components/SelectStateModal.tsx serve para selecionar o Estado que quer jogar
 import React from "react";
 import {
   Modal,
