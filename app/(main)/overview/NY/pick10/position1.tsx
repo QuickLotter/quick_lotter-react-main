@@ -11,7 +11,6 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
 import Pick10Logo from "@/assets/images/ny_game_logo/pick10.svg";
-import DrawingSinceTabs from "../../../../../components/drawingsincetabs";
 
 // ====== HEADER PARA POSITION 01 ======
 // Ordem real: 1 a 80 (Pick 10 é só uma posição)
@@ -96,7 +95,7 @@ export default function Position01Pick10() {
         title="Overview"
         subtitle="Pick 10 NY"
         headerColor="#FFE363"
-        backTo="/overview/new_york/overview"
+        backTo="/overview/ny/overview"
       />
 
       {/* TABS */}

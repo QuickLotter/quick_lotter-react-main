@@ -1,14 +1,12 @@
 import React, { useRef, useState } from "react";
 import {
-  Animated,
-  FlatList,
-  StyleSheet,
   View,
-  TouchableOpacity,
+  StyleSheet,
   useWindowDimensions,
   Platform,
+  Animated,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import Carousel from "react-native-reanimated-carousel";
 import GameCard from "./GameCard";
 import { useRouter } from "expo-router";
 import { GameData } from "@/types/GameData";
@@ -21,198 +19,145 @@ export default function GameCardSlider({ games }: Props) {
   const { width } = useWindowDimensions();
   const router = useRouter();
 
-  // FlatList para MOBILE/TABLET
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const [currentIndex, setCurrentIndex] = useState(0);
-
   // Responsivo para Card
   const maxWidth = 384;
-  const minWidth = 280;
-  const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
-  const cardSpacing = 5;
-  const fullItemWidth = cardWidth + cardSpacing;
+  const minWidth = 320;
+  const cardWidth = Math.min(Math.max(width * 0.92, minWidth), maxWidth);
+  const cardHeight = cardWidth * 1.45; // Ajuste aqui conforme o layout real
 
-  // Verifica se é Desktop (>=1080)
-  const isDesktop = width >= 1080;
-
-  // ------ DESKTOP Slider com Setas ------
-  const [desktopIndex, setDesktopIndex] = useState(0);
-  function goPrev() {
-    setDesktopIndex((prev) => (prev === 0 ? games.length - 1 : prev - 1));
-  }
-  function goNext() {
-    setDesktopIndex((prev) => (prev === games.length - 1 ? 0 : prev + 1));
-  }
-
-  // ------ MOBILE Slider com FlatList ------
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-    {
-      useNativeDriver: true,
-      listener: (event) => {
-        const offsetX = event.nativeEvent.contentOffset.x;
-        const index = Math.round(offsetX / fullItemWidth);
-        setCurrentIndex(index);
-      },
-    }
-  );
-
-  if (!games?.length) return null;
+  // Dots e posição
+  const [activeIndex, setActiveIndex] = useState(0);
 
   function getGeneratorRoute(game: GameData) {
-    // Para NY
-    if (game.id.endsWith("_ny")) {
-      // Exemplo: take5_midday_ny -> /generator/ny/generator?game=take5_midday_ny
+    if (game.id.endsWith("_ny"))
       return `/generator/ny/generator?game=${game.id}`;
-    }
-    // Para AZ
-    if (game.id.endsWith("_az")) {
+    if (game.id.endsWith("_az"))
       return `/generator/az/generator?game=${game.id}`;
-    }
-    // Fallback para outros estados ou estrutura futura
-    if (game.state && game.slug) {
+    if (game.state && game.slug)
       return `/generator/states/${game.state}/${game.slug}`;
-    }
     return "#";
   }
 
+  if (!games?.length) return null;
+
   return (
     <View style={styles.sliderContainer}>
-      {isDesktop ? (
-        // DESKTOP: Card central + setas laterais
-        <View style={styles.desktopRow}>
-          <TouchableOpacity onPress={goPrev} style={styles.arrowBtn}>
-            <Ionicons name="chevron-back-circle" size={48} color="#bbb" />
-          </TouchableOpacity>
-
+      <Carousel
+        loop
+        width={cardWidth}
+        height={cardHeight}
+        autoPlay={false}
+        mode="parallax"
+        modeConfig={{
+          parallaxScrollingScale: 0.92,
+          parallaxScrollingOffset: 38,
+        }}
+        pagingEnabled
+        snapEnabled
+        data={games}
+        style={{
+          alignSelf: "center",
+        }}
+        onSnapToItem={setActiveIndex}
+        renderItem={({ item, index }) => (
           <View
             style={[
-              styles.cardDesktop,
-              { width: 400, maxWidth: 440, minWidth: 240 },
+              styles.cardWrapper,
+              index === activeIndex && styles.activeCardShadow,
             ]}
           >
             <GameCard
-              data={games[desktopIndex]}
+              data={item}
               onPress={() => {
-                const route = getGeneratorRoute(games[desktopIndex]);
+                const route = getGeneratorRoute(item);
                 if (route && route !== "#") router.push(route);
               }}
             />
           </View>
+        )}
+        panGestureHandlerProps={{
+          activeOffsetX: [-10, 10],
+        }}
+        customConfig={() => ({
+          type: "positive",
+        })}
+      />
 
-          <TouchableOpacity onPress={goNext} style={styles.arrowBtn}>
-            <Ionicons name="chevron-forward-circle" size={48} color="#bbb" />
-          </TouchableOpacity>
-        </View>
-      ) : (
-        // MOBILE/TABLET: FlatList horizontal, centralizado, com dots
-        <>
-          <Animated.FlatList
-            data={games}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={fullItemWidth}
-            decelerationRate="fast"
-            pagingEnabled
-            bounces={false}
-            scrollEventThrottle={16}
-            contentContainerStyle={{
-              paddingHorizontal: (width - cardWidth) / 2,
-            }}
-            onScroll={handleScroll}
-            renderItem={({ item, index }) => {
-              const inputRange = [
-                (index - 1) * fullItemWidth,
-                index * fullItemWidth,
-                (index + 1) * fullItemWidth,
-              ];
-
-              const scale = scrollX.interpolate({
-                inputRange,
-                outputRange: [0.9, 1, 0.9],
-                extrapolate: "clamp",
-              });
-
-              return (
-                <Animated.View
-                  style={{
-                    width: cardWidth,
-                    marginHorizontal: cardSpacing / 2,
-                    transform: [{ scale }],
-                  }}
-                >
-                  <GameCard
-                    data={item}
-                    onPress={() => {
-                      const route = getGeneratorRoute(item);
-                      if (route && route !== "#") router.push(route);
-                    }}
-                  />
-                </Animated.View>
-              );
-            }}
-          />
-
-          {/* Dots de navegação */}
-          <View style={styles.dotsContainer}>
-            {games.map((_, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.dot,
-                  currentIndex === i ? styles.dotActive : styles.dotInactive,
-                ]}
-              />
-            ))}
-          </View>
-        </>
-      )}
+      {/* Dots iOS-style */}
+      <View style={styles.dotsContainer}>
+        {games.map((_, i) => {
+          const isActive = i === activeIndex;
+          return (
+            <Animated.View
+              key={i}
+              style={[
+                styles.dot,
+                isActive && styles.dotActive,
+                {
+                  opacity: isActive ? 1 : 0.4,
+                  transform: [{ scale: isActive ? 1.16 : 1 }],
+                },
+              ]}
+            />
+          );
+        })}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   sliderContainer: {
-    marginTop: 0,
-    marginBottom: "center",
+    marginTop: 6,
     alignSelf: "center",
     width: "100%",
     maxWidth: 1080,
+    minHeight: 350,
+    paddingVertical: 12,
   },
-  desktopRow: {
-    flexDirection: "row",
+  cardWrapper: {
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
+    shadowColor: "#194D91",
+    shadowOpacity: 0.06,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 7 },
+    borderRadius: 22,
+    backgroundColor: "transparent",
+    elevation: 2,
+    paddingBottom: 2,
   },
-  cardDesktop: {
-    alignItems: "center",
-    alignSelf: "center",
-    marginHorizontal: 16,
-  },
-  arrowBtn: {
-    padding: 0,
-    marginHorizontal: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 2,
+  activeCardShadow: {
+    shadowOpacity: 0.19,
+    shadowRadius: 22,
+    shadowColor: "#007EFF",
+    elevation: 8,
   },
   dotsContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 50,
+    marginTop: 32,
+    marginBottom: 0,
+    gap: 7,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 5,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#B5CCF9",
+    marginHorizontal: 4,
+    transitionProperty: "all",
+    transitionDuration: "160ms",
   },
   dotActive: {
     backgroundColor: "#007EFF",
-  },
-  dotInactive: {
-    backgroundColor: "#C4D9FF",
+    width: 15,
+    height: 10,
+    borderRadius: 7,
+    shadowColor: "#007EFF",
+    shadowOpacity: 0.19,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
   },
 });

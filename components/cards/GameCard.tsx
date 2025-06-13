@@ -41,10 +41,10 @@ const MAX_BALLS_PER_ROW = 8;
 
 export default function GameCard({ data, onPress }: Props) {
   const { width } = useWindowDimensions();
-  const maxWidth = 375;
-  const minWidth = 192;
-  const cardWidth = Math.min(Math.max(width * 0.9, minWidth), maxWidth);
-  const scale = cardWidth / 375;
+  const maxWidth = 384;
+  const minWidth = 260;
+  const cardWidth = Math.min(Math.max(width * 0.95, minWidth), maxWidth);
+  const scale = cardWidth / 380;
 
   // Extrai o estado do id do jogo (ex: powerball_ny -> NY)
   const gameState = getGameStateFromId(data.id);

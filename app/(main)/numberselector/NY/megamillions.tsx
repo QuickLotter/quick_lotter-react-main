@@ -16,7 +16,7 @@ const TABS = [
   }, // index.tsx
   {
     label: "Números Gerados",
-    route: "/generator/ny/megamillions/numbersgenerated",
+    route: "/generator/ny/megamillions/MyLines",
   },
   {
     label: "Edit Filters",

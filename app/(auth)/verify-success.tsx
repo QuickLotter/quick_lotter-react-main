@@ -1,111 +1,130 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
+  SafeAreaView,
+  Animated,
+  Platform,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Colors, Typography } from "@/theme";
 import HeaderLoginLogo from "@/components/generator/layout/HeaderLoginLogo";
 import { useRouter } from "expo-router";
-
-// Componente responsivo
-const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => (
-  <View style={styles.responsiveContainer}>{children}</View>
-);
+import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function VerifySuccess() {
   const router = useRouter();
 
+  // Bounce-in animation for the check icon
+  const scaleAnim = useRef(new Animated.Value(0.1)).current;
+
+  useEffect(() => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      friction: 5,
+      tension: 80,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
-    <View style={styles.wrapper}>
+    <SafeAreaView style={styles.wrapper}>
       <HeaderLoginLogo title="" />
-
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        keyboardShouldPersistTaps="handled"
-      >
-        <ResponsiveContainer>
-          {/* Ícone de sucesso */}
-          <View style={styles.iconCircle}>
-            <MaterialIcons name="check-circle" size={54} color="#00C851" />
-          </View>
-
-          <Text style={styles.title}>Verification Successful</Text>
-          <Text style={styles.subtitle}>
-            Your phone number has been successfully verified and added to your
-            account.
-          </Text>
-
-          <TouchableOpacity
+      <View style={styles.content}>
+        <Animated.View
+          style={{
+            transform: [{ scale: scaleAnim }],
+            shadowColor: "#36C663",
+            shadowOpacity: 0.18,
+            shadowRadius: 16,
+            shadowOffset: { width: 0, height: 6 },
+            elevation: 7,
+            marginBottom: 18,
+          }}
+        >
+          <MaterialIcons name="check-circle" size={96} color="#36C663" />
+        </Animated.View>
+        <Text style={styles.title}>Verification Successful!</Text>
+        <Text style={styles.desc}>
+          Your email has been successfully verified.
+          <br />
+          You can now access all app features.
+        </Text>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          style={styles.buttonShadow}
+          onPress={() => router.replace("/login")}
+        >
+          <LinearGradient
+            colors={["#009FFF", "#007EFF"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
             style={styles.button}
-            onPress={() => router.replace("/auth/PostLoginGate")} // <-- Aqui!
           >
             <Text style={styles.buttonText}>Continue</Text>
-          </TouchableOpacity>
-        </ResponsiveContainer>
-      </ScrollView>
-    </View>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: "#ECF1FF",
   },
-  scrollContainer: {
-    flexGrow: 1,
-    alignItems: "center",
-    minHeight: "100%",
-    paddingTop: 24,
-    paddingBottom: 40,
-  },
-  responsiveContainer: {
-    width: "100%",
-    maxWidth: 768,
-    alignSelf: "center",
-    padding: 24,
+  content: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  iconCircle: {
-    backgroundColor: "#E6F7EA",
-    borderRadius: 60,
-    width: 110,
-    height: 110,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 24,
+    padding: 28,
   },
   title: {
-    ...Typography.heading,
-    fontSize: 20,
-    fontWeight: "700",
-    color: Colors.text,
+    fontSize: 25,
+    fontWeight: "800",
+    color: "#36C663",
     textAlign: "center",
-    marginBottom: 12,
+    marginBottom: 14,
+    letterSpacing: 0.1,
+    textShadowColor: "#E6FAEF",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 3,
   },
-  subtitle: {
-    ...Typography.body,
-    color: Colors.textMuted,
+  desc: {
+    fontSize: 16.5,
+    color: "#334",
     textAlign: "center",
-    fontSize: 14,
-    marginBottom: 32,
-    paddingHorizontal: 10,
+    marginBottom: 38,
+    lineHeight: 22,
+    fontWeight: "500",
+    opacity: 0.96,
+  },
+  buttonShadow: {
+    width: "100%",
+    borderRadius: 18,
+    shadowColor: "#007EFF",
+    shadowOpacity: 0.11,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 5,
+    marginTop: 8,
   },
   button: {
-    backgroundColor: Colors.primary,
+    borderRadius: 18,
     paddingVertical: 14,
-    paddingHorizontal: 64,
-    borderRadius: 50,
+    paddingHorizontal: 38,
     alignItems: "center",
+    width: "100%",
   },
   buttonText: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 17.5,
+    letterSpacing: 0.2,
+    textShadowColor: "#0058A3aa",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
 });

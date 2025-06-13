@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   View,
   Image,
   Pressable,
   StyleSheet,
   Modal,
-  FlatList,
   Text,
   TouchableOpacity,
+  ScrollView,
   Platform,
+  Animated,
 } from "react-native";
 import { useRouter, usePathname } from "expo-router";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
@@ -16,10 +17,9 @@ import { Colors } from "@/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import { LinearGradient } from "expo-linear-gradient";
+import { useLocation } from "@/app/(main)/context/LocationContext";
 
-// Importa o contexto de localização!
-import { useLocation } from "@/app/(main)/context/LocationContext"; // ajuste se o path mudar
-
+// Lista de siglas dos estados
 const STATES = [
   "AZ",
   "AR",
@@ -91,10 +91,25 @@ export default function HeaderLogoBack({
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
-
-  // Usa o contexto global:
   const { state, setState } = useLocation();
   const [modalVisible, setModalVisible] = React.useState(false);
+
+  // Animação de toque para botão (escala)
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const handlePressIn = () =>
+    Animated.spring(scaleAnim, {
+      toValue: 0.85,
+      useNativeDriver: true,
+      speed: 24,
+      bounciness: 7,
+    }).start();
+  const handlePressOut = () =>
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 24,
+      bounciness: 7,
+    }).start();
 
   const isHome = pathname === "/home";
   const hideBackRoutes = ["/analysis", "/overview", "/checker"];
@@ -108,7 +123,7 @@ export default function HeaderLogoBack({
   return (
     <LinearGradient
       colors={["#004AB1", "#007EFF"]}
-      locations={[0, 0.41]}
+      locations={[0, 0.44]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={[
@@ -122,7 +137,7 @@ export default function HeaderLogoBack({
       ]}
     >
       <ResponsiveContainer style={styles.inner}>
-        {/* Botão de menu ou voltar */}
+        {/* Menu ou Back */}
         {showMenu ? (
           <Pressable
             onPress={
@@ -135,26 +150,35 @@ export default function HeaderLogoBack({
                 : undefined
             }
             style={styles.menuButton}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            hitSlop={10}
           >
-            {isHome ? (
-              <Entypo name="menu" size={28} color={Colors.white} />
-            ) : showBackButton ? (
-              <MaterialIcons
-                name="arrow-back-ios"
-                size={24}
-                color={Colors.white}
-              />
-            ) : (
-              <View style={{ width: 24 }} />
-            )}
+            <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+              {isHome ? (
+                <Entypo name="menu" size={28} color={Colors.white} />
+              ) : showBackButton ? (
+                <MaterialIcons
+                  name="arrow-back-ios"
+                  size={24}
+                  color={Colors.white}
+                />
+              ) : (
+                <View style={{ width: 24 }} />
+              )}
+            </Animated.View>
           </Pressable>
         ) : (
           <View style={{ width: 44 }} />
         )}
 
-        {/* Logo */}
+        {/* Logo + Título */}
         <View
-          style={[styles.logoContainer, { alignItems: logoContainerAlign }]}
+          style={[
+            styles.logoContainer,
+            { alignItems: logoContainerAlign },
+            title && { flexDirection: "column" },
+          ]}
         >
           <Image
             source={require("@/assets/images/logo_01.png")}
@@ -163,11 +187,12 @@ export default function HeaderLogoBack({
           {title ? <Text style={styles.title}>{title}</Text> : null}
         </View>
 
-        {/* Botão seletor de estado */}
+        {/* Selector do Estado */}
         {showStateSelector ? (
           <Pressable
             onPress={() => setModalVisible(true)}
             style={styles.stateButton}
+            hitSlop={8}
           >
             <Entypo name="location-pin" size={20} color="#fff" />
             <Text style={styles.stateText}>{state || "??"}</Text>
@@ -178,55 +203,62 @@ export default function HeaderLogoBack({
         )}
       </ResponsiveContainer>
 
-      {/* Modal de seleção de estado */}
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+      {/* Modal de seleção de estado iOS-style com ScrollView */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setModalVisible(false)}
+        >
+          <Animated.View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Select your state</Text>
-            <FlatList
-              data={STATES}
-              keyExtractor={(item) => item}
-              numColumns={4}
-              contentContainerStyle={{
-                alignSelf: "center",
-                width: 374,
-              }}
-              renderItem={({ item }) => {
-                const isSelected = item === state;
-                return (
-                  <TouchableOpacity
-                    style={[
-                      styles.stateItem,
-                      isSelected && styles.stateItemSelected,
-                    ]}
-                    onPress={() => {
-                      setState(item); // Usa o contexto global!
-                      setModalVisible(false);
-                    }}
-                    activeOpacity={0.7}
-                  >
-                    <Text
+            <ScrollView
+              contentContainerStyle={styles.stateGrid}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.gridWrapper}>
+                {STATES.map((item) => {
+                  const isSelected = item === state;
+                  return (
+                    <TouchableOpacity
+                      key={item}
                       style={[
-                        styles.stateItemText,
-                        isSelected && styles.stateItemTextSelected,
+                        styles.stateItem,
+                        isSelected && styles.stateItemSelected,
                       ]}
+                      onPress={() => {
+                        setState(item);
+                        setModalVisible(false);
+                      }}
+                      activeOpacity={0.8}
                     >
-                      {item}
-                    </Text>
-                    {isSelected && (
-                      <MaterialIcons
-                        name="check"
-                        size={18}
-                        color="#fff"
-                        style={{ marginTop: 4 }}
-                      />
-                    )}
-                  </TouchableOpacity>
-                );
-              }}
-            />
-          </View>
-        </View>
+                      <Text
+                        style={[
+                          styles.stateItemText,
+                          isSelected && styles.stateItemTextSelected,
+                        ]}
+                      >
+                        {item}
+                      </Text>
+                      {isSelected && (
+                        <MaterialIcons
+                          name="check"
+                          size={18}
+                          color="#fff"
+                          style={{ marginTop: 2 }}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </ScrollView>
+          </Animated.View>
+        </Pressable>
       </Modal>
     </LinearGradient>
   );
@@ -235,12 +267,16 @@ export default function HeaderLogoBack({
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
-    height: Platform.OS === "ios" ? 128 : 116,
+    height: Platform.OS === "ios" ? 126 : 112,
     justifyContent: "center",
     zIndex: 999,
-    elevation: 2,
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
+    elevation: 3,
+    borderBottomLeftRadius: 22,
+    borderBottomRightRadius: 22,
+    shadowColor: "#007EFF",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
   },
   inner: {
     flexDirection: "row",
@@ -248,7 +284,7 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    minHeight: 104,
+    minHeight: 96,
   },
   menuButton: {
     padding: 6,
@@ -261,16 +297,20 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 110,
-    height: 50,
+    height: 48,
     resizeMode: "contain",
+    borderRadius: 13,
+
+    alignSelf: "center",
   },
   title: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "700",
     fontSize: 20,
     textAlign: "center",
-    marginTop: 2,
+    marginTop: 3,
     letterSpacing: 0.15,
+    opacity: 0.97,
   },
   stateButton: {
     flexDirection: "row",
@@ -278,52 +318,84 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     height: 38,
     zIndex: 3,
+    borderRadius: 14,
+    backgroundColor: "rgba(0,0,0,0.06)",
   },
   stateText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 16.3,
     marginHorizontal: 4,
+    fontWeight: "600",
+    letterSpacing: 0.07,
   },
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.38)",
+    backgroundColor: "rgba(0,0,0,0.28)",
+    paddingBottom: 0,
   },
   modalContent: {
-    backgroundColor: "#FFF",
-    padding: 20,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    minHeight: 300,
+    backgroundColor: "#FAFAFF",
+    padding: 22,
+    borderTopLeftRadius: 23,
+    borderTopRightRadius: 23,
+    maxHeight: 480, // Limita altura para manter scroll em telas pequenas
+    minHeight: 304,
+    shadowColor: "#007EFF",
+    shadowOpacity: 0.13,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: -8 },
+    elevation: 24,
   },
   modalTitle: {
-    color: "#000",
-    fontSize: 18,
-    fontWeight: "bold",
+    color: "#092058",
+    fontSize: 19,
+    fontWeight: "700",
     marginBottom: 16,
     textAlign: "center",
+    letterSpacing: 0.11,
+  },
+  stateGrid: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: 12,
+  },
+  gridWrapper: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    width: 350, // Mantém grid fixo
+    alignSelf: "center",
   },
   stateItem: {
-    paddingVertical: 12,
+    paddingVertical: 13,
     margin: 6,
     borderRadius: 8,
-    width: 78,
+    width: 74,
     alignItems: "center",
-    backgroundColor: "#F2F2F2",
+    backgroundColor: "#F3F6FB",
     borderWidth: 1,
     borderColor: "transparent",
+    elevation: 1,
   },
   stateItemSelected: {
     backgroundColor: "#007EFF",
     borderColor: "#fff",
+    shadowColor: "#007EFF",
+    shadowOpacity: 0.19,
+    shadowRadius: 7,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 3,
   },
   stateItemText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#000",
+    fontSize: 14.2,
+    fontWeight: "600",
+    color: "#222",
+    letterSpacing: 0.09,
   },
   stateItemTextSelected: {
-    fontWeight: "bold",
+    fontWeight: "700",
     color: "#fff",
+    letterSpacing: 0.12,
   },
 });

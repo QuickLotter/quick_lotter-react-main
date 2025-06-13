@@ -1,4 +1,6 @@
+// states/new_york/games.ts
 import { GameData } from "@/types/GameData";
+import Constants from "expo-constants";
 import MegaMillionsLogo from "@/assets/logos/ny/megamillions.svg";
 import PowerballLogo from "@/assets/logos/ny/powerball.svg";
 import Cash4LifeLogo from "@/assets/logos/ny/cash4life.svg";
@@ -11,368 +13,137 @@ import NumbersMiddayLogo from "@/assets/logos/ny/numbersmidday.svg";
 import NumbersEveningLogo from "@/assets/logos/ny/numbersevening.svg";
 import Pick10Logo from "@/assets/logos/ny/pick10.svg";
 
+// DEBUG: inspeciona se o app.json foi carregado
+console.log("expoConfig:", Constants.expoConfig);
+console.log("manifest:", Constants.manifest);
+
+// fallback entre expoConfig e manifest
+const rawConfig = Constants.expoConfig ?? (Constants.manifest as any);
+if (!rawConfig?.extra) {
+  console.warn(
+    "⚠️ Could not find expoConfig.extra or manifest.extra! Check your app.json"
+  );
+}
+
+// retira das configurações
+const SUPABASE_URL = rawConfig.extra.supabaseUrl as string;
+const SUPABASE_KEY = rawConfig.extra.supabaseAnonKey as string;
+
+// DEBUG: confirma que as variáveis não são undefined
+console.log({ SUPABASE_URL, SUPABASE_KEY });
+
+// mapeia slug → React SVG component
+const logoMap: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
+  megamillions: MegaMillionsLogo,
+  powerball: PowerballLogo,
+  cash4life: Cash4LifeLogo,
+  lotto: NYLottoLogo,
+  take5midday: Take5MiddayLogo,
+  take5evening: Take5EveningLogo,
+  win4midday: Win4MiddayLogo,
+  win4evening: Win4EveningLogo,
+  numbersmidday: NumbersMiddayLogo,
+  numbersevening: NumbersEveningLogo,
+  pick10: Pick10Logo,
+};
+
 export async function fetchNewYorkGames(): Promise<GameData[]> {
-  return [
-    // Mega Millions
-    {
-      id: "megamillions_ny",
-      name: "Mega Millions",
-      slug: "megamillions",
-      logo: MegaMillionsLogo,
-      jackpot: "$143 Million",
-      cashValue: "$66.8 Million",
-      drawTime: "23:00:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["01", "22", "33", "44", "55", "16"],
-      bonusNumber: "16",
-      powerPlay: "3x",
-      result: "No Jackpot Winners    3 Match 5 Winner    NY",
-      config_ui: {
-        borderColor: "#0E4CA1",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#0E4CA1", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#FFD700", "#B8860B"],
-        lastBallTextColor: "#fff",
-        playButtonColor: "#0E4CA1",
-        playButtonBorder: "#EE3E33",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
+  const url = `${SUPABASE_URL}/rest/v1/game_cards?select=*&status=eq.true&order=game_code.asc`;
 
-    // Powerball
-    {
-      id: "powerball_ny",
-      name: "Powerball",
-      slug: "powerball",
-      logo: PowerballLogo,
-      jackpot: "$95 Million",
-      cashValue: "$45.7 Million",
-      drawTime: "23:00:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["05", "09", "22", "34", "51", "10"],
-      bonusNumber: "10",
-      powerPlay: "2x",
-      result: "No Jackpot Winners    3 Match 5 Winner    NY",
-      config_ui: {
-        borderColor: "#C7102E",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#C7102E", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#FF6666", "#B1001C"],
-        lastBallTextColor: "#fff",
-        playButtonColor: "#C7102E",
-        playButtonBorder: "#0E4CA1",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
+  const res = await fetch(url, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
     },
+  });
 
-    // Cash4Life
-    {
-      id: "cash4life_ny",
-      name: "Cash 4 Life",
-      slug: "cash4life",
-      logo: Cash4LifeLogo,
-      jackpot: "$7 Million",
-      cashValue: "$4.5 Million",
-      drawTime: "21:00:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["05", "12", "21", "33", "37", "04"],
-      bonusNumber: "04",
-      powerPlay: "",
-      result: "No Jackpot Winners    3 Match 5 Winner    NY",
-      config_ui: {
-        borderColor: "#009872",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#009872", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#F4FF82", "#7FA837"],
-        lastBallTextColor: "#fff",
-        playButtonColor: "#009872",
-        playButtonBorder: "#5AC27C",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
+  if (!res.ok) {
+    throw new Error(`Erro ao buscar jogos: ${res.status} ${res.statusText}`);
+  }
 
-    // NY Lotto
-    {
-      id: "nylotto_ny",
-      name: "NY Lotto",
-      slug: "nylotto",
-      logo: NYLottoLogo,
-      jackpot: "$12.3 Million",
-      cashValue: "$7.5 Million",
-      drawTime: "20:00:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["11", "19", "24", "38", "43", "48", "57"],
-      bonusNumber: "03",
-      powerPlay: "",
-      result: "No Jackpot Winners    3 Match 5 Winner    NY",
-      config_ui: {
-        borderColor: "#D31245",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#D31245", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#F53C6D", "#A4143A"],
-        lastBallTextColor: "#fff",
-        playButtonColor: "#D31245",
-        playButtonBorder: "#005596",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
+  const records: any[] = await res.json();
 
-    // Take 5 Midday
-    {
-      id: "take5_midday_ny",
-      name: "Take 5 Midday",
-      slug: "take5_midday",
-      logo: Take5MiddayLogo,
-      jackpot: "$20,000",
-      cashValue: "$20,000",
-      drawTime: "14:30:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["02", "08", "13", "19", "24"],
-      bonusNumber: "",
-      powerPlay: "",
-      result: "MIDDAY    5 Match Straight    NY",
-      config_ui: {
-        borderColor: "#CA3092",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#CA3092", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
-        lastBallTextColor: "#101820",
-        playButtonColor: "#00928F",
-        playButtonBorder: "#CA3092",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
+  return records.map((rec) => {
+    const {
+      state_code,
+      game_code,
+      game_name,
+      jackpot_estimated,
+      draw_time,
+      next_draw_date,
+      last_draw_result,
+      config_ui: ui,
+    } = rec;
 
-    // Take 5 Evening
-    {
-      id: "take5_evening_ny",
-      name: "Take 5 Evening",
-      slug: "take5_evening",
-      logo: Take5EveningLogo,
-      jackpot: "$20,000",
-      cashValue: "$20,000",
-      drawTime: "22:30:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["06", "15", "23", "25", "29"],
-      bonusNumber: "",
-      powerPlay: "",
-      result: "EVENING    5 Match Straight    NY",
-      config_ui: {
-        borderColor: "#CA3092",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#CA3092", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
-        lastBallTextColor: "#101820",
-        playButtonColor: "#00928F",
-        playButtonBorder: "#CA3092",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
+    // slug e id
+    const slug = game_code.replace(/^ny_/, "");
+    const id = `${slug}_${state_code.toLowerCase()}`;
 
-    // Win 4 Midday
-    {
-      id: "win4_midday_ny",
-      name: "Win 4 Midday",
-      slug: "win4_midday",
-      logo: Win4MiddayLogo,
-      jackpot: "$5,000",
-      cashValue: "$5,000",
-      drawTime: "14:30:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["0", "7", "8", "0"],
-      bonusNumber: "",
-      powerPlay: "",
-      result: "MIDDAY    5 Match Straight    NY",
-      config_ui: {
-        borderColor: "#7E0C6E",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#7E0C6E", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
-        lastBallTextColor: "#101820",
-        playButtonColor: "#7E0C6E",
-        playButtonBorder: "#7E0C6E",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
+    // formata moeda USD sem centavos
+    const moneyFmt = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    });
+    const jackpot = moneyFmt.format(jackpot_estimated);
+    const cashValue = jackpot;
 
-    // Win 4 Evening
-    {
-      id: "win4_evening_ny",
-      name: "Win 4 Evening",
-      slug: "win4_evening",
-      logo: Win4EveningLogo,
-      jackpot: "$5,000",
-      cashValue: "$5,000",
-      drawTime: "22:30:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["04", "07", "12", "15"],
-      bonusNumber: "",
-      powerPlay: "",
-      result: "EVENING    5 Match Straight    NY",
-      config_ui: {
-        borderColor: "#7E0C6E",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#7E0C6E", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
-        lastBallTextColor: "#101820",
-        playButtonColor: "#7E0C6E",
-        playButtonBorder: "#7E0C6E",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
+    // normaliza horário e data
+    const drawTime = draw_time.length === 5 ? `${draw_time}:00` : draw_time;
+    const drawDate = next_draw_date;
 
-    // Numbers Midday
-    {
-      id: "numbers_midday_ny",
-      name: "Numbers Midday",
-      slug: "numbers_midday",
-      logo: NumbersMiddayLogo,
-      jackpot: "$500",
-      cashValue: "$500",
-      drawTime: "14:30:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["01", "05", "09"],
-      bonusNumber: "",
-      powerPlay: "",
-      result: "MIDDAY    5 Match Straight    NY",
-      config_ui: {
-        borderColor: "#2E73B5",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#2E73B5", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
-        lastBallTextColor: "#101820",
-        playButtonColor: "#2E73B5",
-        playButtonBorder: "#2E73B5",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
+    // formata números principais como ["01","22",...]
+    const numbers = (last_draw_result.main_numbers as number[]).map((n) =>
+      String(n).padStart(1, "0")
+    );
 
-    // Numbers Evening
-    {
-      id: "numbers_evening_ny",
-      name: "Numbers Evening",
-      slug: "numbers_evening",
-      logo: NumbersEveningLogo,
-      jackpot: "$500",
-      cashValue: "$500",
-      drawTime: "22:30:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: ["01", "07", "09"],
-      bonusNumber: "",
-      powerPlay: "",
-      result: "EVENING    5 Match Straight    NY",
-      config_ui: {
-        borderColor: "#2E73B5",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#2E73B5", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
-        lastBallTextColor: "#101820",
-        playButtonColor: "#2E73B5",
-        playButtonBorder: "#2E73B5",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
+    // extrai bonus e megaplier
+    const powerPlay = last_draw_result.megaplier as string;
+    const extraKey = Object.keys(last_draw_result).find(
+      (k) => k !== "main_numbers" && k !== "megaplier"
+    );
+    const bonusNumber = extraKey ? String(last_draw_result[extraKey]) : "";
 
-    // Pick 10
-    {
-      id: "pick10_ny",
-      name: "Pick 10",
-      slug: "pick10",
-      logo: Pick10Logo,
-      jackpot: "$500,000",
-      cashValue: "$500,000",
-      drawTime: "12:30:00",
-      drawDate: "Wed, May 29, 2025",
-      numbers: [
-        "02",
-        "08",
-        "17",
-        "22",
-        "30",
-        "35",
-        "41",
-        "45",
-        "52",
-        "67",
-        "04",
-        "16",
-        "18",
-        "25",
-        "33",
-        "40",
-        "44",
-        "54",
-        "55",
-        "60",
-      ],
-      bonusNumber: "",
-      powerPlay: "",
-      result: "5 Jackpot Winners - NY",
-      config_ui: {
-        borderColor: "#ECC200",
-        borderWidth: 4,
-        borderRadius: 22,
-        background: "#FFF",
-        gradient: ["#FFFFFF", "#ECC200", "#FFFFFF"],
-        ballGradient: ["#FFFFFF", "#BBBBBB"],
-        ballTextColor: "#101820",
-        lastBallGradient: ["#FFFFFF", "#BBBBBB"],
-        lastBallTextColor: "#101820",
-        playButtonColor: "#ECC200",
-        playButtonBorder: "#000",
-        playButtonTextColor: "#fff",
-        logoMarginBottom: 10,
-      },
-    },
-  ];
+    // cria string de resultado
+    const result = Object.entries(last_draw_result)
+      .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(",") : v}`)
+      .join("    ");
+
+    // escolhe logo
+    const LogoComponent = logoMap[slug] || MegaMillionsLogo;
+
+    // merge do config_ui do banco com defaults
+    const config_ui = {
+      borderColor: ui.borderColor,
+      borderWidth: ui.borderWidth ?? 4,
+      borderRadius: ui.borderRadius ?? 22,
+      background: ui.headerBackground ?? "#FFF",
+      gradient: ui.gradient,
+      ballGradient: ui.ballGradient,
+      ballTextColor: ui.textColor,
+      lastBallGradient: ui.lastBallGradient,
+      lastBallTextColor: ui.lastBallTextColor ?? "#fff",
+      playButtonColor: ui.playButtonColor,
+      playButtonBorder: ui.playButtonBorder,
+      playButtonTextColor: ui.playButtonTextColor ?? "#fff",
+      logoMarginBottom: ui.logoMarginBottom ?? 10,
+    };
+
+    return {
+      id,
+      name: game_name,
+      slug,
+      logo: LogoComponent,
+      jackpot,
+      cashValue,
+      drawTime,
+      drawDate,
+      numbers,
+      bonusNumber,
+      powerPlay,
+      result,
+      config_ui,
+    } as GameData;
+  });
 }

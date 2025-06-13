@@ -11,7 +11,6 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
 import Take5Logo from "@/assets/images/ny_game_logo/take5_midday.svg"; // ajuste o path conforme seu projeto!
-import DrawingSinceTabs from "../../../../../components/drawingsincetabs";
 
 // HEADER: 1 a 39 para o Take 5
 const POSITION_HEADERS = {
@@ -95,7 +94,7 @@ export default function DrawingSinceTake5Midday() {
         title="Overview"
         subtitle="Take 5 Midday"
         headerColor="#00928F"
-        backTo="/overview/new_york/overview"
+        backTo="/overview/ny/overview"
       />
 
       {/* TABS */}

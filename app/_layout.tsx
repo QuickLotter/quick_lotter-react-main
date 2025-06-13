@@ -1,11 +1,14 @@
+// app/_layout.tsx
+
 import React, { useRef, useEffect } from "react";
 import { Slot, useRouter, usePathname } from "expo-router";
+import { AuthProvider } from "@/app/(auth)/AuthContext";
 import {
   LocationProvider,
   useLocation,
 } from "@/app/(main)/context/LocationContext";
 
-// Componente para forçar redirect para /home ao trocar estado
+// (Opcional) redirecionamento ao trocar de estado
 function StateRedirector() {
   const router = useRouter();
   const pathname = usePathname();
@@ -14,8 +17,8 @@ function StateRedirector() {
 
   useEffect(() => {
     if (lastState.current !== state) {
-      // Se mudou o estado, força redirect para a Home (não importa de onde veio)
-      //router.replace("/home");
+      // Se quiser redirecionar ao trocar estado, descomente:
+      // router.replace("/home");
       lastState.current = state;
     }
   }, [state]);
@@ -25,9 +28,11 @@ function StateRedirector() {
 
 export default function RootLayout() {
   return (
-    <LocationProvider>
-      <StateRedirector />
-      <Slot />
-    </LocationProvider>
+    <AuthProvider>
+      <LocationProvider>
+        <StateRedirector />
+        <Slot /> {/* Renderiza as rotas filhos do app */}
+      </LocationProvider>
+    </AuthProvider>
   );
 }

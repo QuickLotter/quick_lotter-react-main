@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Share,
   Linking,
+  ActivityIndicator,
 } from "react-native";
 import {
   Ionicons,
@@ -16,10 +17,26 @@ import {
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Colors } from "@/theme";
+import { useAuth } from "@/app/(auth)/AuthContext";
+
+// Helper: retorna iniciais do nome ou email
+function getInitial(name: string, email: string) {
+  if (name && name.trim() !== "") return name.trim()[0].toUpperCase();
+  if (email && email.trim() !== "") return email.trim()[0].toUpperCase();
+  return "?";
+}
 
 export default function MenuDrawer({ onClose }: { onClose?: () => void }) {
   const router = useRouter();
+  const { profile, user, loading } = useAuth();
 
+  // Dados do user/profile
+  const displayName =
+    profile?.name?.trim() || user?.user_metadata?.name || "No name";
+  const displayEmail = user?.email || "no-email@quicklotter.com";
+  const state = profile?.state || profile?.location || "Not set"; // adapte se seu campo for diferente
+
+  // Navegação e handlers
   const handleNavigate = (path: string) => {
     router.push(path);
     onClose?.();
@@ -54,11 +71,28 @@ export default function MenuDrawer({ onClose }: { onClose?: () => void }) {
       {/* Header Profile */}
       <View style={styles.profileHeader}>
         <View style={styles.avatarCircle}>
-          <Text style={styles.avatarInitial}>J</Text>
+          <Text style={styles.avatarInitial}>
+            {getInitial(displayName, displayEmail)}
+          </Text>
         </View>
         <View>
-          <Text style={styles.profileName}>Juliano Nascimento</Text>
-          <Text style={styles.profileEmail}>test@quicklotter.com</Text>
+          <Text style={styles.profileName}>
+            {loading ? <ActivityIndicator size={16} /> : displayName}
+          </Text>
+          <Text style={styles.profileEmail}>{displayEmail}</Text>
+          <Text style={styles.profileState}>
+            State:{" "}
+            <Text
+              style={[
+                styles.profileStateValue,
+                state === "Not set"
+                  ? { color: "#888" }
+                  : { color: "#007AFF", fontWeight: "bold" },
+              ]}
+            >
+              {state}
+            </Text>
+          </Text>
         </View>
       </View>
 
@@ -71,12 +105,12 @@ export default function MenuDrawer({ onClose }: { onClose?: () => void }) {
         />
         <MenuItem
           icon="games"
-          label="My-lines "
+          label="My-lines"
           onPress={() => handleNavigate("/my-lines")}
         />
         <MenuItem
           icon="location-pin"
-          label="My Location: NY"
+          label={`My Location: ${state}`}
           onPress={() => handleNavigate("/location")}
         />
         <MenuItem
@@ -163,13 +197,11 @@ function MenuItem({
   onPress: () => void;
 }) {
   let IconComponent: any = MaterialIcons;
-
   if (icon === "share" || icon === "location-pin") {
     IconComponent = Entypo;
   } else if (icon === "store") {
     IconComponent = FontAwesome5;
   }
-
   return (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
       <IconComponent name={icon as any} size={20} color="#007AFF" />
@@ -185,37 +217,52 @@ const styles = StyleSheet.create({
   },
   profileHeader: {
     backgroundColor: "#fff",
-    paddingVertical: 20,
+    paddingVertical: 18,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
+    borderBottomWidth: 1.3,
+    borderBottomColor: "#F2F2F2",
+    marginBottom: 6,
   },
   avatarCircle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: "#D9EFFF",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 12,
+    marginRight: 13,
   },
   avatarInitial: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
     color: "#007AFF",
   },
   profileName: {
-    fontSize: 16,
+    fontSize: 16.3,
     fontWeight: "bold",
     color: "#000",
+    marginBottom: 1,
   },
   profileEmail: {
     fontSize: 13,
-    color: "#555",
-    marginTop: 2,
+    color: "#444",
+    marginBottom: 2,
+  },
+  profileState: {
+    fontSize: 13.1,
+    color: "#777",
+    marginTop: 1,
+  },
+  profileStateValue: {
+    color: "#007AFF",
+    fontWeight: "bold",
+    fontSize: 13.2,
+    marginLeft: 3,
   },
   section: {
-    marginTop: 24,
+    marginTop: 22,
     paddingHorizontal: 16,
   },
   sectionTitle: {

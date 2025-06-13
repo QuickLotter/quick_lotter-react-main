@@ -5,19 +5,19 @@ import {
   TextInput,
   StyleSheet,
   Pressable,
-  TouchableOpacity,
   Animated,
   ScrollView,
   SafeAreaView,
   Platform,
+  ActivityIndicator,
+  Linking,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Colors, Typography } from "@/theme";
-import GoogleIcon from "@/assets/icons/google.svg";
-import FacebookIcon from "@/assets/icons/facebook.svg";
+import { Colors } from "@/theme";
 import HeaderLoginLogo from "@/components/generator/layout/HeaderLoginLogo";
 import { useRouter } from "expo-router";
+import { useAuth } from "./AuthContext"; // ajuste se necessário
 
 const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => (
   <View style={styles.responsiveContainer}>{children}</View>
@@ -26,13 +26,14 @@ const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => (
 export default function SignUp() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { signUp, loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const scaleAnim = useState(new Animated.Value(1))[0];
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -49,17 +50,31 @@ export default function SignUp() {
     }).start();
   };
 
-  // Função de cadastro
   const handleSignUp = async () => {
-    if (!email || !phone || !password) {
+    setError("");
+    setSuccess("");
+    if (!email || !password) {
       setError("Please fill all fields.");
       return;
     }
-    setError("");
-    // Aqui você pode chamar sua API de cadastro real!
-    setTimeout(() => {
-      router.replace("/auth/PostLoginGate"); // <--- Troquei para ir para o gate do estado!
-    }, 800);
+    const { error } = await signUp(email, password);
+    if (error) {
+      setError(error.message);
+    } else {
+      setSuccess("Check your email to confirm your account.");
+      setTimeout(() => {
+        router.replace("/verify-email");
+      }, 1200);
+    }
+  };
+
+  // Clique: telefone
+  const handlePhonePress = () => {
+    Linking.openURL("tel:18006624357");
+  };
+  // Clique: email
+  const handleEmailPress = () => {
+    Linking.openURL("mailto:support@quicklotter.com");
   };
 
   return (
@@ -89,16 +104,6 @@ export default function SignUp() {
             onChangeText={setEmail}
           />
 
-          <Text style={styles.label}>Phone Number</Text>
-          <TextInput
-            placeholder="Enter your phone number"
-            placeholderTextColor={Colors.textMuted}
-            style={styles.input}
-            keyboardType="phone-pad"
-            value={phone}
-            onChangeText={setPhone}
-          />
-
           <Text style={styles.label}>Password</Text>
           <View style={styles.passwordWrapper}>
             <TextInput
@@ -122,6 +127,7 @@ export default function SignUp() {
           </View>
 
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          {success ? <Text style={styles.successText}>{success}</Text> : null}
 
           <View style={styles.row}>
             <Pressable
@@ -144,30 +150,30 @@ export default function SignUp() {
               onPressIn={handlePressIn}
               onPressOut={handlePressOut}
               onPress={handleSignUp}
+              disabled={loading}
             >
-              <Text style={styles.loginText}>Sign Up</Text>
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.loginText}>Sign Up</Text>
+              )}
             </Pressable>
           </Animated.View>
 
-          <Text style={styles.or}>───── Or Continue With ─────</Text>
-          <View style={styles.socialRow}>
-            <TouchableOpacity style={styles.socialButton}>
-              <GoogleIcon width={20} height={20} />
-              <Text style={styles.socialText}>Google</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton}>
-              <FacebookIcon width={20} height={20} />
-              <Text style={styles.socialText}>Facebook</Text>
-            </TouchableOpacity>
-          </View>
+          {/* REMOVE LOGIN SOCIAL */}
 
-          {/* RESPONSIBLE PLAY */}
           <Text style={styles.legalTitle}>Responsible Play</Text>
           <Text style={styles.legalText}>
             Play responsibly. For adults 18+. Need help with gambling? Free,
             confidential support is available 24/7 at{" "}
-            <Text style={styles.link}>1-800-662-HELP (4357)</Text> or{" "}
-            <Text style={styles.link}>support@quicklotter.com</Text>.
+            <Text style={styles.link} onPress={handlePhonePress}>
+              1-800-662-HELP (4357)
+            </Text>{" "}
+            or{" "}
+            <Text style={styles.link} onPress={handleEmailPress}>
+              support@quicklotter.com
+            </Text>
+            .
           </Text>
           <Text style={styles.legalText}>
             Quick Lotter does not sell lottery tickets. We provide digital tools
@@ -305,37 +311,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-  or: {
-    color: "#8C94A5",
-    textAlign: "center",
-    marginBottom: 18,
-    marginTop: 8,
-    fontSize: 13,
-    letterSpacing: 0.5,
-  },
-  socialRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 12,
-    marginBottom: 26,
-  },
-  socialButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F6F7FB",
-    borderRadius: 11,
-    borderWidth: 1.2,
-    borderColor: "#DEE4F2",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    flex: 1,
-    gap: 10,
-  },
-  socialText: {
-    color: "#222",
-    fontWeight: "600",
-    fontSize: 14,
-  },
   legalTitle: {
     color: "#222",
     fontWeight: "700",
@@ -365,5 +340,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 6,
     textAlign: "center",
+  },
+  successText: {
+    color: "#34C759",
+    fontSize: 13,
+    marginBottom: 6,
+    textAlign: "center",
+    fontWeight: "600",
   },
 });

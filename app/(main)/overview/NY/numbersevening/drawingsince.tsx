@@ -14,20 +14,12 @@ import { useRouter, usePathname } from "expo-router";
 import GameHeader from "@/components/generator/header/gameheader";
 import NumbersEveningLogo from "@/assets/logos/ny/numbersevening.svg";
 
-// ==== TABS (AJUSTE PARA CADA JOGO) ====
-const TABS = [
-  { label: "Drawing Since", route: "drawingsince" },
-  { label: "Position 01", route: "position1" },
-  { label: "Position 02", route: "position2" },
-  { label: "Position 03", route: "position3" },
-];
-
-// HEADER: 0 a 9
+// === CABEÇALHO DAS POSIÇÕES ===
 const POSITION_HEADERS = {
-  "DRAWING SINCE": Array.from({ length: 10 }, (_, i) => `${i}`),
+  "DRAWING SINCE": Array.from({ length: 10 }, (_, i) => i), // 0-9
 };
 
-// MOCK DATA
+// === MOCK DATA ===
 const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
   values: Array(10)
@@ -39,16 +31,25 @@ const FREQ_10 = Array.from(
   () => Math.floor(Math.random() * 350) + 10
 );
 
+// === TABS para NumbersEvening ===
+const TABS = [
+  { label: "Drawing Since", route: "drawingsince" },
+  { label: "Position 01", route: "position1" },
+  { label: "Position 02", route: "position2" },
+  { label: "Position 03", route: "position3" },
+  { label: "Position 04", route: "position4" },
+];
+
 export default function DrawingSinceNumbersEvening() {
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
   const [toDate, setToDate] = useState(new Date(2025, 4, 20));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
 
   const headerScrollRef = useRef(null);
-  const dataRowsRefs = useRef([]);
+  const dataRowsRefs = useRef<any[]>([]);
   const footerScrollRef = useRef(null);
 
-  // Tabs
+  // TABS
   const router = useRouter();
   const pathname = usePathname();
   const currentTab = pathname.split("/").pop();
@@ -56,7 +57,7 @@ export default function DrawingSinceNumbersEvening() {
   const tabRefs = useRef<Array<TouchableOpacity | null>>([]);
   const { width: windowWidth } = useWindowDimensions();
 
-  // Centraliza o tab ativo ao abrir/trocar
+  // Centraliza o tab clicado
   const scrollToTab = (idx: number) => {
     if (!tabRefs.current[idx] || !scrollRef.current) return;
     tabRefs.current[idx].measureLayout(
@@ -72,12 +73,10 @@ export default function DrawingSinceNumbersEvening() {
   };
   useEffect(() => {
     const idx = TABS.findIndex((tab) => tab.route === currentTab);
-    if (idx !== -1) {
-      setTimeout(() => scrollToTab(idx), 120);
-    }
+    if (idx !== -1) setTimeout(() => scrollToTab(idx), 120);
   }, [currentTab, windowWidth]);
 
-  // Datas
+  // Formatação MM/DD/YY
   const formatDate = (date: Date) => {
     if (!date) return "";
     const mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -86,7 +85,6 @@ export default function DrawingSinceNumbersEvening() {
     return `${mm}/${dd}/${yy}`;
   };
 
-  // Data
   const HEADER = POSITION_HEADERS["DRAWING SINCE"];
   const ROWS = DATA_ROWS;
   const FREQ = FREQ_10;
@@ -99,7 +97,7 @@ export default function DrawingSinceNumbersEvening() {
       .map((_, i) => dataRowsRefs.current[i] || React.createRef());
   }
 
-  // Sincronização horizontal header/grid/footer
+  // Sincronização horizontal
   const handleScroll = (event) => {
     const scrollX = event.nativeEvent.contentOffset.x;
     if (headerScrollRef.current)
@@ -126,13 +124,14 @@ export default function DrawingSinceNumbersEvening() {
     }
   };
 
+  // ============ UI ==============
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* HEADER PRINCIPAL */}
       <GameHeader
         logo={<NumbersEveningLogo width={100} height={40} />}
         title="Overview"
-        subtitle="New York Numbers Evening"
+        subtitle="Win 4 Evening"
         headerColor="#2E73B5"
         backTo="/overview/ny/overview"
       />
@@ -152,21 +151,22 @@ export default function DrawingSinceNumbersEvening() {
                 key={tab.route}
                 ref={(ref) => (tabRefs.current[idx] = ref)}
                 onPress={() => {
-                  router.replace(`/overview/ny/numbersevening/${tab.route}`);
+                  router.replace(`/overview/ny/Numbersevening/${tab.route}`);
                   setTimeout(() => scrollToTab(idx), 100);
                 }}
                 style={[
                   styles.tabButton,
                   isActive && {
                     backgroundColor: "#2E73B5",
-                    borderColor: "#2E73B5",
+                    borderColor: "#FFD700",
                   },
                 ]}
+                activeOpacity={0.78}
               >
                 <Text
                   style={[
                     styles.tabText,
-                    isActive && { color: "#fff", fontWeight: "700" },
+                    isActive && { color: "#fff", fontWeight: "800" },
                   ]}
                 >
                   {tab.label}
@@ -177,7 +177,7 @@ export default function DrawingSinceNumbersEvening() {
         </ScrollView>
       </View>
 
-      {/* Data Range Picker */}
+      {/* Date Range Picker */}
       <View style={styles.fixedHeader}>
         <View style={styles.filtersPad}>
           <View style={styles.datesRow}>
@@ -201,7 +201,7 @@ export default function DrawingSinceNumbersEvening() {
               <Text
                 style={[
                   styles.inputText,
-                  { color: "#2E73B5", fontWeight: "700" },
+                  { color: "#2E73B5", fontWeight: "800" },
                 ]}
               >
                 {drawCount}
@@ -211,7 +211,6 @@ export default function DrawingSinceNumbersEvening() {
         </View>
       </View>
 
-      {/* Picker Modal */}
       {(pickerMode === "from" || pickerMode === "to") && (
         <DateTimePicker
           value={pickerMode === "from" ? fromDate : toDate}
@@ -240,11 +239,9 @@ export default function DrawingSinceNumbersEvening() {
             {HEADER.map((n, i) => (
               <View
                 key={i}
-                style={[styles.headerNumberBox, styles.headerNumberBoxBlue]}
+                style={[styles.headerNumberBox, { backgroundColor: "#2E73B5" }]}
               >
-                <Text
-                  style={[styles.headerNumberText, styles.headerNumberTextBlue]}
-                >
+                <Text style={[styles.headerNumberText, { color: "#fff" }]}>
                   {n}
                 </Text>
               </View>
@@ -280,11 +277,20 @@ export default function DrawingSinceNumbersEvening() {
         ))}
       </ScrollView>
 
-      {/* Frequencies */}
+      {/* Frequencies + Save Button (SEM SELETORES) */}
       <View style={styles.footerPad}>
         <View style={styles.footerContent}>
-          <View style={styles.freqLabel}>
-            <Text style={styles.freqLabelText}>FREQUENCY</Text>
+          <View style={{ alignItems: "center" }}>
+            <View style={styles.freqLabel}>
+              <Text style={styles.freqLabelText}>FREQUENCY</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={() => {}} // pode remover ou definir sua ação
+              activeOpacity={0.8}
+            >
+              <Text style={styles.saveButtonText}></Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.footerSeparator} />
           <ScrollView
@@ -307,9 +313,9 @@ export default function DrawingSinceNumbersEvening() {
     </SafeAreaView>
   );
 }
-
 // ====== STYLES =======
 const CELL_SIZE = 30;
+
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#ECF1FF" },
   tabsWrapper: {
@@ -425,16 +431,10 @@ const styles = StyleSheet.create({
     marginRight: 2,
     borderRadius: 3,
   },
-  headerNumberBoxBlue: {
-    backgroundColor: "#2E73B5",
-  },
   headerNumberText: {
     fontWeight: "bold",
     fontSize: 12,
     letterSpacing: 0.1,
-  },
-  headerNumberTextBlue: {
-    color: "#FFF",
   },
   gridRow: {
     flexDirection: "row",
@@ -522,6 +522,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     letterSpacing: 0.04,
   },
+  saveButtonDisabled: {
+    backgroundColor: "#E0DECE",
+  },
+  saveButtonText: {
+    fontWeight: "bold",
+    color: "#2E73B5",
+    fontSize: 15,
+  },
   freqBox: {
     width: CELL_SIZE,
     height: CELL_SIZE,
@@ -538,5 +546,29 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#fff",
     letterSpacing: 0.03,
+  },
+  numberCircle: {
+    width: CELL_SIZE,
+    height: CELL_SIZE,
+    borderRadius: 15,
+    marginRight: 2,
+    marginTop: 5,
+    backgroundColor: "#fff",
+    borderWidth: 1.7,
+    borderColor: "#2E73B5",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  numberCircleSelected: {
+    backgroundColor: "#2E73B5",
+    borderColor: "#FFD700",
+  },
+  numberCircleText: {
+    fontWeight: "700",
+    color: "#2E73B5",
+    fontSize: 15,
+  },
+  numberCircleTextSelected: {
+    color: "#fff",
   },
 });

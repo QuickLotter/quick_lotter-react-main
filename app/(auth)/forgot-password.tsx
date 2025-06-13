@@ -8,10 +8,12 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import HeaderLoginLogo from "@/components/generator/layout/HeaderLoginLogo";
 import { Colors, Typography } from "@/theme";
 import { useRouter } from "expo-router";
+import { useAuth } from "./AuthContext"; // <-- ajuste o path conforme seu projeto
 
 const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => (
   <View style={styles.responsiveContainer}>{children}</View>
@@ -20,18 +22,29 @@ const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => (
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { resetPassword } = useAuth();
 
   const handleForgot = async () => {
+    setError("");
+    setSuccess("");
     if (!email.includes("@")) {
       setError("Please enter a valid email address.");
       return;
     }
-    setError("");
-    // --- INTEGRAÇÃO COM API DE RECUPERAÇÃO DE SENHA ---
-    setTimeout(() => {
-      router.replace("/verify-code");
-    }, 800);
+    setLoading(true);
+    const { error } = await resetPassword(email);
+    setLoading(false);
+    if (error) {
+      setError(error.message);
+    } else {
+      setSuccess("Check your email for the reset link.");
+      setTimeout(() => {
+        router.replace("/login");
+      }, 1500);
+    }
   };
 
   return (
@@ -59,13 +72,19 @@ export default function ForgotPasswordScreen() {
             autoCorrect={false}
           />
           {error ? <Text style={styles.errorText}>⚠️ {error}</Text> : null}
+          {success ? <Text style={styles.successText}>{success}</Text> : null}
 
           <TouchableOpacity
             style={styles.button}
             onPress={handleForgot}
             activeOpacity={0.82}
+            disabled={loading}
           >
-            <Text style={styles.buttonText}>Send Reset Link</Text>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Send Reset Link</Text>
+            )}
           </TouchableOpacity>
 
           <Text style={styles.footerText}>
@@ -87,9 +106,10 @@ export default function ForgotPasswordScreen() {
 }
 
 const styles = StyleSheet.create({
+  // ...os mesmos estilos do seu código anterior...
   wrapper: {
     flex: 1,
-    backgroundColor: "#F6F7FB", // iOS background
+    backgroundColor: "#F6F7FB",
   },
   scrollContainer: {
     flexGrow: 1,
@@ -100,7 +120,7 @@ const styles = StyleSheet.create({
   },
   responsiveContainer: {
     width: "100%",
-    maxWidth: 370, // Mais iOS-like
+    maxWidth: 370,
     alignSelf: "center",
     padding: 24,
     backgroundColor: "#fff",
@@ -155,6 +175,13 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "#FF3B30",
+    fontSize: 12,
+    marginBottom: 8,
+    marginLeft: 4,
+    textAlign: "center",
+  },
+  successText: {
+    color: "#0BBD5B",
     fontSize: 12,
     marginBottom: 8,
     marginLeft: 4,

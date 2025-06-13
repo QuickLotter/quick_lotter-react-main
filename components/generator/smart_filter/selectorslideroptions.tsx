@@ -5,26 +5,30 @@ import {
   View,
   TouchableOpacity,
   useWindowDimensions,
+  Text,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-// SVGs dos botões
-import Analysis from "@/assets/buttons_slider/analysis.svg";
-import EditFilter from "@/assets/buttons_slider/edit_filter.svg";
-import Open from "@/assets/buttons_slider/open.svg";
-import Checker from "@/assets/buttons_slider/checker.svg";
-import Delete from "@/assets/buttons_slider/delete.svg";
+import { findNodeHandle } from "react-native";
 
 type Props = {
   onFilterPress?: (filterId: string) => void;
 };
 
 const BUTTONS = [
-  { id: "analysis", Component: Analysis },
-  { id: "edit_filter", Component: EditFilter },
-  { id: "open", Component: Open },
-  { id: "checker", Component: Checker },
-  { id: "delete", Component: Delete },
+  {
+    id: "analysis",
+    icon: "analytics-outline",
+    label: "Analysis",
+    color: "#A65918",
+  },
+  {
+    id: "edit_filter",
+    icon: "options-outline",
+    label: "Edit Filter",
+    color: "#37954A",
+  },
+  { id: "open", icon: "folder-open-outline", label: "Open", color: "#318CFA" },
+  { id: "delete", icon: "trash-outline", label: "Delete", color: "#C6293F" },
 ];
 
 export default function SelectorSliderOptions({ onFilterPress }: Props) {
@@ -35,9 +39,7 @@ export default function SelectorSliderOptions({ onFilterPress }: Props) {
 
   const handlePress = (id: string) => {
     setSelectedId(id);
-    if (onFilterPress) {
-      onFilterPress(id); // 🚀 dispara evento para a página pai
-    }
+    onFilterPress?.(id);
   };
 
   useEffect(() => {
@@ -46,10 +48,10 @@ export default function SelectorSliderOptions({ onFilterPress }: Props) {
         const ref = itemRefs.current[selectedId];
         if (ref && scrollRef.current) {
           ref.measureLayout(
-            scrollRef.current.getInnerViewNode(),
+            findNodeHandle(scrollRef.current), // ← CORRETO!
             (x) => {
-              scrollRef.current?.scrollTo({
-                x: x - width / 2 + 45,
+              scrollRef.current.scrollTo({
+                x: x - width / 2 + 70,
                 animated: true,
               });
             },
@@ -58,7 +60,7 @@ export default function SelectorSliderOptions({ onFilterPress }: Props) {
         }
       }, 300);
     }
-  }, [selectedId]);
+  }, [selectedId, width]);
 
   return (
     <View style={styles.barBackground}>
@@ -78,19 +80,24 @@ export default function SelectorSliderOptions({ onFilterPress }: Props) {
         contentContainerStyle={styles.sliderContent}
       >
         <View style={styles.sliderWrapper}>
-          {BUTTONS.map(({ id, Component }) => (
-            <TouchableOpacity
-              key={id}
-              ref={(el) => (itemRefs.current[id] = el)}
-              style={[
-                styles.button,
-                selectedId === id && styles.buttonSelected,
-              ]}
-              onPress={() => handlePress(id)}
-            >
-              <Component width={100} height={40} />
-            </TouchableOpacity>
-          ))}
+          {BUTTONS.map(({ id, icon, label, color }) => {
+            const isActive = selectedId === id;
+            return (
+              <TouchableOpacity
+                key={id}
+                ref={(el) => (itemRefs.current[id] = el)}
+                style={[
+                  styles.button,
+                  { backgroundColor: color },
+                  isActive && styles.buttonSelected,
+                ]}
+                onPress={() => handlePress(id)}
+              >
+                <Ionicons name={icon} size={20} color="#fff" />
+                <Text style={styles.label}>{label}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
 
@@ -120,9 +127,8 @@ const styles = StyleSheet.create({
   },
   sliderWrapper: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    gap: 1,
+    gap: 12,
     maxWidth: 768,
     alignSelf: "center",
     width: "100%",
@@ -134,16 +140,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   button: {
-    width: 100,
-    height: 40,
-    justifyContent: "center",
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center", // garante centralização
+    width: 140,
+    height: 44,
+    borderRadius: 22,
+    paddingHorizontal: 0, // centraliza melhor
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 1 },
     elevation: 2,
   },
   buttonSelected: {
-    opacity: 0.5,
+    opacity: 0.7,
+  },
+  label: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 8, // espaço entre ícone e texto
   },
   arrow: {
     paddingHorizontal: 10,

@@ -7,6 +7,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { findNodeHandle } from "react-native";
 
 // SVGs dos filtros
 import Sum from "@/assets/buttons_slider/sum.svg";
@@ -63,9 +64,9 @@ export default function FiltersSlideButton({ onFilterPress }: Props) {
         const ref = itemRefs.current[selectedId];
         if (ref && scrollRef.current) {
           ref.measureLayout(
-            scrollRef.current.getInnerViewNode(),
+            findNodeHandle(scrollRef.current), // ← Troca AQUI!
             (x) => {
-              scrollRef.current?.scrollTo({
+              scrollRef.current.scrollTo({
                 x: x - width / 2 + 45,
                 animated: true,
               });
@@ -75,7 +76,7 @@ export default function FiltersSlideButton({ onFilterPress }: Props) {
         }
       }, 300);
     }
-  }, [selectedId]);
+  }, [selectedId, width]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,37 +7,74 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Platform,
+  useWindowDimensions,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useRouter, usePathname } from "expo-router";
 import GameHeader from "@/components/generator/header/gameheader";
-import Win4MiddayLogo from "@/assets/images/ny_game_logo/win4_midday.svg"; // ajuste o path conforme seu projeto!
-import DrawingSinceTabs from "../../../../../components/drawingsincetabs";
+import Win4EveningLogo from "@/assets/logos/ny/win4evening.svg";
 
-// HEADER: 1 a 39 para o Take 5
+// === CABEÇALHO DAS POSIÇÕES ===
 const POSITION_HEADERS = {
-  "DRAWING SINCE": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "DRAWING SINCE": Array.from({ length: 10 }, (_, i) => i), // 0-9
 };
 
-// MOCK DATA (trocar pelo fetch do Supabase futuramente)
+// === MOCK DATA ===
 const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  values: Array(39)
+  values: Array(10)
     .fill(0)
     .map(() => Math.round(Math.random())),
 }));
-const FREQ_39 = Array.from(
-  { length: 39 },
+const FREQ_10 = Array.from(
+  { length: 10 },
   () => Math.floor(Math.random() * 350) + 10
 );
 
-export default function DrawingSinceTake5Midday() {
-  const [fromDate, setFromDate] = useState(new Date(2025, 4, 1)); // 05/01/2025
-  const [toDate, setToDate] = useState(new Date(2025, 4, 20)); // 05/20/2025
+// === TABS para Win4Evening ===
+const TABS = [
+  { label: "Drawing Since", route: "drawingsince" },
+  { label: "Position 01", route: "position1" },
+  { label: "Position 02", route: "position2" },
+  { label: "Position 03", route: "position3" },
+  { label: "Position 04", route: "position4" },
+];
+
+export default function DrawingSinceWin4Evening() {
+  const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
+  const [toDate, setToDate] = useState(new Date(2025, 4, 20));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
 
   const headerScrollRef = useRef(null);
-  const dataRowsRefs = useRef([]);
+  const dataRowsRefs = useRef<any[]>([]);
   const footerScrollRef = useRef(null);
+
+  // TABS
+  const router = useRouter();
+  const pathname = usePathname();
+  const currentTab = pathname.split("/").pop();
+  const scrollRef = useRef<ScrollView>(null);
+  const tabRefs = useRef<Array<TouchableOpacity | null>>([]);
+  const { width: windowWidth } = useWindowDimensions();
+
+  // Centraliza o tab clicado
+  const scrollToTab = (idx: number) => {
+    if (!tabRefs.current[idx] || !scrollRef.current) return;
+    tabRefs.current[idx].measureLayout(
+      // @ts-ignore
+      scrollRef.current.getInnerViewNode
+        ? scrollRef.current.getInnerViewNode()
+        : scrollRef.current,
+      (x, y, btnWidth) => {
+        const scrollX = Math.max(0, x - windowWidth / 2 + btnWidth / 2);
+        scrollRef.current.scrollTo({ x: scrollX, animated: true });
+      }
+    );
+  };
+  useEffect(() => {
+    const idx = TABS.findIndex((tab) => tab.route === currentTab);
+    if (idx !== -1) setTimeout(() => scrollToTab(idx), 120);
+  }, [currentTab, windowWidth]);
 
   // Formatação MM/DD/YY
   const formatDate = (date: Date) => {
@@ -50,7 +87,7 @@ export default function DrawingSinceTake5Midday() {
 
   const HEADER = POSITION_HEADERS["DRAWING SINCE"];
   const ROWS = DATA_ROWS;
-  const FREQ = FREQ_39;
+  const FREQ = FREQ_10;
   const filteredRows = ROWS;
   const drawCount = filteredRows.length;
 
@@ -60,7 +97,7 @@ export default function DrawingSinceTake5Midday() {
       .map((_, i) => dataRowsRefs.current[i] || React.createRef());
   }
 
-  // Sincronização horizontal header/grid/footer
+  // Sincronização horizontal
   const handleScroll = (event) => {
     const scrollX = event.nativeEvent.contentOffset.x;
     if (headerScrollRef.current)
@@ -87,21 +124,60 @@ export default function DrawingSinceTake5Midday() {
     }
   };
 
+  // ============ UI ==============
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* HEADER PRINCIPAL */}
       <GameHeader
-        logo={<Win4MiddayLogo width={100} height={40} />}
+        logo={<Win4EveningLogo width={100} height={40} />}
         title="Overview"
-        subtitle="Win 4 Midday"
+        subtitle="Win 4 Evening"
         headerColor="#7E0C6E"
-        backTo="/overview"
+        backTo="/overview/ny/overview"
       />
 
-      {/* TABS */}
-      <DrawingSinceTabs />
+      {/* --- TABS INLINE --- */}
+      <View style={styles.tabsWrapper}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          ref={scrollRef}
+          contentContainerStyle={{ alignItems: "center" }}
+        >
+          {TABS.map((tab, idx) => {
+            const isActive = currentTab === tab.route;
+            return (
+              <TouchableOpacity
+                key={tab.route}
+                ref={(ref) => (tabRefs.current[idx] = ref)}
+                onPress={() => {
+                  router.replace(`/overview/ny/win4evening/${tab.route}`);
+                  setTimeout(() => scrollToTab(idx), 100);
+                }}
+                style={[
+                  styles.tabButton,
+                  isActive && {
+                    backgroundColor: "#7E0C6E",
+                    borderColor: "#FFD700",
+                  },
+                ]}
+                activeOpacity={0.78}
+              >
+                <Text
+                  style={[
+                    styles.tabText,
+                    isActive && { color: "#fff", fontWeight: "800" },
+                  ]}
+                >
+                  {tab.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
 
-      {/* Data Range Picker */}
+      {/* Date Range Picker */}
       <View style={styles.fixedHeader}>
         <View style={styles.filtersPad}>
           <View style={styles.datesRow}>
@@ -125,7 +201,7 @@ export default function DrawingSinceTake5Midday() {
               <Text
                 style={[
                   styles.inputText,
-                  { color: "#7E0C6E", fontWeight: "700" },
+                  { color: "#7E0C6E", fontWeight: "800" },
                 ]}
               >
                 {drawCount}
@@ -135,7 +211,6 @@ export default function DrawingSinceTake5Midday() {
         </View>
       </View>
 
-      {/* Picker Modal */}
       {(pickerMode === "from" || pickerMode === "to") && (
         <DateTimePicker
           value={pickerMode === "from" ? fromDate : toDate}
@@ -164,14 +239,9 @@ export default function DrawingSinceTake5Midday() {
             {HEADER.map((n, i) => (
               <View
                 key={i}
-                style={[styles.headerNumberBox, styles.headerNumberBoxYellow]}
+                style={[styles.headerNumberBox, { backgroundColor: "#7E0C6E" }]}
               >
-                <Text
-                  style={[
-                    styles.headerNumberText,
-                    styles.headerNumberTextYellow,
-                  ]}
-                >
+                <Text style={[styles.headerNumberText, { color: "#fff" }]}>
                   {n}
                 </Text>
               </View>
@@ -207,11 +277,20 @@ export default function DrawingSinceTake5Midday() {
         ))}
       </ScrollView>
 
-      {/* Frequencies */}
+      {/* Frequencies + Save Button (SEM SELETORES) */}
       <View style={styles.footerPad}>
         <View style={styles.footerContent}>
-          <View style={styles.freqLabel}>
-            <Text style={styles.freqLabelText}>FREQUENCY</Text>
+          <View style={{ alignItems: "center" }}>
+            <View style={styles.freqLabel}>
+              <Text style={styles.freqLabelText}>FREQUENCY</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={() => {}} // pode remover ou definir sua ação
+              activeOpacity={0.8}
+            >
+              <Text style={styles.saveButtonText}></Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.footerSeparator} />
           <ScrollView
@@ -234,12 +313,31 @@ export default function DrawingSinceTake5Midday() {
     </SafeAreaView>
   );
 }
-
 // ====== STYLES =======
 const CELL_SIZE = 30;
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#ECF1FF" },
+  tabsWrapper: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    paddingVertical: 8,
+    paddingLeft: 8,
+  },
+  tabButton: {
+    marginRight: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 7,
+    borderRadius: 19,
+    backgroundColor: "#ECF1FF",
+    borderWidth: 1,
+    borderColor: "#ECF1FF",
+  },
+  tabText: {
+    fontSize: 15,
+    color: "#7E0C6E",
+    fontWeight: "500",
+  },
   fixedHeader: {
     backgroundColor: "#fff",
     borderBottomColor: "#E0E0E0",
@@ -333,16 +431,10 @@ const styles = StyleSheet.create({
     marginRight: 2,
     borderRadius: 3,
   },
-  headerNumberBoxYellow: {
-    backgroundColor: "#7E0C6E",
-  },
   headerNumberText: {
     fontWeight: "bold",
     fontSize: 12,
     letterSpacing: 0.1,
-  },
-  headerNumberTextYellow: {
-    color: "#FFF",
   },
   gridRow: {
     flexDirection: "row",
@@ -430,6 +522,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     letterSpacing: 0.04,
   },
+  saveButtonDisabled: {
+    backgroundColor: "#E0DECE",
+  },
+  saveButtonText: {
+    fontWeight: "bold",
+    color: "#7E0C6E",
+    fontSize: 15,
+  },
   freqBox: {
     width: CELL_SIZE,
     height: CELL_SIZE,
@@ -446,5 +546,29 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#fff",
     letterSpacing: 0.03,
+  },
+  numberCircle: {
+    width: CELL_SIZE,
+    height: CELL_SIZE,
+    borderRadius: 15,
+    marginRight: 2,
+    marginTop: 5,
+    backgroundColor: "#fff",
+    borderWidth: 1.7,
+    borderColor: "#7E0C6E",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  numberCircleSelected: {
+    backgroundColor: "#7E0C6E",
+    borderColor: "#FFD700",
+  },
+  numberCircleText: {
+    fontWeight: "700",
+    color: "#7E0C6E",
+    fontSize: 15,
+  },
+  numberCircleTextSelected: {
+    color: "#fff",
   },
 });

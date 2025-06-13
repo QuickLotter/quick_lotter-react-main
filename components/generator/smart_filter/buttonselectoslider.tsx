@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   useWindowDimensions,
+  findNodeHandle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -55,7 +56,7 @@ export default function GameSelectorSlider({
       const ref = itemRefs.current[selectedId];
       if (ref && scrollRef.current) {
         ref.measureLayout(
-          scrollRef.current.getInnerViewNode(),
+          findNodeHandle(scrollRef.current),
           (x) => {
             scrollRef.current?.scrollTo({
               x: x - width / 2 + 50,
@@ -89,7 +90,6 @@ export default function GameSelectorSlider({
           {BUTTONS.map(({ id, Component, route }) => (
             <TouchableOpacity
               key={id}
-              ref={(el) => (itemRefs.current[id] = el)}
               style={[
                 styles.button,
                 selectedId === id && styles.buttonSelected,
@@ -97,7 +97,11 @@ export default function GameSelectorSlider({
               activeOpacity={0.75}
               onPress={() => handlePress(id, route)}
             >
-              <View style={styles.logoContainer}>
+              <View
+                ref={(el) => (itemRefs.current[id] = el)}
+                collapsable={false}
+                style={styles.logoContainer}
+              >
                 <Component width={66} height={30} />
               </View>
             </TouchableOpacity>
@@ -160,9 +164,9 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   buttonSelected: {
-    borderWidth: 2,
-    borderColor: "#999",
-    shadowOpacity: 0.22,
+    borderWidth: 1,
+    borderColor: "#ACACAC",
+    shadowOpacity: 0.5,
     elevation: 5,
   },
   logoContainer: {

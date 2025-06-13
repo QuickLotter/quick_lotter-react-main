@@ -10,8 +10,9 @@ import {
   Platform,
 } from "react-native";
 import HeaderLoginLogo from "@/components/generator/layout/HeaderLoginLogo";
-import { Colors, Typography } from "@/theme";
-import { useRouter } from "expo-router";
+import { Colors } from "@/theme";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { supabase } from "./AuthContext"; // ajuste o path
 
 const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => (
   <View style={styles.responsiveContainer}>{children}</View>
@@ -21,9 +22,16 @@ export default function ResetPasswordScreen() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const router = useRouter();
+  const params = useLocalSearchParams();
+  const access_token = params.access_token as string;
 
   const handleReset = async () => {
+    if (!access_token) {
+      setError("No token found. Open the link from your email.");
+      return;
+    }
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
       return;
@@ -33,10 +41,20 @@ export default function ResetPasswordScreen() {
       return;
     }
     setError("");
-    // ---- INTEGRAÇÃO COM API DE RESET DE SENHA AQUI ----
-    // await api.resetPassword({ password });
-    // Após sucesso:
-    router.replace("/login");
+    setSuccess("");
+    // Chama o Supabase para atualizar a senha usando o token
+    const { error } = await supabase.auth.updateUser(
+      { password },
+      { accessToken: access_token }
+    );
+    if (error) {
+      setError(error.message);
+    } else {
+      setSuccess("Password reset successfully!");
+      setTimeout(() => {
+        router.replace("/login");
+      }, 1500);
+    }
   };
 
   return (
@@ -75,6 +93,7 @@ export default function ResetPasswordScreen() {
             autoCorrect={false}
           />
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          {success ? <Text style={styles.successText}>{success}</Text> : null}
 
           <TouchableOpacity style={styles.button} onPress={handleReset}>
             <Text style={styles.buttonText}>Reset Password</Text>
@@ -85,7 +104,10 @@ export default function ResetPasswordScreen() {
   );
 }
 
+// ...estilos iguais ao seu código anterior...
+
 const styles = StyleSheet.create({
+  // ... igual ao seu código ...
   wrapper: {
     flex: 1,
     backgroundColor: "#F6F7FB",
@@ -154,6 +176,13 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "#FF3B30",
+    fontSize: 12,
+    marginBottom: 14,
+    textAlign: "center",
+    marginTop: 6,
+  },
+  successText: {
+    color: "#0BBD5B",
     fontSize: 12,
     marginBottom: 14,
     textAlign: "center",

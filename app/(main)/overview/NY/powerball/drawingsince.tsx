@@ -39,15 +39,13 @@ const TABS = [
   { label: "Position 03", route: "position3" },
   { label: "Position 04", route: "position4" },
   { label: "Position 05", route: "position5" },
-  { label: "Position PB", route: "positionpb", color: "#000" }, // PB especial
+  { label: "Position PB", route: "positionpb", color: "#000" },
 ];
 
 export default function DrawingSince() {
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
   const [toDate, setToDate] = useState(new Date(2025, 4, 20));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
-
-  // Estado dos números marcados
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
 
   const headerScrollRef = useRef(null);
@@ -55,7 +53,6 @@ export default function DrawingSince() {
   const footerScrollRef = useRef(null);
   const numberBarScrollRef = useRef(null);
 
-  // Para tabs
   const router = useRouter();
   const pathname = usePathname();
   const currentTab = pathname.split("/").pop();
@@ -202,7 +199,7 @@ export default function DrawingSince() {
                     styles.tabText,
                     isActive &&
                       (isPB
-                        ? { color: "#222", fontWeight: "700" }
+                        ? { color: "#fff", fontWeight: "700" }
                         : { color: "#fff", fontWeight: "700" }),
                   ]}
                 >
@@ -605,7 +602,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     width: 75,
   },
-
   saveButton: {
     backgroundColor: "#D0021B",
     borderRadius: 7,

@@ -1,7 +1,9 @@
+// ✅ generator.tsx (NY Mega Millions, Powerball, NY Lotto, etc.)
+// Atualizado para refletir os números escolhidos nas Positions (selected1, ..., selectedmb)
+
 import React, { useState, useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { useRouter } from "expo-router";
-import { useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 import { normalGamesConfig } from "./gamesNormalConfig";
 import { pickGamesConfig } from "./gamesPickConfig";
@@ -35,9 +37,48 @@ export default function GeneratorNYUnified() {
   const game = allGamesConfig[selectedGameIdx];
   const router = useRouter();
 
+  // Utilidade: recebe qualquer coluna como array
+  function getColSelection(name: string) {
+    const raw = params[name];
+    if (typeof raw === "string" && raw.length > 0) {
+      return raw
+        .split(",")
+        .map((n) => Number(n))
+        .filter((x) => !isNaN(x));
+    }
+    return [];
+  }
+  // Para Mega Millions/Powerball/Normal (seleção por position)
+  const selected1 = getColSelection("selected1");
+  const selected2 = getColSelection("selected2");
+  const selected3 = getColSelection("selected3");
+  const selected4 = getColSelection("selected4");
+  const selected5 = getColSelection("selected5");
+  const selectedmb = getColSelection("selectedmb"); // Mega Ball
+
+  // Array com os números selecionados em cada posição (1 número por posição)
+  const allSelected = [
+    ...(selected1.length ? [selected1[0]] : []),
+    ...(selected2.length ? [selected2[0]] : []),
+    ...(selected3.length ? [selected3[0]] : []),
+    ...(selected4.length ? [selected4[0]] : []),
+    ...(selected5.length ? [selected5[0]] : []),
+  ];
+  const allSelectedMB = selectedmb.length ? [selectedmb[0]] : [];
+
+  // Para casos em que o usuário clica diretamente no grid principal (sem usar positions)
+  const initialSelected =
+    typeof params.selected === "string" && params.selected.length > 0
+      ? params.selected.split(",").map(Number)
+      : [];
+
   // States para os tipos normais e pick
-  const [mainNumbers, setMainNumbers] = useState<number[]>([]);
-  const [extraNumbers, setExtraNumbers] = useState<number[]>([]);
+  const [mainNumbers, setMainNumbers] = useState<number[]>(
+    allSelected.length > 0 ? allSelected : initialSelected
+  );
+  const [extraNumbers, setExtraNumbers] = useState<number[]>(
+    allSelectedMB.length > 0 ? allSelectedMB : []
+  );
   const [pickSelected, setPickSelected] = useState<number[][]>(
     Array.from({ length: (game as any).ballCount || 4 }, () => [])
   );
@@ -54,8 +95,8 @@ export default function GeneratorNYUnified() {
 
   // Limpa tudo ao trocar de jogo
   useEffect(() => {
-    setMainNumbers([]);
-    setExtraNumbers([]);
+    setMainNumbers(allSelected.length > 0 ? allSelected : initialSelected);
+    setExtraNumbers(allSelectedMB.length > 0 ? allSelectedMB : []);
     setPickSelected(
       Array.from({ length: (game as any).ballCount || 4 }, () => [])
     );
@@ -66,9 +107,20 @@ export default function GeneratorNYUnified() {
     setShowGeneratorSetting(false);
     setShowGeneratorSettingPick(false);
     setPrizeLines({});
-  }, [selectedGameIdx]);
+    // eslint-disable-next-line
+  }, [
+    selectedGameIdx,
+    params.selected,
+    params.selected1,
+    params.selected2,
+    params.selected3,
+    params.selected4,
+    params.selected5,
+    params.selectedmb,
+    params.game,
+  ]);
 
-  // Handlers jogos normais
+  // Handlers jogos normais (habilita edição no grid principal)
   const handleMainSelect = (num: number) => {
     setMainNumbers((prev) =>
       prev.includes(num) ? prev.filter((n) => n !== num) : [...prev, num]
@@ -360,10 +412,9 @@ export default function GeneratorNYUnified() {
       <GeneratorSettingModalPick
         visible={showGeneratorSettingPick && game.type === "pick"}
         onClose={() => setShowGeneratorSettingPick(false)}
+        game={game}
         gameId={game.id.toUpperCase()}
-        selectedMain={pickSelected.flat()}
-        prizeLines={prizeLines}
-        setPrizeLines={setPrizeLines}
+        selectedColumns={pickSelected} // array de arrays, ex: [[1,2],[3],[5,7]]
         onConfirm={(settings) => {
           setShowGeneratorSettingPick(false);
           router.push({
@@ -373,7 +424,6 @@ export default function GeneratorNYUnified() {
                 JSON.stringify({
                   numbers: pickSelected,
                   settings,
-                  prizeLines,
                 })
               ),
               game: game.id,

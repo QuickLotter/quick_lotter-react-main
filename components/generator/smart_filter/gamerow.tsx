@@ -1,7 +1,12 @@
-// ✅ Path: components/generator/smart_filter/gamerow.tsx
-
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ViewStyle,
+  TextStyle,
+} from "react-native";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 
 type GameRowProps = {
@@ -11,6 +16,8 @@ type GameRowProps = {
   date?: string;
   onDelete: () => void;
   onEdit: () => void;
+  ballStyle?: ViewStyle; // Permite customização
+  ballTextStyle?: TextStyle; // Permite customização
 };
 
 export default function GameRow({
@@ -20,7 +27,10 @@ export default function GameRow({
   date,
   onDelete,
   onEdit,
+  ballStyle,
+  ballTextStyle,
 }: GameRowProps) {
+  // Data formatada
   const today = new Date();
   const formattedDate =
     date ||
@@ -33,7 +43,7 @@ export default function GameRow({
 
   return (
     <View style={styles.wrapper}>
-      {/* 🔵 Header de cima */}
+      {/* Header */}
       <View style={styles.header}>
         <View>
           <Text style={styles.dateDay}>
@@ -59,14 +69,14 @@ export default function GameRow({
         </View>
       </View>
 
-      {/* 🔵 Divider */}
+      {/* Divider */}
       <View style={styles.divider} />
 
-      {/* 🔵 Números */}
+      {/* Números */}
       <View style={styles.numbersContainer}>
         {mainNumbers.map((num, idx) => (
-          <View key={idx} style={styles.ball}>
-            <Text style={styles.ballText}>{num}</Text>
+          <View key={idx} style={[styles.ball, ballStyle]}>
+            <Text style={[styles.ballText, ballTextStyle]}>{num}</Text>
           </View>
         ))}
         {extraNumber !== undefined && (
@@ -82,14 +92,14 @@ export default function GameRow({
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
-    maxWidth: 512,
+    maxWidth: 570,
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
+    borderRadius: 13,
     padding: 16,
     marginBottom: 16,
     alignSelf: "center",
     shadowColor: "#000",
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.07,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 2,
@@ -98,11 +108,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
+    gap: 10,
   },
   dateDay: {
     fontWeight: "bold",
     fontSize: 14,
-    color: "#000",
+    color: "#0E4CA1",
   },
   dateFull: {
     fontSize: 14,
@@ -124,6 +135,7 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 8,
   },
   divider: {
     height: 1,
@@ -133,33 +145,37 @@ const styles = StyleSheet.create({
   numbersContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
+    justifyContent: "center", // Sempre centralizado!
     gap: 8,
+    marginTop: 2,
   },
   ball: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: "#F5F7F9",
     borderWidth: 1,
-    borderColor: "#333", // 🔵 Stroke preto
+    borderColor: "#A9A9A9",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 4,
   },
   ballText: {
-    fontWeight: "bold",
+    fontWeight: "700",
     fontSize: 16,
     color: "#333",
   },
   extraBall: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: "#FDB927",
     borderWidth: 1,
-    borderColor: "#333", // 🔵 Stroke preto também na extra
+    borderColor: "#333",
     justifyContent: "center",
     alignItems: "center",
+    marginLeft: 8,
+    marginBottom: 4,
   },
   extraBallText: {
     fontWeight: "bold",

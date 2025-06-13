@@ -11,7 +11,6 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
 import NYLottoLogo from "@/assets/images/ny_game_logo/nylotto.svg";
-import DrawingSinceTabs from "../../../../../components/drawingsincetabs";
 
 // ====== HEADER PARA POSITION 06 ======
 const POSITION_HEADERS = {

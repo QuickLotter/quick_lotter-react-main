@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { findNodeHandle } from "react-native";
 
 // SVGs padrões
 import Powerball from "@/assets/buttons_slider/powerball.svg";
@@ -121,7 +122,7 @@ export default function GameSelectorSlider({
       const ref = itemRefs.current[selectedId];
       if (ref && scrollRef.current) {
         ref.measureLayout(
-          scrollRef.current.getInnerViewNode(),
+          findNodeHandle(scrollRef.current), // <-- ESTA LINHA CORRIGE
           (x) => {
             scrollRef.current?.scrollTo({
               x: x - width / 2 + 45,

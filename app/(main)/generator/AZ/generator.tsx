@@ -73,7 +73,7 @@ const AZ_GAMES = [
       pickLabelColor: "#FFB500",
       gridBorderColor: "#e3e3e3",
     },
-    resultsRoute: "/generator/az/numbersgenerated",
+    resultsRoute: "/generator/az/MyLines",
   },
   {
     id: "powerball",
@@ -115,7 +115,7 @@ const AZ_GAMES = [
       pickLabelColor: "#C7102E",
       gridBorderColor: "#e3e3e3",
     },
-    resultsRoute: "/generator/az/numbersgenerated",
+    resultsRoute: "/generator/az/MyLines",
   },
   {
     id: "fantasy5",
@@ -146,7 +146,7 @@ const AZ_GAMES = [
       gridBorderColor: "#e3e3e3",
     },
     extraGrid: null,
-    resultsRoute: "/generator/az/numbersgenerated",
+    resultsRoute: "/generator/az/MyLines",
   },
   {
     id: "thepick",
@@ -177,7 +177,7 @@ const AZ_GAMES = [
       gridBorderColor: "#e3e3e3",
     },
     extraGrid: null,
-    resultsRoute: "/generator/az/numbersgenerated",
+    resultsRoute: "/generator/az/MyLines",
   },
   {
     id: "tripletwist",
@@ -208,7 +208,7 @@ const AZ_GAMES = [
       gridBorderColor: "#e3e3e3",
     },
     extraGrid: null,
-    resultsRoute: "/generator/az/numbersgenerated",
+    resultsRoute: "/generator/az/MyLines",
   },
   {
     id: "pick3",
@@ -223,7 +223,7 @@ const AZ_GAMES = [
       selectedTextColor: "#fff", // texto bola selecionada
       boltColor: "#FFD700", // cor do bolt Quick Pick
     },
-    resultsRoute: "/generator/az/numbersgenerated",
+    resultsRoute: "/generator/az/MyLines",
   },
 ];
 

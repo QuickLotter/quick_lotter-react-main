@@ -1,34 +1,35 @@
 import React, { useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
-import { useInitUserState } from "@/hooks/useInitUserState";
 import { useLocation } from "@/app/(main)/context/LocationContext";
-import SelectStateModal from "@/components/SelectStateModal";
 import { useRouter } from "expo-router";
+import { useAuth } from "@/app/(auth)/AuthContext"; // Importante!
 
 export default function PostLoginGate() {
-  const { showModal, setShowModal } = useInitUserState();
-  const { state, setState } = useLocation();
+  const { state } = useLocation();
   const router = useRouter();
+  const { loading, canAccessApp } = useAuth();
 
   useEffect(() => {
-    if (state) {
-      // Se já definiu o estado, navega para a Home
-      //router.replace("/home");
+    if (loading) return;
+
+    if (!canAccessApp()) {
+      router.replace("/paywall");
+      return;
     }
-  }, [state]);
+
+    // Se não escolheu estado, obriga passar pelo Welcome
+    if (!state) {
+      router.replace("/welcome");
+      return;
+    }
+
+    // Se tem acesso e já tem estado, vai para a home
+    router.replace("/home");
+  }, [loading, canAccessApp, state]);
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      {/* Exibe um loading enquanto processa */}
       <ActivityIndicator size="large" color="#007EFF" />
-      {/* Modal de seleção caso necessário */}
-      <SelectStateModal
-        visible={showModal}
-        onSelect={(code) => {
-          setState(code);
-          setShowModal(false);
-        }}
-      />
     </View>
   );
 }

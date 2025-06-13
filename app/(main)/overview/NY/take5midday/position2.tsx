@@ -11,7 +11,6 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
 import NYLottoLogo from "@/assets/images/ny_game_logo/nylotto.svg";
-import DrawingSinceTabs from "../../../../../components/drawingsincetabs";
 
 // ====== HEADER PARA POSITION 02 ======
 const POSITION_HEADERS = {
@@ -97,7 +96,7 @@ export default function Position1NYLotto() {
         title="Overview"
         subtitle="NY Lotto"
         headerColor="#155095"
-        backTo="/overview/new_york/overview"
+        backTo="/overview/ny/overview"
       />
 
       {/* TABS */}

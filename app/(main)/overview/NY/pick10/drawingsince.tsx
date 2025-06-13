@@ -11,7 +11,6 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import GameHeader from "@/components/generator/header/gameheader";
 import Pick10Logo from "@/assets/images/ny_game_logo/pick10.svg";
-import DrawingSinceTabs from "../../../../../components/drawingsincetabs";
 
 // ====== HEADER (1 a 80 para o Pick 10) ======
 const POSITION_HEADERS = {
@@ -102,7 +101,7 @@ export default function DrawingSincePick10() {
         title="Overview"
         subtitle="Pick 10 NY"
         headerColor="#FFE363"
-        backTo="/overview/new_york/overview"
+        backTo="/overview/ny/overview"
         backIconColor="#000" // Cor da seta
         titleColor="#000" // Cor do título
         subtitleColor="#000" // Cor do subtítulo

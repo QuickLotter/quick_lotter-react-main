@@ -1,3 +1,5 @@
+//Filtro do botao + Add Filters apos o usuario clicar no botao
+
 import React, { useState } from "react";
 import {
   View,
@@ -28,12 +30,9 @@ const FILTER_KEYS: {
   { key: "PRIME", mode: "select", color: "#FF8A65" },
   { key: "FIBONACCI", mode: "select", color: "#F06292" },
   { key: "MULT_OF_3", mode: "select", color: "#4DD0E1" },
-  { key: "VERTICAL", mode: "select", color: "#B71C1C" },
   { key: "ADJACENT", mode: "select", color: "#388E3C" },
   { key: "REPEATED", mode: "select", color: "#FB8C00" },
   { key: "SEQUENCE", mode: "select", color: "#000000" },
-  { key: "DIGITS", mode: "select", color: "#FFEB3B" },
-  { key: "LINES", mode: "select", color: "#1976D2" },
   { key: "COLUMNS", mode: "select", color: "#F44336" },
 ];
 

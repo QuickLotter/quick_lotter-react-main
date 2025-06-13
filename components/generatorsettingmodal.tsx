@@ -118,7 +118,7 @@ export default function GeneratorSettingModal({
   // Header SEM a seta de voltar!
   const renderHeader = () => (
     <GameHeader
-      title="Generator Setting"
+      title="Generator"
       subtitle={`New York ${game?.name ?? ""}`}
       logo={game?.logo ? <game.logo width={110} height={40} /> : null}
       headerColor={game?.headerColor || "#0E4CA1"}

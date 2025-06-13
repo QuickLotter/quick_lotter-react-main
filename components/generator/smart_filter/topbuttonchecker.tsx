@@ -7,6 +7,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { findNodeHandle } from "react-native";
 
 // SVGs dos botões
 import Analysis from "@/assets/buttons_slider/analysis.svg";
@@ -43,7 +44,7 @@ export default function SelectorSliderOptions({ onFilterPress }: Props) {
         const ref = itemRefs.current[selectedId];
         if (ref && scrollRef.current) {
           ref.measureLayout(
-            scrollRef.current.getInnerViewNode(),
+            findNodeHandle(scrollRef.current),
             (x) => {
               scrollRef.current?.scrollTo({
                 x: x - width / 2 + 45,

@@ -10,33 +10,31 @@ import {
   useWindowDimensions,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useRouter, usePathname } from "expo-router";
+import { useRouter, useLocalSearchParams, usePathname } from "expo-router";
 import GameHeader from "@/components/generator/header/gameheader";
 import MegaMillionsLogo from "@/assets/logos/ny/megamillions.svg";
 
-// ====== HEADER PARA POSITION 01 ======
+// ====== HEADER PARA POSITION 03 ======
 const POSITION_HEADERS = {
-  "POSITION 01": [
-    31, 26, 40, 29, 37, 39, 33, 30, 25, 44, 42, 28, 27, 36, 47, 53, 48, 32, 46,
-    35, 38, 20, 34, 43, 50, 24, 23, 41, 19, 17, 14, 18, 21, 56, 22, 16, 15, 13,
-    45, 49, 51, 58, 11, 60, 10, 54, 52, 55, 12, 59, 61, 57, 6, 9, 8, 65, 63, 5,
-    7, 4, 66, 62, 67,
+  "POSITION 03": [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+    22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+    60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
   ],
 };
 
-// MOCK DATA
 const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
   date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  values: Array(POSITION_HEADERS["POSITION 01"].length)
+  values: Array(POSITION_HEADERS["POSITION 03"].length)
     .fill(0)
     .map(() => Math.round(Math.random())),
 }));
 const FREQ = Array.from(
-  { length: POSITION_HEADERS["POSITION 01"].length },
+  { length: POSITION_HEADERS["POSITION 03"].length },
   () => Math.floor(Math.random() * 350) + 10
 );
 
-// ======= Adicione o array de tabs do Mega Millions =======
 const TABS = [
   { label: "Drawing Since", route: "drawingsince" },
   { label: "Position 01", route: "position1" },
@@ -44,19 +42,27 @@ const TABS = [
   { label: "Position 03", route: "position3" },
   { label: "Position 04", route: "position4" },
   { label: "Position 05", route: "position5" },
-  { label: "Position MB", route: "positionmb", color: "#FDB927" }, // PB especial
+  { label: "Position MB", route: "positionmb", color: "#FDB927" },
 ];
 
-export default function Position1() {
+export default function Position3MegaMillions() {
+  const params = useLocalSearchParams();
+  const selected1 =
+    typeof params.selected1 === "string" ? params.selected1 : "";
+  const selected2 =
+    typeof params.selected2 === "string" ? params.selected2 : "";
+
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
   const [toDate, setToDate] = useState(new Date(2025, 4, 20));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
 
-  const headerScrollRef = useRef(null);
-  const dataRowsRefs = useRef([]);
-  const footerScrollRef = useRef(null);
+  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
 
-  // Para animação do carrossel de tabs:
+  const headerScrollRef = useRef(null);
+  const dataRowsRefs = useRef<any[]>([]);
+  const footerScrollRef = useRef(null);
+  const numberBarScrollRef = useRef(null);
+
   const router = useRouter();
   const pathname = usePathname();
   const currentTab = pathname.split("/").pop();
@@ -81,12 +87,9 @@ export default function Position1() {
 
   useEffect(() => {
     const idx = TABS.findIndex((tab) => tab.route === currentTab);
-    if (idx !== -1) {
-      setTimeout(() => scrollToTab(idx), 120);
-    }
+    if (idx !== -1) setTimeout(() => scrollToTab(idx), 120);
   }, [currentTab, windowWidth]);
 
-  // Formatação MM/DD/YY
   const formatDate = (date: Date) => {
     if (!date) return "";
     const mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -95,19 +98,18 @@ export default function Position1() {
     return `${mm}/${dd}/${yy}`;
   };
 
-  // Substituir pelo fetch da API do Supabase aqui:
-  const HEADER = POSITION_HEADERS["POSITION 01"];
+  const HEADER = POSITION_HEADERS["POSITION 03"];
   const ROWS = DATA_ROWS;
   const filteredRows = ROWS;
   const drawCount = filteredRows.length;
 
   if (dataRowsRefs.current.length !== filteredRows.length) {
     dataRowsRefs.current = Array(filteredRows.length)
-      .fill()
+      .fill(null)
       .map((_, i) => dataRowsRefs.current[i] || React.createRef());
   }
 
-  // Sincronização horizontal header/grid/footer
+  // Sincronização horizontal
   const handleScroll = (event) => {
     const scrollX = event.nativeEvent.contentOffset.x;
     if (headerScrollRef.current)
@@ -117,9 +119,10 @@ export default function Position1() {
     );
     if (footerScrollRef.current)
       footerScrollRef.current.scrollTo({ x: scrollX, animated: false });
+    if (numberBarScrollRef.current)
+      numberBarScrollRef.current.scrollTo({ x: scrollX, animated: false });
   };
 
-  // Manipulação do Date Picker
   const showPicker = (mode: "from" | "to") => setPickerMode(mode);
   const onDateChange = (event, selectedDate) => {
     setPickerMode(null);
@@ -134,18 +137,36 @@ export default function Position1() {
     }
   };
 
+  const toggleNumber = (num: number) => {
+    setSelectedNumbers((prev) =>
+      prev.includes(num)
+        ? prev.filter((n) => n !== num)
+        : [...prev, num].sort((a, b) => a - b)
+    );
+  };
+
+  // Salvar e navegar para Position 04
+  const handleSave = () => {
+    if (selectedNumbers.length > 0) {
+      router.push(
+        `/overview/ny/megamillions/position4?selected1=${selected1}&selected2=${selected2}&selected3=${selectedNumbers.join(
+          ","
+        )}`
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* HEADER PRINCIPAL */}
       <GameHeader
         logo={<MegaMillionsLogo width={100} height={40} />}
         title="Overview"
         subtitle="New York Mega Millions"
         headerColor="#0E4CA1"
-        backTo="/overview/ny/overview"
+        backTo="/overview/ny/megamillions"
       />
 
-      {/* --- TABS INLINE --- */}
+      {/* --- TABS --- */}
       <View style={styles.tabsWrapper}>
         <ScrollView
           horizontal
@@ -155,7 +176,7 @@ export default function Position1() {
         >
           {TABS.map((tab, idx) => {
             const isActive = currentTab === tab.route;
-            const isPB = tab.route === "positionpb";
+            const isPB = tab.route === "positionmb";
             return (
               <TouchableOpacity
                 key={tab.route}
@@ -169,22 +190,23 @@ export default function Position1() {
                   isActive &&
                     (isPB
                       ? {
-                          backgroundColor: "#FDB927", //cor do fundo do botao PB
-                          borderColor: "#FDB927", //cor da borda do fundo do botao PB
+                          backgroundColor: "#FDB927",
+                          borderColor: "#FDB927",
                         }
                       : {
                           backgroundColor: "#0E4CA1",
                           borderColor: "#FDB927",
                         }),
                 ]}
+                activeOpacity={0.78}
               >
                 <Text
                   style={[
                     styles.tabText,
                     isActive &&
                       (isPB
-                        ? { color: "#222", fontWeight: "700" }
-                        : { color: "#fff", fontWeight: "700" }),
+                        ? { color: "#222", fontWeight: "800" }
+                        : { color: "#fff", fontWeight: "800" }),
                   ]}
                 >
                   {tab.label}
@@ -219,7 +241,7 @@ export default function Position1() {
               <Text
                 style={[
                   styles.inputText,
-                  { color: "#0E4CA1", fontWeight: "700" },
+                  { color: "#0E4CA1", fontWeight: "800" },
                 ]}
               >
                 {drawCount}
@@ -297,13 +319,27 @@ export default function Position1() {
         ))}
       </ScrollView>
 
-      {/* Frequencies */}
+      {/* Frequencies + Barra de seleção de números sincronizada */}
       <View style={styles.footerPad}>
         <View style={styles.footerContent}>
-          <View style={styles.freqLabel}>
-            <Text style={styles.freqLabelText}>FREQUENCY</Text>
+          <View style={{ alignItems: "center" }}>
+            <View style={styles.freqLabel}>
+              <Text style={styles.freqLabelText}>FREQUENCY</Text>
+            </View>
+            <TouchableOpacity
+              style={[
+                styles.saveButton,
+                selectedNumbers.length === 0 && styles.saveButtonDisabled,
+              ]}
+              disabled={selectedNumbers.length === 0}
+              onPress={handleSave}
+              activeOpacity={selectedNumbers.length === 0 ? 1 : 0.8}
+            >
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.footerSeparator} />
+
           <ScrollView
             horizontal
             ref={footerScrollRef}
@@ -311,12 +347,48 @@ export default function Position1() {
             scrollEventThrottle={16}
             showsHorizontalScrollIndicator={false}
           >
-            <View style={{ flexDirection: "row" }}>
-              {FREQ.map((freq, i) => (
-                <View key={i} style={styles.freqBox}>
-                  <Text style={styles.freqText}>{freq}</Text>
+            <View>
+              <View style={{ flexDirection: "row" }}>
+                {FREQ.map((freq, i) => (
+                  <View key={i} style={styles.freqBox}>
+                    <Text style={styles.freqText}>{freq}</Text>
+                  </View>
+                ))}
+              </View>
+              {/* Barra de seleção de números */}
+              <ScrollView
+                horizontal
+                ref={numberBarScrollRef}
+                scrollEnabled={false}
+                showsHorizontalScrollIndicator={false}
+                style={{ marginTop: 2 }}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  {HEADER.map((num, i) => {
+                    const isSelected = selectedNumbers.includes(num);
+                    return (
+                      <TouchableOpacity
+                        key={num}
+                        style={[
+                          styles.numberCircle,
+                          isSelected && styles.numberCircleSelected,
+                        ]}
+                        onPress={() => toggleNumber(num)}
+                        activeOpacity={0.7}
+                      >
+                        <Text
+                          style={[
+                            styles.numberCircleText,
+                            isSelected && styles.numberCircleTextSelected,
+                          ]}
+                        >
+                          {num}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
                 </View>
-              ))}
+              </ScrollView>
             </View>
           </ScrollView>
         </View>
@@ -335,6 +407,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingVertical: 8,
     paddingLeft: 8,
+    borderBottomColor: "#E3E8F1",
+    borderBottomWidth: 1.2,
+    shadowColor: "#16233C",
+    shadowOpacity: 0.04,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 9,
+    elevation: 3,
+    zIndex: 14,
   },
   tabButton: {
     marginRight: 8,
@@ -342,13 +422,16 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 19,
     backgroundColor: "#ECF1FF",
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: "#ECF1FF",
+    minWidth: 80,
+    alignItems: "center",
   },
   tabText: {
     fontSize: 15,
     color: "#0E4CA1",
     fontWeight: "500",
+    letterSpacing: 0.03,
   },
   fixedHeader: {
     backgroundColor: "#fff",
@@ -359,11 +442,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 12,
     elevation: 6,
-    zIndex: 20,
+    zIndex: 10,
   },
   filtersPad: {
     backgroundColor: "#FFFFFF",
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderBottomColor: "#E5EAF3",
     borderBottomWidth: 1,
   },
@@ -371,12 +454,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
+    gap: 9,
     paddingHorizontal: 16,
     marginVertical: 6,
   },
   dateLabel: {
-    fontSize: 12,
+    fontSize: 12.5,
     fontWeight: "700",
     color: "#0E4CA1",
     letterSpacing: 0.05,
@@ -386,19 +469,20 @@ const styles = StyleSheet.create({
     width: 85,
     backgroundColor: "#F7F8FA",
     borderRadius: 7,
-    borderWidth: 1.2,
+    borderWidth: 1.3,
     borderColor: "#E1E8F3",
     paddingHorizontal: 10,
-    fontSize: 12,
+    fontSize: 13,
     color: "#222",
-    fontWeight: "500",
+    fontWeight: "600",
     textAlign: "center",
     marginHorizontal: 2,
     justifyContent: "center",
+    alignItems: "center",
   },
   inputText: {
     fontSize: 13,
-    fontWeight: "600",
+    fontWeight: "700",
     color: "#222",
     textAlign: "center",
   },
@@ -409,8 +493,8 @@ const styles = StyleSheet.create({
     maxWidth: 768,
     alignSelf: "center",
     paddingHorizontal: 12,
-    marginTop: 8,
-    marginBottom: 5,
+    marginTop: 7,
+    marginBottom: 4,
     zIndex: 10,
   },
   dateBoxHeader: {
@@ -427,8 +511,8 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   headerText: {
-    fontSize: 12,
-    fontWeight: "700",
+    fontSize: 12.5,
+    fontWeight: "800",
     color: "#FFF",
     letterSpacing: 0.08,
   },
@@ -450,8 +534,8 @@ const styles = StyleSheet.create({
   },
   headerNumberText: {
     fontWeight: "bold",
-    fontSize: 12,
-    letterSpacing: 0.1,
+    fontSize: 12.5,
+    letterSpacing: 0.09,
   },
   headerNumberTextRed: {
     color: "#FFF",
@@ -516,12 +600,42 @@ const styles = StyleSheet.create({
   },
   footerContent: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
     width: "100%",
     maxWidth: 768,
     alignSelf: "center",
     paddingHorizontal: 12,
     gap: 0,
+  },
+  freqLabel: {
+    backgroundColor: "#0E4CA1",
+    borderRadius: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 0,
+    width: 75,
+    marginBottom: 4,
+  },
+  saveButton: {
+    backgroundColor: "#0E4CA1",
+    borderRadius: 7,
+    marginTop: 6,
+    marginBottom: 2,
+    width: 75,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  saveButtonDisabled: {
+    backgroundColor: "#B0B0B0",
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
+    letterSpacing: 0.06,
   },
   freqLabel: {
     backgroundColor: "#0E4CA1",
@@ -553,11 +667,36 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 2,
     backgroundColor: "#000",
+    marginBottom: 4,
   },
   freqText: {
     fontWeight: "bold",
     fontSize: 12,
     color: "#fff",
     letterSpacing: 0.03,
+  },
+  numberCircle: {
+    width: CELL_SIZE,
+    height: CELL_SIZE,
+    borderRadius: CELL_SIZE / 2,
+    borderWidth: 2,
+    borderColor: "#0E4CA1",
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 2,
+    marginTop: 3,
+  },
+  numberCircleSelected: {
+    backgroundColor: "#0E4CA1",
+    borderColor: "#0E4CA1",
+  },
+  numberCircleText: {
+    fontWeight: "700",
+    fontSize: 15,
+    color: "#0E4CA1",
+  },
+  numberCircleTextSelected: {
+    color: "#fff",
   },
 });

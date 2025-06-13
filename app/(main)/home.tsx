@@ -8,6 +8,7 @@ import {
   Pressable,
   Animated,
   Platform,
+  SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
@@ -17,19 +18,18 @@ import GameCardSlider from "@/components/cards/GameCardSlider";
 import MenuDrawer from "./menu-drawer";
 import { GameData } from "@/types/GameData";
 import { useLocation } from "@/app/(main)/context/LocationContext";
-import { fetchGamesByState } from "@/utils/fetchGamesByState"; // NOVO
+import { fetchGamesByState } from "@/utils/fetchGamesByState";
 
 const DRAWER_WIDTH = 300;
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { state, loading: stateLoading } = useLocation(); // NOVO
+  const { state, loading: stateLoading } = useLocation();
   const [games, setGames] = useState<GameData[]>([]);
   const [loading, setLoading] = useState(true);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const slideAnim = useState(new Animated.Value(-DRAWER_WIDTH))[0];
 
-  // Sempre que o estado mudar, atualiza a lista de jogos!
   useEffect(() => {
     async function loadGames() {
       if (!state || stateLoading) return;
@@ -45,7 +45,7 @@ export default function HomeScreen() {
     setDrawerVisible(true);
     Animated.timing(slideAnim, {
       toValue: 0,
-      duration: 230,
+      duration: 240,
       useNativeDriver: false,
     }).start();
   };
@@ -53,14 +53,17 @@ export default function HomeScreen() {
   const closeDrawer = () => {
     Animated.timing(slideAnim, {
       toValue: -DRAWER_WIDTH,
-      duration: 220,
+      duration: 200,
       useNativeDriver: false,
     }).start(() => setDrawerVisible(false));
   };
 
   return (
     <View style={styles.container}>
-      <HeaderLogoBack onMenuPress={openDrawer} />
+      <SafeAreaView style={{ backgroundColor: "#ECF1FF" }}>
+        <HeaderLogoBack onMenuPress={openDrawer} />
+      </SafeAreaView>
+
       {loading || stateLoading ? (
         <ActivityIndicator
           size="large"
@@ -73,7 +76,7 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
           bounces
         >
-          <ResponsiveContainer>
+          <ResponsiveContainer style={styles.centralizeContainer}>
             <GameCardSlider games={games} />
           </ResponsiveContainer>
         </ScrollView>
@@ -101,12 +104,21 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F6F6F8",
+    backgroundColor: "#ECF1FF",
   },
   scrollContainer: {
-    paddingTop: 50,
+    paddingTop: 24,
     paddingBottom: 24,
     flexGrow: 1,
+    justifyContent: "center",
+  },
+  centralizeContainer: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    maxWidth: 768, // Limita centralização do slider em telas grandes
+    alignSelf: "center",
+    flex: 1,
   },
   modalContainer: {
     flex: 1,

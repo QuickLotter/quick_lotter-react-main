@@ -10,132 +10,143 @@ import {
   useWindowDimensions,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useRouter, usePathname } from "expo-router";
+import { useRouter, useLocalSearchParams, usePathname } from "expo-router";
 import GameHeader from "@/components/generator/header/gameheader";
-import NumbersEveningLogo from "@/assets/logos/ny/numbersevening.svg";
+import Win4EveningLogo from "@/assets/logos/ny/win4evening.svg";
 
-// ==== TABS PARA WIN 4 Evening ====
+// ==== HEADERS DA TABELA ====
+const POSITION_HEADERS = {
+  "POSITION 02": [3, 1, 4, 2, 6, 0, 7, 8, 5, 9],
+};
+
+// ==== MOCK DATA ====
+const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
+  date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
+  values: Array(10)
+    .fill(0)
+    .map(() => Math.round(Math.random())),
+}));
+const FREQ = Array.from(
+  { length: 10 },
+  () => Math.floor(Math.random() * 350) + 10
+);
 const TABS = [
   { label: "Drawing Since", route: "drawingsince" },
   { label: "Position 01", route: "position1" },
   { label: "Position 02", route: "position2" },
   { label: "Position 03", route: "position3" },
+  { label: "Position 04", route: "position4" },
 ];
 
-// Cabeçalho (exemplo, pode ser [0,1,2,3,4,5,6,7,8,9] ou qualquer ordem)
-const POSITION_HEADERS = {
-  "POSITION 01": [3, 1, 4, 2, 8, 0, 7, 8, 5, 9],
-};
+export default function Position2Win4Evening() {
+  const params = useLocalSearchParams();
+  const selected1 =
+    typeof params.selected1 === "string" ? params.selected1 : "";
 
-// MOCK DATA
-const DATA_ROWS = Array.from({ length: 20 }, (_, i) => ({
-  date: `05/${(i + 1).toString().padStart(2, "0")}/25`,
-  values: Array(POSITION_HEADERS["POSITION 01"].length)
-    .fill(0)
-    .map(() => Math.round(Math.random())),
-}));
-const FREQ = Array.from(
-  { length: POSITION_HEADERS["POSITION 01"].length },
-  () => Math.floor(Math.random() * 350) + 10
-);
-
-export default function Position1NumbersEvening() {
+  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [fromDate, setFromDate] = useState(new Date(2025, 4, 1));
   const [toDate, setToDate] = useState(new Date(2025, 4, 20));
   const [pickerMode, setPickerMode] = useState<null | "from" | "to">(null);
-
-  const headerScrollRef = useRef(null);
-  const dataRowsRefs = useRef([]);
-  const footerScrollRef = useRef(null);
-
-  // Tabs
   const router = useRouter();
   const pathname = usePathname();
   const currentTab = pathname.split("/").pop();
   const scrollRef = useRef<ScrollView>(null);
   const tabRefs = useRef<Array<TouchableOpacity | null>>([]);
+  const headerScrollRef = useRef(null);
+  const dataRowsRefs = useRef<any[]>([]);
+  const footerScrollRef = useRef(null);
+  const numberBarScrollRef = useRef(null);
   const { width: windowWidth } = useWindowDimensions();
 
-  // Centraliza o tab ativo ao abrir/trocar
+  // Centralizar tab
   const scrollToTab = (idx: number) => {
     if (!tabRefs.current[idx] || !scrollRef.current) return;
     tabRefs.current[idx].measureLayout(
-      // @ts-ignore
-      scrollRef.current.getInnerViewNode
-        ? scrollRef.current.getInnerViewNode()
-        : scrollRef.current,
+      scrollRef.current.getInnerViewNode(),
       (x, y, btnWidth) => {
         const scrollX = Math.max(0, x - windowWidth / 2 + btnWidth / 2);
         scrollRef.current.scrollTo({ x: scrollX, animated: true });
       }
     );
   };
+
   useEffect(() => {
     const idx = TABS.findIndex((tab) => tab.route === currentTab);
-    if (idx !== -1) {
-      setTimeout(() => scrollToTab(idx), 120);
-    }
+    if (idx !== -1) setTimeout(() => scrollToTab(idx), 120);
   }, [currentTab, windowWidth]);
 
-  // Datas
   const formatDate = (date: Date) => {
-    if (!date) return "";
     const mm = String(date.getMonth() + 1).padStart(2, "0");
     const dd = String(date.getDate()).padStart(2, "0");
     const yy = String(date.getFullYear()).slice(-2);
     return `${mm}/${dd}/${yy}`;
   };
 
-  const HEADER = POSITION_HEADERS["POSITION 01"];
+  const HEADER = POSITION_HEADERS["POSITION 02"];
   const ROWS = DATA_ROWS;
-  const filteredRows = ROWS;
-  const drawCount = filteredRows.length;
+  const FREQS = FREQ;
+  const drawCount = ROWS.length;
 
-  if (dataRowsRefs.current.length !== filteredRows.length) {
-    dataRowsRefs.current = Array(filteredRows.length)
-      .fill()
+  if (dataRowsRefs.current.length !== ROWS.length) {
+    dataRowsRefs.current = Array(ROWS.length)
+      .fill(null)
       .map((_, i) => dataRowsRefs.current[i] || React.createRef());
   }
 
-  // Sincronização horizontal header/grid/footer
   const handleScroll = (event) => {
     const scrollX = event.nativeEvent.contentOffset.x;
-    if (headerScrollRef.current)
-      headerScrollRef.current.scrollTo({ x: scrollX, animated: false });
+    headerScrollRef.current?.scrollTo({ x: scrollX, animated: false });
     dataRowsRefs.current.forEach((ref) =>
       ref?.current?.scrollTo({ x: scrollX, animated: false })
     );
-    if (footerScrollRef.current)
-      footerScrollRef.current.scrollTo({ x: scrollX, animated: false });
+    footerScrollRef.current?.scrollTo({ x: scrollX, animated: false });
+    numberBarScrollRef.current?.scrollTo({ x: scrollX, animated: false });
   };
 
-  // Manipulação do Date Picker
+  const toggleNumber = (num: number) => {
+    setSelectedNumbers((prev) =>
+      prev.includes(num)
+        ? prev.filter((n) => n !== num)
+        : [...prev, num].sort((a, b) => a - b)
+    );
+  };
+
   const showPicker = (mode: "from" | "to") => setPickerMode(mode);
+
   const onDateChange = (event, selectedDate) => {
     setPickerMode(null);
     if (event.type === "set" && selectedDate) {
       if (pickerMode === "from") {
         setFromDate(selectedDate);
         if (selectedDate > toDate) setToDate(selectedDate);
-      } else if (pickerMode === "to") {
+      } else {
         setToDate(selectedDate);
         if (selectedDate < fromDate) setFromDate(selectedDate);
       }
     }
   };
 
+  const handleSave = () => {
+    if (selectedNumbers.length > 0) {
+      router.push(
+        `/overview/ny/win4evening/position3?selected1=${selected1}&selected2=${selectedNumbers.join(
+          ","
+        )}`
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* HEADER PRINCIPAL */}
       <GameHeader
-        logo={<NumbersEveningLogo width={100} height={40} />}
+        logo={<Win4EveningLogo width={100} height={40} />}
         title="Overview"
-        subtitle="New York Numbers Evening"
+        subtitle="Win 4 Evening"
         headerColor="#2E73B5"
         backTo="/overview/ny/overview"
       />
 
-      {/* --- TABS INLINE --- */}
+      {/* Tabs */}
       <View style={styles.tabsWrapper}>
         <ScrollView
           horizontal
@@ -150,21 +161,22 @@ export default function Position1NumbersEvening() {
                 key={tab.route}
                 ref={(ref) => (tabRefs.current[idx] = ref)}
                 onPress={() => {
-                  router.replace(`/overview/ny/numbersevening/${tab.route}`);
+                  router.replace(`/overview/ny/win4evening/${tab.route}`);
                   setTimeout(() => scrollToTab(idx), 100);
                 }}
                 style={[
                   styles.tabButton,
                   isActive && {
                     backgroundColor: "#2E73B5",
-                    borderColor: "#2E73B5",
+                    borderColor: "#FFD700",
                   },
                 ]}
+                activeOpacity={0.78}
               >
                 <Text
                   style={[
                     styles.tabText,
-                    isActive && { color: "#fff", fontWeight: "700" },
+                    isActive && { color: "#fff", fontWeight: "800" },
                   ]}
                 >
                   {tab.label}
@@ -175,7 +187,7 @@ export default function Position1NumbersEvening() {
         </ScrollView>
       </View>
 
-      {/* Data Range Picker */}
+      {/* Filtros e datas */}
       <View style={styles.fixedHeader}>
         <View style={styles.filtersPad}>
           <View style={styles.datesRow}>
@@ -199,7 +211,7 @@ export default function Position1NumbersEvening() {
               <Text
                 style={[
                   styles.inputText,
-                  { color: "#2E73B5", fontWeight: "700" },
+                  { color: "#2E73B5", fontWeight: "800" },
                 ]}
               >
                 {drawCount}
@@ -209,8 +221,7 @@ export default function Position1NumbersEvening() {
         </View>
       </View>
 
-      {/* Picker Modal */}
-      {(pickerMode === "from" || pickerMode === "to") && (
+      {pickerMode && (
         <DateTimePicker
           value={pickerMode === "from" ? fromDate : toDate}
           mode="date"
@@ -221,7 +232,7 @@ export default function Position1NumbersEvening() {
         />
       )}
 
-      {/* Header da tabela */}
+      {/* Header da Tabela */}
       <View style={styles.tableHeaderRow}>
         <View style={[styles.dateBoxHeader, { backgroundColor: "#2E73B5" }]}>
           <Text style={styles.headerText}>DATE</Text>
@@ -238,11 +249,9 @@ export default function Position1NumbersEvening() {
             {HEADER.map((n, i) => (
               <View
                 key={i}
-                style={[styles.headerNumberBox, styles.headerNumberBoxBlue]}
+                style={[styles.headerNumberBox, { backgroundColor: "#2E73B5" }]}
               >
-                <Text
-                  style={[styles.headerNumberText, styles.headerNumberTextBlue]}
-                >
+                <Text style={[styles.headerNumberText, { color: "#fff" }]}>
                   {n}
                 </Text>
               </View>
@@ -251,9 +260,9 @@ export default function Position1NumbersEvening() {
         </ScrollView>
       </View>
 
-      {/* Data Rows */}
+      {/* Grade com dados */}
       <ScrollView style={{ flex: 1 }}>
-        {filteredRows.map((row, rowIndex) => (
+        {ROWS.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.gridRow}>
             <View style={[styles.dateBoxGrid, { backgroundColor: "#2E73B5" }]}>
               <Text style={styles.dateText}>{row.date}</Text>
@@ -267,7 +276,7 @@ export default function Position1NumbersEvening() {
               showsHorizontalScrollIndicator={false}
             >
               <View style={{ flexDirection: "row" }}>
-                {row.values.slice(0, HEADER.length).map((val, j) => (
+                {row.values.map((val, j) => (
                   <View key={j} style={styles.gridBox}>
                     <Text style={styles.gridText}>{val}</Text>
                   </View>
@@ -278,11 +287,23 @@ export default function Position1NumbersEvening() {
         ))}
       </ScrollView>
 
-      {/* Frequencies */}
+      {/* Frequência e número selecionável */}
       <View style={styles.footerPad}>
         <View style={styles.footerContent}>
-          <View style={styles.freqLabel}>
-            <Text style={styles.freqLabelText}>FREQUENCY</Text>
+          <View style={{ alignItems: "center" }}>
+            <View style={styles.freqLabel}>
+              <Text style={styles.freqLabelText}>FREQUENCY</Text>
+            </View>
+            <TouchableOpacity
+              style={[
+                styles.saveButton,
+                selectedNumbers.length === 0 && styles.saveButtonDisabled,
+              ]}
+              disabled={selectedNumbers.length === 0}
+              onPress={handleSave}
+            >
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.footerSeparator} />
           <ScrollView
@@ -292,12 +313,46 @@ export default function Position1NumbersEvening() {
             scrollEventThrottle={16}
             showsHorizontalScrollIndicator={false}
           >
-            <View style={{ flexDirection: "row" }}>
-              {FREQ.map((freq, i) => (
-                <View key={i} style={styles.freqBox}>
-                  <Text style={styles.freqText}>{freq}</Text>
+            <View>
+              <View style={{ flexDirection: "row" }}>
+                {FREQS.map((freq, i) => (
+                  <View key={i} style={styles.freqBox}>
+                    <Text style={styles.freqText}>{freq}</Text>
+                  </View>
+                ))}
+              </View>
+              <ScrollView
+                horizontal
+                ref={numberBarScrollRef}
+                scrollEnabled={false}
+                showsHorizontalScrollIndicator={false}
+                style={{ marginTop: 2 }}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  {HEADER.map((num) => {
+                    const isSelected = selectedNumbers.includes(num);
+                    return (
+                      <TouchableOpacity
+                        key={num}
+                        style={[
+                          styles.numberCircle,
+                          isSelected && styles.numberCircleSelected,
+                        ]}
+                        onPress={() => toggleNumber(num)}
+                      >
+                        <Text
+                          style={[
+                            styles.numberCircleText,
+                            isSelected && styles.numberCircleTextSelected,
+                          ]}
+                        >
+                          {num}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
                 </View>
-              ))}
+              </ScrollView>
             </View>
           </ScrollView>
         </View>
@@ -306,9 +361,11 @@ export default function Position1NumbersEvening() {
   );
 }
 
-// ====== STYLES =======
-const CELL_SIZE = 30;
+// ⬅️ Styles: já estão definidos corretamente no seu projeto anterior.
 
+// Styles: use os mesmos do seu projeto, iguais ao Position 01!
+
+const CELL_SIZE = 30;
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#ECF1FF" },
   tabsWrapper: {
@@ -326,11 +383,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ECF1FF",
   },
-  tabText: {
-    fontSize: 15,
-    color: "#2E73B5",
-    fontWeight: "500",
-  },
+  tabText: { fontSize: 15, color: "#2E73B5", fontWeight: "500" },
   fixedHeader: {
     backgroundColor: "#fff",
     borderBottomColor: "#E0E0E0",
@@ -356,11 +409,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginVertical: 6,
   },
-  dateLabel: {
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 0.05,
-  },
+  dateLabel: { fontSize: 12, fontWeight: "700", letterSpacing: 0.05 },
   input: {
     height: 30,
     width: 85,
@@ -411,11 +460,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
     letterSpacing: 0.08,
   },
-  headerSeparator: {
-    width: 4,
-    height: CELL_SIZE,
-    backgroundColor: "#F2F2F7",
-  },
+  headerSeparator: { width: 4, height: CELL_SIZE, backgroundColor: "#F2F2F7" },
   headerNumberBox: {
     width: CELL_SIZE,
     height: CELL_SIZE,
@@ -424,17 +469,7 @@ const styles = StyleSheet.create({
     marginRight: 2,
     borderRadius: 3,
   },
-  headerNumberBoxBlue: {
-    backgroundColor: "#2E73B5",
-  },
-  headerNumberText: {
-    fontWeight: "bold",
-    fontSize: 12,
-    letterSpacing: 0.1,
-  },
-  headerNumberTextBlue: {
-    color: "#FFF",
-  },
+  headerNumberText: { fontWeight: "bold", fontSize: 12, letterSpacing: 0.1 },
   gridRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -447,7 +482,6 @@ const styles = StyleSheet.create({
   dateBoxGrid: {
     width: 75,
     height: CELL_SIZE,
-    backgroundColor: "#2E73B5",
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,
     justifyContent: "center",
@@ -455,11 +489,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderColor: "#E8EBF6",
   },
-  rowSeparator: {
-    width: 4,
-    height: CELL_SIZE,
-    backgroundColor: "#ECF1FF",
-  },
+  rowSeparator: { width: 4, height: CELL_SIZE, backgroundColor: "#ECF1FF" },
   gridBox: {
     width: CELL_SIZE,
     height: CELL_SIZE,
@@ -511,17 +541,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 0,
   },
-  footerSeparator: {
-    width: 4,
-    height: CELL_SIZE,
-    backgroundColor: "#ECF1FF",
-  },
+  footerSeparator: { width: 4, height: CELL_SIZE, backgroundColor: "#ECF1FF" },
   freqLabelText: {
     fontWeight: "700",
     fontSize: 10.5,
     color: "#fff",
     letterSpacing: 0.04,
   },
+  saveButton: {
+    marginTop: 7,
+    backgroundColor: "#FFD700",
+    borderRadius: 7,
+    paddingHorizontal: 19,
+    paddingVertical: 7,
+    shadowColor: "#FFD700",
+    shadowOpacity: 0.13,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  saveButtonDisabled: { backgroundColor: "#E0DECE" },
+  saveButtonText: { fontWeight: "bold", color: "#2E73B5", fontSize: 15 },
   freqBox: {
     width: CELL_SIZE,
     height: CELL_SIZE,
@@ -539,4 +578,19 @@ const styles = StyleSheet.create({
     color: "#fff",
     letterSpacing: 0.03,
   },
+  numberCircle: {
+    width: CELL_SIZE,
+    height: CELL_SIZE,
+    borderRadius: 15,
+    marginRight: 2,
+    marginTop: 5,
+    backgroundColor: "#fff",
+    borderWidth: 1.7,
+    borderColor: "#2E73B5",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  numberCircleSelected: { backgroundColor: "#2E73B5", borderColor: "#FFD700" },
+  numberCircleText: { fontWeight: "700", color: "#2E73B5", fontSize: 15 },
+  numberCircleTextSelected: { color: "#fff" },
 });

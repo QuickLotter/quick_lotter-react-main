@@ -1,4 +1,4 @@
-// ✅ Path: app/(main)/generator/ny/megamillions/numbersgenerated.tsx
+// ✅ Path: app/(main)/generator/ny/megamillions/MyLines.tsx
 
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
@@ -14,7 +14,7 @@ import GameRow from "@/components/generator/smart_filter/gamerow";
 // Assets
 import MegamillionsLogo from "@/assets/logos/ny/megamillions.svg";
 
-export default function NumbersGeneratedPage() {
+export default function MyLinesPage() {
   const { data } = useLocalSearchParams();
   const [games, setGames] = useState<any[]>([]);
   const router = useRouter();
@@ -23,49 +23,21 @@ export default function NumbersGeneratedPage() {
     if (data) {
       try {
         const parsed = JSON.parse(decodeURIComponent(data as string));
-        if (Array.isArray(parsed)) {
-          setGames(parsed);
-        } else {
-          console.error("Data recebido não é um array:", parsed);
-        }
+        if (Array.isArray(parsed)) setGames(parsed);
+        else console.error("Data recebido não é um array:", parsed);
       } catch (error) {
         console.error("Erro ao carregar jogos:", error);
       }
     } else {
       setGames([
-        {
-          mainNumbers: [4, 12, 15, 33, 54],
-          extraNumbers: [16],
-        },
-        {
-          mainNumbers: [7, 8, 19, 25, 60],
-          extraNumbers: [3],
-        },
-
-        {
-          mainNumbers: [4, 12, 15, 33, 54],
-          extraNumbers: [16],
-        },
-        {
-          mainNumbers: [7, 8, 19, 25, 60],
-          extraNumbers: [3],
-        },
-        {
-          mainNumbers: [4, 12, 15, 33, 54],
-          extraNumbers: [16],
-        },
-        {
-          mainNumbers: [7, 8, 19, 25, 60],
-          extraNumbers: [3],
-        },
-        {
-          mainNumbers: [4, 12, 15, 33, 54],
-          extraNumbers: [16],
-        },
-        {
-          mainNumbers: [7, 8, 19, 25, 60],
-          extraNumbers: [3],
-        },
+        { mainNumbers: [4, 12, 15, 33, 54], extraNumbers: [16] },
+        { mainNumbers: [7, 8, 19, 25, 60], extraNumbers: [3] },
+        { mainNumbers: [4, 12, 15, 33, 54], extraNumbers: [16] },
+        { mainNumbers: [7, 8, 19, 25, 60], extraNumbers: [3] },
+        { mainNumbers: [4, 12, 15, 33, 54], extraNumbers: [16] },
+        { mainNumbers: [7, 8, 19, 25, 60], extraNumbers: [3] },
+        { mainNumbers: [4, 12, 15, 33, 54], extraNumbers: [16] },
+        { mainNumbers: [7, 8, 19, 25, 60], extraNumbers: [3] },
       ]);
     }
   }, [data]);
@@ -75,10 +47,7 @@ export default function NumbersGeneratedPage() {
       "Are You Sure Want to delete this line?",
       "Your number selection will be gone if you delete this line.",
       [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
+        { text: "Cancel", style: "cancel" },
         {
           text: "Delete Line",
           style: "destructive",
@@ -103,19 +72,14 @@ export default function NumbersGeneratedPage() {
     });
   };
 
-  const handleSave = () => {
-    console.log("Salvar jogos:", games);
-  };
-
-  const handlePrint = () => {
-    console.log("Imprimir jogos:", games);
-  };
+  const handleSave = () => console.log("Salvar jogos:", games);
+  const handlePrint = () => console.log("Imprimir jogos:", games);
 
   return (
     <View style={styles.wrapper}>
       <GameHeader
         logo={<MegamillionsLogo width={100} height={40} />}
-        title="Generated Games"
+        title="My Lines"
         subtitle="New York Mega Millions"
         headerColor="#0E4CA1"
       />
@@ -124,7 +88,11 @@ export default function NumbersGeneratedPage() {
         <SelectorSliderOptions />
       </View>
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <ResponsiveContainer>
           {games.length === 0 ? (
             <View style={styles.empty}>
@@ -139,6 +107,8 @@ export default function NumbersGeneratedPage() {
                 extraNumber={game.extraNumbers?.[0]}
                 onDelete={() => handleDelete(index)}
                 onEdit={() => handleEdit(index)}
+                ballStyle={styles.mainBall} // <--- ESTILO DA BOLA
+                ballTextStyle={styles.mainBallText} // <--- ESTILO DO TEXTO
               />
             ))
           )}
@@ -161,8 +131,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   content: {
-    paddingBottom: 100,
+    flexGrow: 1,
     paddingTop: 12,
+    paddingBottom: 100,
     alignItems: "center",
   },
   empty: {
@@ -172,5 +143,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 14,
     color: "#999",
+  },
+  // ---- ITENS PARA PERSONALIZAR A COR DAS BOLAS ----
+  mainBall: {
+    backgroundColor: "#0E4CA1", // Troque aqui para a cor da bola principal!
+  },
+  mainBallText: {
+    color: "#FFF", // Troque aqui para a cor do texto principal!
   },
 });

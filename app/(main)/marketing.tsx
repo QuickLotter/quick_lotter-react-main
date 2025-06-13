@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+// app/(main)/marketing.tsx
+
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,12 +9,16 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import { Ionicons } from "@expo/vector-icons";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import IOSSwitch from "@/components/ui/IOSSwitch"; // <<-- IMPORTANTE
+import IOSSwitch from "@/components/ui/IOSSwitch";
+import { supabase } from "@/app/(auth)/supabaseClient";
+import { useAuth } from "@/app/(auth)/AuthContext";
 
 const COLORS = {
   background: "#F6F6F8",
@@ -27,27 +33,107 @@ const COLORS = {
 
 export default function Marketing() {
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
 
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // Preferências (defaults)
   const [emailAlerts, setEmailAlerts] = useState(false);
   const [jackpotAlerts, setJackpotAlerts] = useState(false);
   const [strategyTips, setStrategyTips] = useState(true);
   const [gameResults, setGameResults] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Exibe notificação temporária ao trocar
-  const handleToggle = (toggleFn: any) => {
-    toggleFn((prev: boolean) => {
-      const updated = !prev;
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 1500);
-      return updated;
-    });
+  // Buscar preferências
+  useEffect(() => {
+    async function fetchPrefs() {
+      if (!user?.id) return;
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("user_preferences")
+        .select(
+          `
+            marketing_email_alerts,
+            marketing_jackpot_alerts,
+            marketing_strategy_tips,
+            marketing_game_results
+          `
+        )
+        .eq("user_id", user.id)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 = not found
+        setLoading(false);
+        Alert.alert("Error", "Failed to load preferences.");
+        return;
+      }
+      if (data) {
+        setEmailAlerts(!!data.marketing_email_alerts);
+        setJackpotAlerts(!!data.marketing_jackpot_alerts);
+        setStrategyTips(
+          typeof data.marketing_strategy_tips === "boolean"
+            ? data.marketing_strategy_tips
+            : true
+        );
+        setGameResults(!!data.marketing_game_results);
+      }
+      setLoading(false);
+    }
+    fetchPrefs();
+  }, [user]);
+
+  // Cria registro se não existir
+  async function ensurePreferencesExist() {
+    if (!user?.id) return;
+    const { data, error } = await supabase
+      .from("user_preferences")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .single();
+    if (!data && (!error || error.code === "PGRST116")) {
+      // Cria registro padrão
+      await supabase.from("user_preferences").insert([{ user_id: user.id }]);
+    }
+  }
+
+  // Função para salvar no banco
+  const savePreference = async (field: string, value: boolean) => {
+    if (!user?.id) return;
+    setSaving(true);
+    await ensurePreferencesExist();
+    const { error } = await supabase
+      .from("user_preferences")
+      .update({ [field]: value })
+      .eq("user_id", user.id);
+    setSaving(false);
+    if (error) {
+      Alert.alert("Error", "Failed to save preferences.");
+      return false;
+    }
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 1200);
+    return true;
   };
+
+  // Troca e já salva no banco
+  const handleToggle = async (key: string, setFn: any, prevValue: boolean) => {
+    setFn(!prevValue);
+    await savePreference(key, !prevValue);
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingWrapper}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.wrapper}>
       <HeaderLogoBack />
-
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -97,28 +183,56 @@ export default function Marketing() {
               <Text style={styles.switchLabel}>Receive updates via email</Text>
               <IOSSwitch
                 value={emailAlerts}
-                onValueChange={() => handleToggle(setEmailAlerts)}
+                onValueChange={() =>
+                  handleToggle(
+                    "marketing_email_alerts",
+                    setEmailAlerts,
+                    emailAlerts
+                  )
+                }
+                disabled={saving}
               />
             </View>
             <View style={styles.switchRow}>
               <Text style={styles.switchLabel}>Jackpot above $100M</Text>
               <IOSSwitch
                 value={jackpotAlerts}
-                onValueChange={() => handleToggle(setJackpotAlerts)}
+                onValueChange={() =>
+                  handleToggle(
+                    "marketing_jackpot_alerts",
+                    setJackpotAlerts,
+                    jackpotAlerts
+                  )
+                }
+                disabled={saving}
               />
             </View>
             <View style={styles.switchRow}>
               <Text style={styles.switchLabel}>Weekly strategy tips</Text>
               <IOSSwitch
                 value={strategyTips}
-                onValueChange={() => handleToggle(setStrategyTips)}
+                onValueChange={() =>
+                  handleToggle(
+                    "marketing_strategy_tips",
+                    setStrategyTips,
+                    strategyTips
+                  )
+                }
+                disabled={saving}
               />
             </View>
             <View style={styles.switchRow}>
               <Text style={styles.switchLabel}>Game result notifications</Text>
               <IOSSwitch
                 value={gameResults}
-                onValueChange={() => handleToggle(setGameResults)}
+                onValueChange={() =>
+                  handleToggle(
+                    "marketing_game_results",
+                    setGameResults,
+                    gameResults
+                  )
+                }
+                disabled={saving}
               />
             </View>
           </View>
@@ -147,6 +261,12 @@ export default function Marketing() {
 }
 
 const styles = StyleSheet.create({
+  loadingWrapper: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   wrapper: {
     flex: 1,
     backgroundColor: COLORS.background,

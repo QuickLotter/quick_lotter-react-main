@@ -8,16 +8,16 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-// Imagem SVG
 import ChangePasswordIllustration from "@/assets/images/change_password.svg";
+import { supabase } from "@/app/(auth)/supabaseClient";
+import { useAuth } from "@/app/(auth)/AuthContext";
 
-// Cores padrão iOS
 const COLORS = {
   background: "#F6F6F8",
   card: "#FFF",
@@ -26,32 +26,106 @@ const COLORS = {
   textMuted: "#8C95A3",
   primary: "#007AFF",
   white: "#FFF",
+  success: "#22C55E",
+  error: "#FF3B30",
 };
 
 export default function ChangePassword() {
   const insets = useSafeAreaInsets();
+  const { signOut } = useAuth();
+
+  // States
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // Para trocar senha, é obrigatório reautenticar o usuário.
+  // Solução segura: tentar login com a senha antiga antes de alterar.
+  const handleChangePassword = async () => {
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    // 1. Validação simples
+    if (!oldPassword || !newPassword || !confirm) {
+      setErrorMsg("Fill in all fields.");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setErrorMsg("Password must be at least 8 characters.");
+      return;
+    }
+    if (newPassword !== confirm) {
+      setErrorMsg("Passwords do not match.");
+      return;
+    }
+    if (newPassword === oldPassword) {
+      setErrorMsg("New password must be different.");
+      return;
+    }
+
+    setLoading(true);
+
+    // 2. Checa se a senha antiga está correta (reauth)
+    const user = supabase.auth.getUser
+      ? (await supabase.auth.getUser()).data.user
+      : supabase.auth.user(); // fallback para versões antigas
+
+    const email = user?.email;
+    if (!email) {
+      setErrorMsg("Not logged in.");
+      setLoading(false);
+      return;
+    }
+
+    // 3. Login silencioso com a senha antiga
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password: oldPassword,
+    });
+    if (signInError) {
+      setErrorMsg("Current password is incorrect.");
+      setLoading(false);
+      return;
+    }
+
+    // 4. Atualiza senha no Supabase
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (updateError) {
+      setErrorMsg(updateError.message || "Error changing password.");
+    } else {
+      setSuccessMsg("Password changed successfully. Please log in again.");
+      setTimeout(async () => {
+        await signOut();
+      }, 2200);
+    }
+    setLoading(false);
+  };
+
   return (
     <SafeAreaView style={styles.wrapper}>
       <HeaderLogoBack />
-
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <ResponsiveContainer>
-          {/* Espaço seguro */}
           <View style={{ height: insets.top + 12 }} />
 
-          {/* Imagem */}
           <View style={styles.imageWrapper}>
             <ChangePasswordIllustration width={140} height={94} />
           </View>
 
-          {/* Título e descrição */}
           <Text style={styles.title}>Change your password</Text>
           <Text style={styles.description}>
             Type your current and new password. Choose a unique password to
@@ -67,6 +141,8 @@ export default function ChangePassword() {
               placeholderTextColor={COLORS.textMuted}
               autoCapitalize="none"
               autoCorrect={false}
+              value={oldPassword}
+              onChangeText={setOldPassword}
             />
             <TouchableOpacity
               onPress={() => setShowOld(!showOld)}
@@ -90,6 +166,8 @@ export default function ChangePassword() {
               placeholderTextColor={COLORS.textMuted}
               autoCapitalize="none"
               autoCorrect={false}
+              value={newPassword}
+              onChangeText={setNewPassword}
             />
             <TouchableOpacity
               onPress={() => setShowNew(!showNew)}
@@ -117,6 +195,8 @@ export default function ChangePassword() {
               placeholderTextColor={COLORS.textMuted}
               autoCapitalize="none"
               autoCorrect={false}
+              value={confirm}
+              onChangeText={setConfirm}
             />
             <TouchableOpacity
               onPress={() => setShowConfirm(!showConfirm)}
@@ -131,9 +211,24 @@ export default function ChangePassword() {
             </TouchableOpacity>
           </View>
 
+          {errorMsg ? (
+            <Text style={[styles.msg, styles.errorMsg]}>{errorMsg}</Text>
+          ) : null}
+          {successMsg ? (
+            <Text style={[styles.msg, styles.successMsg]}>{successMsg}</Text>
+          ) : null}
+
           {/* Botão */}
-          <TouchableOpacity style={styles.submitButton}>
-            <Text style={styles.submitText}>Set new password</Text>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={handleChangePassword}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.submitText}>Set new password</Text>
+            )}
           </TouchableOpacity>
         </ResponsiveContainer>
       </ScrollView>
@@ -195,7 +290,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 16,
     top: "50%",
-    marginTop: -11, // metade do ícone (22)
+    marginTop: -11,
     opacity: 0.8,
   },
   helperText: {
@@ -223,5 +318,17 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: Platform.OS === "ios" ? "System" : undefined,
     letterSpacing: 0.15,
+  },
+  msg: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  errorMsg: {
+    color: COLORS.error,
+  },
+  successMsg: {
+    color: COLORS.success,
   },
 });

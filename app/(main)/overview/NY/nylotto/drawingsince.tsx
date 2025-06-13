@@ -136,7 +136,7 @@ export default function DrawingSinceNYLotto() {
         title="Overview"
         subtitle="New York NY Lotto"
         headerColor="#155095"
-        backTo="/overview/new_york/overview"
+        backTo="/overview/ny/overview"
       />
 
       {/* --- TABS INLINE --- */}

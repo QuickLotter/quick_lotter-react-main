@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import GamesGenerated from "@/components/generator/smart_filter/gamesgenerated";
 
-export default function NumbersGeneratedPage() {
+export default function MyLinesPage() {
   const router = useRouter();
   const { data } = useLocalSearchParams();
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,14 +10,15 @@ import {
   ScrollView,
   SafeAreaView,
   Platform,
+  ActivityIndicator,
+  Linking,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors, Typography } from "@/theme";
-import GoogleIcon from "@/assets/icons/google.svg";
-import FacebookIcon from "@/assets/icons/facebook.svg";
 import HeaderLoginLogo from "@/components/generator/layout/HeaderLoginLogo";
 import { useRouter } from "expo-router";
+import { useAuth } from "./AuthContext";
 
 const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => (
   <View style={styles.responsiveContainer}>{children}</View>
@@ -26,12 +27,19 @@ const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => (
 export default function Login() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { signIn, user, loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const scaleAnim = useState(new Animated.Value(1))[0];
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (user && !user.email_confirmed_at) {
+      router.replace("/verify-success");
+    }
+  }, [user]);
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
@@ -48,16 +56,28 @@ export default function Login() {
     }).start();
   };
 
+  // LOGIN REAL com Supabase
   const handleLogin = async () => {
+    setError("");
     if (!email || !password) {
       setError("Please enter both email and password.");
       return;
     }
-    setError("");
-    // Aqui você pode chamar sua API de autenticação real!
-    setTimeout(() => {
-      router.replace("/auth/PostLoginGate"); // Após login, vai para o "gate" do estado!
-    }, 800);
+    const { error } = await signIn(email, password);
+    if (error) {
+      setError(error.message);
+    } else {
+      router.replace("/PostLoginGate");
+    }
+  };
+
+  // Clique: telefone
+  const handlePhonePress = () => {
+    Linking.openURL("tel:18006624357");
+  };
+  // Clique: email
+  const handleEmailPress = () => {
+    Linking.openURL("mailto:support@quicklotter.com");
   };
 
   return (
@@ -138,37 +158,36 @@ export default function Login() {
               onPressIn={handlePressIn}
               onPressOut={handlePressOut}
               onPress={handleLogin}
+              disabled={loading}
             >
-              <Text style={styles.loginText}>Login</Text>
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.loginText}>Login</Text>
+              )}
             </Pressable>
           </Animated.View>
 
-          <Text style={styles.or}>───── Or Continue With ─────</Text>
-          <View style={styles.socialRow}>
-            <TouchableOpacity style={styles.socialButton}>
-              <GoogleIcon width={20} height={20} />
-              <Text style={styles.socialText}>Google</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton}>
-              <FacebookIcon width={20} height={20} />
-              <Text style={styles.socialText}>Facebook</Text>
-            </TouchableOpacity>
-          </View>
+          {/* REMOVE LOGIN SOCIAL */}
 
-          {/* RESPONSIBLE PLAY */}
           <Text style={styles.legalTitle}>Responsible Play</Text>
           <Text style={styles.legalText}>
             Play responsibly. Only for 18 years or older. Need help with
             gambling? Support is free, confidential, and available 24/7 at{" "}
-            <Text style={styles.link}>1-800-662-HELP (4357)</Text> or{" "}
-            <Text style={styles.link}>support@quicklotter.com</Text>.
+            <Text style={styles.link} onPress={handlePhonePress}>
+              1-800-662-HELP (4357)
+            </Text>{" "}
+            or{" "}
+            <Text style={styles.link} onPress={handleEmailPress}>
+              support@quicklotter.com
+            </Text>
+            .
           </Text>
           <Text style={styles.legalText}>
             Quick Lotter does not sell lottery tickets. We provide digital tools
             and resources to help you enjoy and optimize your lottery
             experience.
           </Text>
-          {/*  */}
 
           <Text style={styles.footerText}>
             Don’t have an account?{" "}
@@ -182,6 +201,7 @@ export default function Login() {
   );
 }
 
+// ...styles iguais ao seu código anterior...
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
@@ -299,37 +319,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
-  },
-  or: {
-    color: "#8C94A5",
-    textAlign: "center",
-    marginBottom: 18,
-    marginTop: 8,
-    fontSize: 13,
-    letterSpacing: 0.5,
-  },
-  socialRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 12,
-    marginBottom: 26,
-  },
-  socialButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F6F7FB",
-    borderRadius: 11,
-    borderWidth: 1.2,
-    borderColor: "#DEE4F2",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    flex: 1,
-    gap: 10,
-  },
-  socialText: {
-    color: "#222",
-    fontWeight: "600",
-    fontSize: 14,
   },
   legalTitle: {
     color: "#222",

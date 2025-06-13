@@ -9,11 +9,13 @@ import {
   SafeAreaView,
   ScrollView,
   Platform,
+  Alert,
 } from "react-native";
 import HeaderLogoBack from "@/components/generator/layout/HeaderLogoBack";
 import { MaterialIcons } from "@expo/vector-icons";
 import ResponsiveContainer from "@/components/shared/responsivecontainer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 // Cores iOS-like
 const COLORS = {
@@ -29,7 +31,47 @@ const COLORS = {
 
 export default function EditPhone() {
   const [phone, setPhone] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+
+  // Função para formatar (XXX) XXX-XXXX
+  const handlePhoneChange = (raw: string) => {
+    let cleaned = raw.replace(/\D/g, "");
+    if (cleaned.length > 10) cleaned = cleaned.slice(0, 10);
+    let formatted = cleaned;
+    if (cleaned.length >= 7)
+      formatted = `(${cleaned.slice(0, 3)}) ${cleaned.slice(
+        3,
+        6
+      )}-${cleaned.slice(6)}`;
+    else if (cleaned.length >= 4)
+      formatted = `(${cleaned.slice(0, 3)}) ${cleaned.slice(3)}`;
+    else if (cleaned.length > 0) formatted = `(${cleaned}`;
+    setPhone(formatted);
+    setError("");
+  };
+
+  // Valida se está completo
+  const isValidPhone = (phone: string) => {
+    return /^\(\d{3}\) \d{3}-\d{4}$/.test(phone);
+  };
+
+  // Ao salvar, apenas simula envio, depois volta à tela anterior
+  const handleSave = () => {
+    if (!isValidPhone(phone)) {
+      setError("Enter a valid phone number (XXX) XXX-XXXX");
+      return;
+    }
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      Alert.alert("Success", "A verification message has been sent!");
+      router.back(); // Ou router.replace("/personal-data") se quiser garantir navegação
+    }, 1200);
+    // Depois, conecte aqui o Supabase + SMS
+  };
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -62,19 +104,32 @@ export default function EditPhone() {
                 placeholderTextColor={COLORS.textMuted}
                 style={styles.phoneInput}
                 value={phone}
-                onChangeText={setPhone}
+                onChangeText={handlePhoneChange}
                 keyboardType="phone-pad"
                 selectionColor={COLORS.primary}
+                maxLength={14}
+                autoFocus
+                returnKeyType="done"
               />
               <Pressable style={styles.editIcon} hitSlop={8}>
                 <MaterialIcons name="edit" size={22} color={COLORS.textMuted} />
               </Pressable>
             </View>
           </View>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
           {/* Botão */}
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Save and send the message</Text>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              (!isValidPhone(phone) || loading) && { opacity: 0.55 },
+            ]}
+            onPress={handleSave}
+            disabled={!isValidPhone(phone) || loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? "Sending..." : "Save and send the message"}
+            </Text>
           </TouchableOpacity>
 
           {/* Info */}
@@ -206,6 +261,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 0.11,
     fontFamily: Platform.OS === "ios" ? "System" : undefined,
+  },
+  errorText: {
+    color: "#D32F2F",
+    fontSize: 13,
+    marginBottom: 10,
+    textAlign: "left",
+    marginLeft: 4,
+    fontWeight: "600",
   },
   infoBox: {
     flexDirection: "row",
